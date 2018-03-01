@@ -2,8 +2,8 @@ package projet.pictionnary.breton.components;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-//import javafx.scene.control.ChoiceBox;
-//import javafx.scene.control.RadioButton;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.RadioButton;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -16,7 +16,7 @@ public class DrawingPane extends Region {
     
     // Add this eraser radiobutton to try the capacity to erase
     // the draw.
-    //private RadioButton eraser;
+    private RadioButton eraser;
     
     private Canvas canvas;
     private StackPane rootPane;
@@ -25,10 +25,10 @@ public class DrawingPane extends Region {
     
     public DrawingPane() {
         canvas = new Canvas(1000, 800);
-        //eraser = new RadioButton();
-        //eraser.setSelected(false);
+        eraser = new RadioButton();
+        eraser.setSelected(false);
         erase = false;
-        //erase = eraser.isSelected();
+        erase = eraser.isSelected();
         rootPane = new StackPane();
         
         
@@ -36,19 +36,19 @@ public class DrawingPane extends Region {
         setMouseEvent();
         
         rootPane.getChildren().add(canvas);
-        this.getChildren().addAll(rootPane);
-        //this.getChildren().addAll(rootPane, eraser);
+     //   this.getChildren().addAll(rootPane);
+        this.getChildren().addAll(rootPane, eraser);
     }
 
     private void setGraphiContxt() {
         graphicContxt = canvas.getGraphicsContext2D();
         graphicContxt.setStroke(Color.BLACK);
-        graphicContxt.setLineWidth(7);
+        graphicContxt.setLineWidth(50);
     }
 
     private void setMouseEvent() {
         canvas.setOnMouseDragged((event) -> {
-            //erase = eraser.isSelected();
+            erase = eraser.isSelected();
             double size = graphicContxt.getLineWidth();
             double x = event.getX() - size;
             double y = event.getY() - size;
@@ -57,7 +57,7 @@ public class DrawingPane extends Region {
                 graphicContxt.clearRect(x, y, size + 1, size + 1);
             } else {
                 graphicContxt.setFill(Color.BLACK);
-                graphicContxt.fillRect(x, y, size, size);
+                graphicContxt.fillOval(x, y, size, size);
             }
         });
     }
