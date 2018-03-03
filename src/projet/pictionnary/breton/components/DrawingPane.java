@@ -14,18 +14,20 @@ import javafx.scene.paint.Color;
  */
 public class DrawingPane extends Region {
     
-    private final Canvas canvas;
+    private Canvas canvas;
     private final StackPane rootPane;
-    private final GraphicsContext graphicContxt;
+    private GraphicsContext graphicContxt;
     private boolean erase;
     
     private final ObjectProperty<Color> color;
-    private final ObjectProperty<Integer> thickness = new SimpleObjectProperty<>();
+    private final ObjectProperty<Integer> thickness;
     
     public DrawingPane() {
         canvas = new Canvas(1000, 800);
         rootPane = new StackPane();
+        
         erase = false;
+        thickness = new SimpleObjectProperty<>();
         color = new SimpleObjectProperty<>();
 
         graphicContxt = canvas.getGraphicsContext2D();
@@ -62,6 +64,11 @@ public class DrawingPane extends Region {
         });
     }
 
+    public void clearPane() {
+//        graphicContxt.beginPath();
+        graphicContxt.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+    }
+    
     public ObjectProperty<Color> colorProperty() {
         return color;
     }

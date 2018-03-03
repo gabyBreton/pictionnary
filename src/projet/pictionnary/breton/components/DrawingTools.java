@@ -43,12 +43,17 @@ public class DrawingTools extends Region {
            controller.setErase(true);
         });
         
+        Button clearAllBtn = new Button("Clear all");
+        clearAllBtn.setOnAction((event) -> {
+           controller.clearPane();
+        });
+        
         rootBox.setSpacing(20);
         rootBox.setStyle("-fx-background-color: #e6e6e6;");
         rootBox.setMinHeight(800);
         rootBox.setMaxWidth(100);
         rootBox.setPadding(new Insets(5, 5, 0, 5));
-        rootBox.getChildren().addAll(colorPicker, spinner, noEraseBtn, eraserBtn);
+        rootBox.getChildren().addAll(colorPicker, spinner, noEraseBtn, eraserBtn, clearAllBtn);
         getChildren().add(rootBox);
     }
 }

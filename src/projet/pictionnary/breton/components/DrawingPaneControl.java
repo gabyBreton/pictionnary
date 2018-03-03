@@ -30,7 +30,7 @@ public final class DrawingPaneControl extends Region implements IDrawing {
 
     @Override
     public void clearPane() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        drawingPane.clearPane();
     }
 
     @Override
