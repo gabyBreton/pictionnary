@@ -6,7 +6,7 @@ import javafx.stage.Stage;
 import projet.pictionnary.breton.components.DrawingPaneControl;
 
 /**
- *
+ * This class launches the main applicatio 
  * @author Gabriel Breton - 43397
  */
 public class ProjetPictionnaryBreton extends Application {

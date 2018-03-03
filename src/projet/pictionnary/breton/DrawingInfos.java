@@ -1,14 +1,21 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package projet.pictionnary.breton;
+
+import javafx.scene.canvas.Canvas;
+import javafx.scene.image.Image;
 
 /**
  *
  * @author Gabriel Breton - 43397
  */
-public class DrawingInfos {
+public class DrawingInfos extends Canvas {
     
+    private Image image;
+
+    public Image getImage() {
+        return image;
+    }
+
+    public void setImage(Image image) {
+        this.image = image;
+    }
 }
