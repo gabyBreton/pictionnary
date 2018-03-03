@@ -1,6 +1,8 @@
 package projet.pictionnary.breton.components;
 
 import javafx.beans.property.ObjectProperty;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import projet.pictionnary.breton.DrawingInfos;
 
@@ -8,11 +10,22 @@ import projet.pictionnary.breton.DrawingInfos;
  *
  * @author Gabriel Breton - 43397
  */
-public class DrawingPaneControl implements IDrawing {
+public final class DrawingPaneControl extends Region implements IDrawing {
 
+    private DrawingPane drawingPane;
+    private DrawingTools drawingTools;
+    
+    public DrawingPaneControl() {
+        initialize();
+    }
+    
     @Override
     public void initialize() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        drawingPane = new DrawingPane();
+        drawingTools = new DrawingTools(this);
+        HBox rootBox = new HBox();        
+        rootBox.getChildren().addAll(drawingTools, drawingPane);
+        getChildren().add(rootBox);
     }
 
     @Override
@@ -32,32 +45,36 @@ public class DrawingPaneControl implements IDrawing {
 
     @Override
     public ObjectProperty<Color> colorProperty() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return drawingPane.colorProperty();
     }
 
     @Override
     public void setColor(Color color) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        drawingPane.setColor(color);
     }
 
     @Override
     public Color getColor() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return drawingPane.getColor();
     }
 
     @Override
     public ObjectProperty<Integer> thicknessProperty() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return drawingPane.thicknessProperty();
     }
 
     @Override
     public void setThickness(int thickness) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        drawingPane.setThickness(thickness);
     }
 
     @Override
     public int getThickness() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return drawingPane.getThickness();
     }
     
+   @Override
+   public void setErase(boolean erase) {
+       drawingPane.setErase(erase);
+   }
 }

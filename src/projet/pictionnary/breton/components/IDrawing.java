@@ -74,5 +74,11 @@ public interface IDrawing {
      */
     int getThickness();
 
+    /**
+     * Set the erase function of the brush.
+     * 
+     * @param erase true to erase, or else false.
+     */
+    void setErase(boolean erase);
 }
 
