@@ -21,7 +21,9 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 /**
- *
+ * This class provides tools to draw such as brush, eraser, colorpicker, 
+ * thickness spinner, saver and opener.
+ * 
  * @author Gabriel Breton - 43397
  */
 
@@ -38,6 +40,11 @@ public class DrawingTools extends Region {
     private Spinner<Integer> spinner;
     private ColorPicker colorPicker;
     
+    /**
+     * Creates a new DrawingTools component.
+     * 
+     * @param controller the drawing controller.
+     */
     public DrawingTools(DrawingPaneControl controller) {
         rootBox = new VBox();
         
@@ -54,17 +61,35 @@ public class DrawingTools extends Region {
         getChildren().add(rootBox);
     }
 
-    private void setRootBox(Button brushBtn, Button eraserBtn, Button saveBtn, Button openBtn, Button clearAllBtn) {
+    /**
+     * Set the root box and add its elements
+     * 
+     * @param brushBtn the brush button.
+     * @param eraserBtn the eraser button.
+     * @param saveBtn the save button.
+     * @param openBtn the open button.
+     * @param clearAllBtn the clear button.
+     */
+    private void setRootBox(Button brushBtn, Button eraserBtn, Button saveBtn, 
+                            Button openBtn, Button clearAllBtn) {
         rootBox.setSpacing(20);
         rootBox.setStyle("-fx-background-color: #e6e6e6;");
         rootBox.setMinHeight(800);
         rootBox.setMaxWidth(70);
         rootBox.setPadding(new Insets(5, 5, 0, 5));
-        rootBox.getChildren().addAll(colorPicker, spinner, brushBtn, eraserBtn, saveBtn, openBtn, clearAllBtn);
+        rootBox.getChildren().addAll(colorPicker, spinner, brushBtn, eraserBtn, 
+                                     saveBtn, openBtn, clearAllBtn);
     }
 
+    /**
+     * Creates the button to open a saved draw.
+     * 
+     * @param controller the drawing controller.
+     * @return the open button.
+     */
     private Button createsOpenBtn(DrawingPaneControl controller) {
         Image openImg = new Image(getClass().getResourceAsStream("folder.png"));
+        
         Button openBtn = new Button();
         openBtn.setTooltip(new Tooltip("Open..."));
         openBtn.setGraphic(new ImageView(openImg));
@@ -72,11 +97,19 @@ public class DrawingTools extends Region {
             FileChooser fileChooser = createsFileChooser("Open draw", "ser");
             controller.setDrawingInfos(recoverDraw(fileChooser));
         });
+        
         return openBtn;
     }
 
+    /**
+     * Creates the button to save a draw.
+     * 
+     * @param controller the drawing controller.
+     * @return the save button.
+     */
     private Button createsSaveBtn(DrawingPaneControl controller) {
         Image saveImg = new Image(getClass().getResourceAsStream("save.png"));                
+        
         Button saveBtn = new Button();
         saveBtn.setTooltip(new Tooltip("Save..."));
         saveBtn.setGraphic(new ImageView(saveImg));
@@ -85,20 +118,36 @@ public class DrawingTools extends Region {
                     "ser");
             registerDraw(fileChooser, controller.getDrawingInfos());
         });
+        
         return saveBtn;
     }
 
+    /**
+     * Creates the button to clear all the canvas.
+     * 
+     * @param controller the drawing controller.
+     * @return the clear button.
+     */
     private Button createsClearAllBtn(DrawingPaneControl controller) {
         Button clearAllBtn = new Button("Clear");
         clearAllBtn.setAlignment(Pos.BOTTOM_CENTER);
         clearAllBtn.setOnAction((event) -> {
             controller.clearPane();
         });
+        
         return clearAllBtn;
     }
 
+    /**
+     * Creates the button to erase.
+     * 
+     * @param controller the drawing controller.
+     * @return the erase button.
+     */
     private Button createsEraseBtn(DrawingPaneControl controller) {
-        Image eraseImg = new Image(getClass().getResourceAsStream("eraser.png"));
+        Image eraseImg = new Image(getClass().
+                                   getResourceAsStream("eraser.png"));
+        
         Button eraserBtn = new Button();
         eraserBtn.setTooltip(new Tooltip("Erase..."));
         
@@ -106,11 +155,20 @@ public class DrawingTools extends Region {
         eraserBtn.setOnAction((event) -> {
             controller.setErase(true);
         });
+        
         return eraserBtn;
     }
 
+    /**
+     * Creates the button to draw.
+     * 
+     * @param controller the drawing controller.
+     * @return the brush button.
+     */
     private Button createsBrushBtn(DrawingPaneControl controller) {
-        Image brushImg = new Image(getClass().getResourceAsStream("paint-brush.png"));
+        Image brushImg = new Image(getClass().
+                                   getResourceAsStream("paint-brush.png"));
+        
         Button brushBtn = new Button();
         brushBtn.setTooltip(new Tooltip("Draw..."));
         
@@ -118,25 +176,44 @@ public class DrawingTools extends Region {
         brushBtn.setOnAction((event) -> {
             controller.setErase(false);
         });
+        
         return brushBtn;
     }
 
+    /**
+     * Creates the color picker to change the draw color.
+     * 
+     * @param controller the drawing controller.
+     */
     private void createsColorPicker(DrawingPaneControl controller) {
         colorPicker = new ColorPicker(Color.BLACK);
         colorPicker.setEditable(true);
-        colorPicker.valueProperty().addListener((observable, oldValue, newValue) -> {
+        colorPicker.valueProperty().
+                    addListener((observable, oldValue, newValue) -> {
             controller.setColor(newValue);
         });
     }
 
+    /**
+     * Creates the thickness spinner.
+     * 
+     * @param controller the drawing controller.
+     */
     private void createsSpinner(DrawingPaneControl controller) {
         spinner = new Spinner(1, 200, 20);
         spinner.setEditable(true);
-        spinner.valueProperty().addListener((observable, oldValue, newValue) -> {
+        spinner.valueProperty().
+                addListener((observable, oldValue, newValue) -> {
             controller.setThickness(newValue);
         });
     }
     
+    /**
+     * Handle the action to recover a draw saved on the file system.
+     * 
+     * @param fileChooser the file chooser to select a draw.
+     * @return the draw as an DrawingInfos instance.
+     */
     private DrawingInfos recoverDraw(FileChooser fileChooser) {
         DrawingInfos drawingInfos = null;
         try {
@@ -154,6 +231,14 @@ public class DrawingTools extends Region {
         return drawingInfos;
     }
     
+    /**
+     * Creates a file chooser.
+     * 
+     * @param title the title of the file chooser.
+     * @param extensions the extensions displayed by the file chooser.
+     * 
+     * @return the new file chooser.
+     */
     private FileChooser createsFileChooser(String title, String... extensions) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle(title);
@@ -170,7 +255,15 @@ public class DrawingTools extends Region {
         return fileChooser;
     }
     
-    private void registerDraw(FileChooser fileChooser, DrawingInfos drawingInfos) {
+    /**
+     * Handle the action to save a draw.
+     * 
+     * @param fileChooser the file chooser to select where to save the draw on 
+     * the file system.
+     * @param drawingInfos the draw as an instance of DrawingInfos.
+     */
+    private void registerDraw(FileChooser fileChooser, 
+                              DrawingInfos drawingInfos) {
         try {
             FileOutputStream fileOut = new FileOutputStream(
                     fileChooser.showSaveDialog(new Stage()) + ".ser"
