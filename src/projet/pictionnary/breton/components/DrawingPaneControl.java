@@ -4,7 +4,6 @@ import javafx.beans.property.ObjectProperty;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
-import projet.pictionnary.breton.DrawingInfos;
 
 /**
  *
@@ -14,6 +13,7 @@ public final class DrawingPaneControl extends Region implements IDrawing {
 
     private DrawingPane drawingPane;
     private DrawingTools drawingTools;
+    private DrawingInfos drawingInfos;
     
     public DrawingPaneControl() {
         initialize();
@@ -21,8 +21,10 @@ public final class DrawingPaneControl extends Region implements IDrawing {
     
     @Override
     public void initialize() {
-        drawingPane = new DrawingPane();
+        drawingInfos = new DrawingInfos();
+        drawingPane = new DrawingPane(drawingInfos);
         drawingTools = new DrawingTools(this);
+        
         HBox rootBox = new HBox();        
         rootBox.getChildren().addAll(drawingTools, drawingPane);
         getChildren().add(rootBox);
@@ -35,12 +37,13 @@ public final class DrawingPaneControl extends Region implements IDrawing {
 
     @Override
     public DrawingInfos getDrawingInfos() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return drawingInfos;
     }
 
     @Override
-    public void setDrawingInfos(DrawingInfos dInfos) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void setDrawingInfos(DrawingInfos drawingInfos) {
+        this.drawingInfos = drawingInfos;
+        drawingPane.drawSaved(this.drawingInfos);
     }
 
     @Override

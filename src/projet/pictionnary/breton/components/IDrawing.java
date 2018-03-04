@@ -2,7 +2,6 @@ package projet.pictionnary.breton.components;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.scene.paint.Color;
-import projet.pictionnary.breton.DrawingInfos;
 
 public interface IDrawing {
 

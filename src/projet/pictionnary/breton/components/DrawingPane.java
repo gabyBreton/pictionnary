@@ -22,7 +22,7 @@ public class DrawingPane extends Region {
     private final ObjectProperty<Color> color;
     private final ObjectProperty<Integer> thickness;
     
-    public DrawingPane() {
+    public DrawingPane(DrawingInfos drawingInfos) {
         canvas = new Canvas(1000, 800);
         rootPane = new StackPane();
         
@@ -33,7 +33,7 @@ public class DrawingPane extends Region {
         graphicContxt = canvas.getGraphicsContext2D();
         graphicContxt.setLineWidth(20);        
 
-        setMouseEvent();
+        setMouseEvent(drawingInfos);
         addListeners();
         
         rootPane.getChildren().add(canvas);
@@ -50,22 +50,24 @@ public class DrawingPane extends Region {
         });
     }
     
-    private void setMouseEvent() {
+    private void setMouseEvent(DrawingInfos drawingInfos) {
         canvas.setOnMouseDragged((event) -> {
-            double size = graphicContxt.getLineWidth();
-            double x = event.getX() - size;
-            double y = event.getY() - size;
+            double thickness = graphicContxt.getLineWidth();
+            double x = event.getX() - thickness;
+            double y = event.getY() - thickness;
 
+            drawingInfos.add(new Point(x, y, (int) graphicContxt.getLineWidth(), 
+                                             (Color) graphicContxt.getFill(), 
+                                             erase));
             if (erase) {
-                graphicContxt.clearRect(x, y, size + 1, size + 1);
+                graphicContxt.clearRect(x, y, thickness + 1, thickness + 1);
             } else {
-                graphicContxt.fillOval(x, y, size, size);
+                graphicContxt.fillOval(x, y, thickness, thickness);
             }
         });
     }
 
     public void clearPane() {
-//        graphicContxt.beginPath();
         graphicContxt.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
     }
     
@@ -85,11 +87,6 @@ public class DrawingPane extends Region {
         return thickness.get();
     }
 
-    public void getDrawInfos() {
-//        canvas.snapshot(new SnapshotParameters(), new WritableImage(1000, 800));
-//        graphicContxt.save();
-    }
-    
     public void setColor(Color color) {
         this.color.set(color);
     }
@@ -100,5 +97,20 @@ public class DrawingPane extends Region {
     
     public void setErase(boolean erase) {
         this.erase = erase;
+    }
+    
+    public void drawSaved(DrawingInfos drawingInfos) {
+        for (Point p : drawingInfos.getListPositions()) {
+            double x = p.getX();
+            double y = p.getY();
+            double thickness = p.getThickness();
+            
+            if (p.isErase()) {
+                graphicContxt.clearRect(x, y, thickness + 1, thickness + 1);
+            } else {
+                graphicContxt.setFill(p.getColor());
+                graphicContxt.fillOval(x, y, thickness, thickness);
+            }
+        }
     }
 }
