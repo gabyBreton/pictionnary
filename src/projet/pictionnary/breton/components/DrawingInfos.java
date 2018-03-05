@@ -18,6 +18,7 @@ public class DrawingInfos implements Serializable {
      */
     public DrawingInfos() {
         listPositions = new ArrayList<>();
+        modifiable = true;
     }
     
     /**
@@ -40,7 +41,7 @@ public class DrawingInfos implements Serializable {
         this.modifiable = modifiable;
     }
     
-    public boolean getModifiable() {
+    public boolean isModifiable() {
         return modifiable;
     }
     
