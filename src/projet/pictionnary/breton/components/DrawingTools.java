@@ -21,12 +21,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-/**
- * This class provides tools to draw such as brush, eraser, colorpicker, 
- * thickness spinner, saver and opener.
- * 
- * @author Gabriel Breton - 43397
- */
+
 
 /*
  CREDITS ICONS:
@@ -35,6 +30,13 @@ import javafx.stage.Stage;
  paint-brush Icons made by Baianat "https://www.flaticon.com/authors/baianat" from "https://www.flaticon.com/" is licensed by "http://creativecommons.org/licenses/by/3.0/" "Creative Commons BY 3.0"
  eraser      Icons made by Pixel Buddha "https://www.flaticon.com/authors/pixel-buddha" from "https://www.flaticon.com/" is licensed by "http://creativecommons.org/licenses/by/3.0/" "Creative Commons BY 3.0"
 */
+
+/**
+ * This class provides tools to draw such as brush, eraser, colorpicker, 
+ * thickness spinner, saver and opener.
+ * 
+ * @author Gabriel Breton - 43397
+ */
 public class DrawingTools extends Region {
     
     private final VBox toolsBox;
@@ -63,7 +65,6 @@ public class DrawingTools extends Region {
         
         setRootBox(brushBtn, eraserBtn, saveBtn, openBtn, clearAllBtn);
         
-//        setRootBox(brushBtn, eraserBtn, clearAllBtn);
         rootBox.getChildren().addAll(toolsBox, drawingPane);
         getChildren().add(rootBox);
     }
@@ -84,11 +85,8 @@ public class DrawingTools extends Region {
         toolsBox.setMinHeight(800);
         toolsBox.setMaxWidth(70);
         toolsBox.setPadding(new Insets(5, 5, 0, 5));
-//        toolsBox.getChildren().addAll(colorPicker, spinner, brushBtn, eraserBtn, 
-//                                     clearAllBtn);
         toolsBox.getChildren().addAll(colorPicker, spinner, brushBtn, eraserBtn, 
-                                     saveBtn, openBtn, clearAllBtn);
-
+                                      saveBtn, openBtn, clearAllBtn);
     }
 
     /**
@@ -124,8 +122,7 @@ public class DrawingTools extends Region {
         saveBtn.setTooltip(new Tooltip("Save..."));
         saveBtn.setGraphic(new ImageView(saveImg));
         saveBtn.setOnAction((event) -> {
-            FileChooser fileChooser = createsFileChooser("Register draw",
-                    "ser");
+            FileChooser fileChooser = createsFileChooser("Register draw","ser");
             registerDraw(fileChooser, drawingPane.getDrawingInfos());
         });
         
@@ -201,11 +198,10 @@ public class DrawingTools extends Region {
         }
     }
     
-    
     /**
      * Creates the button to clear all the canvas.
      * 
-     * @param controller the drawing controller.
+     * @param drawingPane the drawing pane.
      * @return the clear button.
      */
     private Button createsClearAllBtn(DrawingPane drawingPane) {
@@ -221,7 +217,7 @@ public class DrawingTools extends Region {
     /**
      * Creates the button to erase.
      * 
-     * @param controller the drawing controller.
+     * @param drawingPane the drawing pane.
      * @return the erase button.
      */
     private Button createsEraseBtn(DrawingPane drawingPane) {
@@ -242,7 +238,7 @@ public class DrawingTools extends Region {
     /**
      * Creates the button to draw.
      * 
-     * @param controller the drawing controller.
+     * @param drawingPane the drawing pane.
      * @return the brush button.
      */
     private Button createsBrushBtn(DrawingPane drawingPane) {
@@ -263,7 +259,7 @@ public class DrawingTools extends Region {
     /**
      * Creates the color picker to change the draw color.
      * 
-     * @param controller the drawing controller.
+     * @param drawingPane the drawing pane.
      */
     private void createsColorPicker(DrawingPane drawingPane) {
         colorPicker = new ColorPicker(Color.BLACK);

@@ -7,7 +7,8 @@ import projet.pictionnary.breton.components.DrawingPane;
 import projet.pictionnary.breton.components.DrawingTools;
 
 /**
- * This class launches the main applicatio 
+ * This class launches the application.
+ * 
  * @author Gabriel Breton - 43397
  */
 public class ProjetPictionnaryBreton extends Application {

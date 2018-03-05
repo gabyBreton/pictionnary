@@ -11,7 +11,7 @@ import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
 
 /**
- * This class is used as the canvas where to draw.
+ * This class is used as a canvas where to draw.
  * 
  * @author Gabriel Breton - 43397
  */
@@ -39,8 +39,8 @@ public class DrawingPane extends Region implements IDrawing {
         canvas = new Canvas(1000, 800);
         rootPane = new StackPane();    
         drawingInfos = new DrawingInfos();
+
         erase = false;        
-        
         thickness = new SimpleObjectProperty<>();
         color = new SimpleObjectProperty<>();        
         
@@ -52,6 +52,9 @@ public class DrawingPane extends Region implements IDrawing {
         getChildren().addAll(rootPane);        
     }    
 
+    /**
+     * Creates and set the graphic context.
+     */
     private void createsGraphicsContext() {
         graphicContxt = canvas.getGraphicsContext2D();
         graphicContxt.setLineWidth(20);
@@ -59,6 +62,9 @@ public class DrawingPane extends Region implements IDrawing {
         graphicContxt.setLineJoin(StrokeLineJoin.ROUND);
     }
     
+    /**
+     * Add the listeners to color and thickness properties.
+     */
     private void addListeners() {
         color.addListener((observable, oldValue, newValue) -> {
             graphicContxt.setStroke(newValue);
@@ -69,12 +75,18 @@ public class DrawingPane extends Region implements IDrawing {
         });
     }
     
+    /**
+     * Set the mouse event.
+     */
     private void setMouseEvent() {
-        setOnMouseExited();
+        setOnMouseReleased();
         setOnMouseDragged();
         setOnMousePressed();
     }
 
+    /**
+     * Handle the mouse event when the mouse is pressed.
+     */
     private void setOnMousePressed() {
         canvas.setOnMousePressed((event) -> {
             if (drawingInfos.isModifiable()) {
@@ -82,9 +94,10 @@ public class DrawingPane extends Region implements IDrawing {
                 double x = event.getX() - (thickness / 2);
                 double y = event.getY() - (thickness / 2);
 
-                drawingInfos.add(new Point(x, y, (int) graphicContxt.getLineWidth(),
-                        (Color) graphicContxt.getStroke(),
-                        erase, LinePosition.BEGIN));
+                drawingInfos.add(new Point(x, y, 
+                                           (int) graphicContxt.getLineWidth(),
+                                           (Color) graphicContxt.getStroke(),
+                                           erase, LinePosition.BEGIN));
                 if (erase) {
                     graphicContxt.clearRect(x, y, thickness, thickness);
                 } else {
@@ -96,6 +109,9 @@ public class DrawingPane extends Region implements IDrawing {
         });
     }
 
+    /**
+     * Handle the mouse event when the mouse is dragged.
+     */
     private void setOnMouseDragged() {
         canvas.setOnMouseDragged((event) -> {
             if (drawingInfos.isModifiable()) {
@@ -103,9 +119,10 @@ public class DrawingPane extends Region implements IDrawing {
                 double x = event.getX() - (thickness / 2);
                 double y = event.getY() - (thickness / 2);
 
-                drawingInfos.add(new Point(x, y, (int) graphicContxt.getLineWidth(),
-                        (Color) graphicContxt.getStroke(),
-                        erase, LinePosition.MIDDLE));
+                drawingInfos.add(new Point(x, y, 
+                                           (int) graphicContxt.getLineWidth(),
+                                           (Color) graphicContxt.getStroke(),
+                                           erase, LinePosition.MIDDLE));
                 if (erase) {
                     graphicContxt.clearRect(x, y, thickness, thickness);
                 } else {
@@ -116,8 +133,11 @@ public class DrawingPane extends Region implements IDrawing {
         });
     }
 
-    private void setOnMouseExited() {
-        canvas.setOnMouseExited((event) -> {
+    /**
+     * Handle the mouse event when the is released.
+     */
+    private void setOnMouseReleased() {
+        canvas.setOnMouseReleased((event) -> {
             if (drawingInfos.isModifiable()) {
                 double thickness = graphicContxt.getLineWidth();
                 double x = event.getX() - (thickness / 2);
@@ -171,6 +191,11 @@ public class DrawingPane extends Region implements IDrawing {
         this.erase = erase;
     }
     
+    /**
+     * Draw based on the drawing infos given in parameters.
+     * 
+     * @param drawingInfos the infos to draw.
+     */
     public void drawSavedDrawingInfos(DrawingInfos drawingInfos) {
         for (Point p : drawingInfos.getListPositions()) {
             double x = p.getX();

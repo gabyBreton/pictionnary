@@ -1,16 +1,24 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package projet.pictionnary.breton.components;
 
 /**
- *
+ * This enum is used to specify the position of a point in a line.
+ * 
  * @author Gabriel Breton - 43397
  */
 public enum LinePosition {
+    
+    /**
+     * Used when the point is the first one of a line.
+     */
     BEGIN,
+    
+    /**
+     * Used when the point is in line (between the first and the last).
+     */
     MIDDLE,
+    
+    /**
+     * Used when the point is the last of a line.
+     */
     END;
 }
