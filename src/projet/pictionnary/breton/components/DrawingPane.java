@@ -9,37 +9,47 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 
 /**
+ * This class is used as the canvas where to draw.
  * 
  * @author Gabriel Breton - 43397
  */
-public class DrawingPane extends Region {
+public class DrawingPane extends Region implements IDrawing {
     
-    private final Canvas canvas;
-    private final StackPane rootPane;
-    private final GraphicsContext graphicContxt;
+    private Canvas canvas;
+    private StackPane rootPane;
+    private GraphicsContext graphicContxt;
     private boolean erase;
+    // private boolean modifiable;
     
-    private final ObjectProperty<Color> color;
-    private final ObjectProperty<Integer> thickness;
+    private ObjectProperty<Color> color;
+    private ObjectProperty<Integer> thickness;
+    private DrawingInfos drawingInfos;
     
-    public DrawingPane(DrawingInfos drawingInfos) {
-        canvas = new Canvas(1000, 800);
-        rootPane = new StackPane();
-        
-        erase = false;
-        thickness = new SimpleObjectProperty<>();
-        color = new SimpleObjectProperty<>();
-
-        graphicContxt = canvas.getGraphicsContext2D();
-        graphicContxt.setLineWidth(20);        
-
-        setMouseEvent(drawingInfos);
-        addListeners();
-        
-        rootPane.getChildren().add(canvas);
-        getChildren().addAll(rootPane);
+    /**
+     * Creates and initialize the attributes to draw.
+     * 
+     */
+    public DrawingPane() {
+        initialize();
     }
 
+    @Override
+    public final void initialize() {
+        canvas = new Canvas(1000, 800);
+        rootPane = new StackPane();    
+        drawingInfos = new DrawingInfos();
+        erase = false;        
+        // modifiable = true;
+        thickness = new SimpleObjectProperty<>();
+        color = new SimpleObjectProperty<>();        
+        graphicContxt = canvas.getGraphicsContext2D();
+        graphicContxt.setLineWidth(20);              
+        setMouseEvent();
+        addListeners();        
+        rootPane.getChildren().add(canvas);
+        getChildren().addAll(rootPane);        
+    }    
+    
     private void addListeners() {
         color.addListener((observable, oldValue, newValue) -> {
             graphicContxt.setFill(newValue);
@@ -50,7 +60,7 @@ public class DrawingPane extends Region {
         });
     }
     
-    private void setMouseEvent(DrawingInfos drawingInfos) {
+    private void setMouseEvent() {
         canvas.setOnMouseDragged((event) -> {
             double thickness = graphicContxt.getLineWidth();
             double x = event.getX() - thickness;
@@ -67,39 +77,47 @@ public class DrawingPane extends Region {
         });
     }
 
+    @Override
     public void clearPane() {
         graphicContxt.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
     }
     
+    @Override
     public ObjectProperty<Color> colorProperty() {
         return color;
     }
 
+    @Override
     public ObjectProperty<Integer> thicknessProperty() {
         return thickness;
     }    
 
+    @Override
     public Color getColor() {
         return color.get();
     }
     
+    @Override
     public int getThickness() {
         return thickness.get();
     }
 
+    @Override
     public void setColor(Color color) {
         this.color.set(color);
     }
     
+    @Override
     public void setThickness(int thickness) {
         this.thickness.set(thickness);
     } 
     
+    @Override
     public void setErase(boolean erase) {
         this.erase = erase;
     }
     
-    public void drawSaved(DrawingInfos drawingInfos) {
+    public void drawSavedDrawingInfos(DrawingInfos drawingInfos) {
         for (Point p : drawingInfos.getListPositions()) {
             double x = p.getX();
             double y = p.getY();
@@ -112,5 +130,16 @@ public class DrawingPane extends Region {
                 graphicContxt.fillOval(x, y, thickness, thickness);
             }
         }
+    }
+
+    @Override
+    public DrawingInfos getDrawingInfos() {
+        return drawingInfos;
+    }
+
+    @Override
+    public void setDrawingInfos(DrawingInfos drawingInfos) {
+        this.drawingInfos = drawingInfos;
+        drawSavedDrawingInfos(drawingInfos);
     }
 }

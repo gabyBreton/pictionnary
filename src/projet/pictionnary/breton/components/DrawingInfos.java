@@ -33,13 +33,6 @@ public class DrawingInfos implements Serializable {
      * @return 
      */
     public ArrayList<Point> getListPositions() {
-//        ArrayList<Point> copyListPos = new ArrayList<>();
-//        
-//        for (Point p : listPositions) {
-//            copyListPos.add(new Point(p.getX(), p.getY(), p.getThickness(), 
-//                                      p.getColor(), p.isErase()));
-//        }
-//        return copyListPos;
         return listPositions;
     }
 }

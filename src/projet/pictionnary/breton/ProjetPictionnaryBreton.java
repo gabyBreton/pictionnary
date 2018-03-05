@@ -3,7 +3,8 @@ package projet.pictionnary.breton;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import projet.pictionnary.breton.components.DrawingPaneControl;
+import projet.pictionnary.breton.components.DrawingPane;
+import projet.pictionnary.breton.components.DrawingTools;
 
 /**
  * This class launches the main applicatio 
@@ -22,7 +23,8 @@ public class ProjetPictionnaryBreton extends Application {
     public void start(Stage primaryStage) {
         primaryStage.setTitle("Pictionnary");
         
-        DrawingPaneControl root = new DrawingPaneControl();
+        DrawingPane drawingPane = new DrawingPane();
+        DrawingTools root = new DrawingTools(drawingPane);
         Scene scene = new Scene(root, 1000, 800);
  
         primaryStage.setScene(scene);
