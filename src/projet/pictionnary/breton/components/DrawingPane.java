@@ -7,6 +7,8 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.StrokeLineCap;
+import javafx.scene.shape.StrokeLineJoin;
 
 /**
  * This class is used as the canvas where to draw.
@@ -19,7 +21,7 @@ public class DrawingPane extends Region implements IDrawing {
     private StackPane rootPane;
     private GraphicsContext graphicContxt;
     private boolean erase;
-    // private boolean modifiable;
+    private boolean modifiable;
     
     private ObjectProperty<Color> color;
     private ObjectProperty<Integer> thickness;
@@ -39,20 +41,29 @@ public class DrawingPane extends Region implements IDrawing {
         rootPane = new StackPane();    
         drawingInfos = new DrawingInfos();
         erase = false;        
-        // modifiable = true;
+        modifiable = true;
+        
         thickness = new SimpleObjectProperty<>();
         color = new SimpleObjectProperty<>();        
-        graphicContxt = canvas.getGraphicsContext2D();
-        graphicContxt.setLineWidth(20);              
+        
+        createsGraphicsContext();
+        
         setMouseEvent();
         addListeners();        
         rootPane.getChildren().add(canvas);
         getChildren().addAll(rootPane);        
     }    
+
+    private void createsGraphicsContext() {
+        graphicContxt = canvas.getGraphicsContext2D();
+        graphicContxt.setLineWidth(20);
+        graphicContxt.setLineCap(StrokeLineCap.ROUND);
+        graphicContxt.setLineJoin(StrokeLineJoin.ROUND);
+    }
     
     private void addListeners() {
         color.addListener((observable, oldValue, newValue) -> {
-            graphicContxt.setFill(newValue);
+            graphicContxt.setStroke(newValue);
         });
         
         thickness.addListener((observable, oldValue, newValue) -> {
@@ -61,25 +72,54 @@ public class DrawingPane extends Region implements IDrawing {
     }
     
     private void setMouseEvent() {
+        
+        canvas.setOnMouseExited((event) -> {
+            double thickness = graphicContxt.getLineWidth();
+            double x = event.getX() - (thickness / 2);
+            double y = event.getY() - (thickness / 2);
+            drawingInfos.add((new Point(x, y, (int) graphicContxt.getLineWidth(), 
+                                              (Color) graphicContxt.getStroke(), 
+                                              erase, LinePosition.END)));
+        });
+        
         canvas.setOnMouseDragged((event) -> {
             double thickness = graphicContxt.getLineWidth();
-            double x = event.getX() - thickness;
-            double y = event.getY() - thickness;
+            double x = event.getX() - (thickness / 2);
+            double y = event.getY() - (thickness / 2);
 
             drawingInfos.add(new Point(x, y, (int) graphicContxt.getLineWidth(), 
-                                             (Color) graphicContxt.getFill(), 
-                                             erase));
+                                             (Color) graphicContxt.getStroke(), 
+                                             erase, LinePosition.MIDDLE));
             if (erase) {
-                graphicContxt.clearRect(x, y, thickness + 1, thickness + 1);
+                graphicContxt.clearRect(x, y, thickness, thickness);
             } else {
-                graphicContxt.fillOval(x, y, thickness, thickness);
+                graphicContxt.lineTo(x, y);
+                graphicContxt.stroke();
             }
+        });
+        
+        canvas.setOnMousePressed((event) -> {
+            double thickness = graphicContxt.getLineWidth();
+            double x = event.getX() - (thickness / 2);
+            double y = event.getY() - (thickness / 2);
+            
+            drawingInfos.add(new Point(x, y, (int) graphicContxt.getLineWidth(), 
+                                             (Color) graphicContxt.getStroke(), 
+                                             erase, LinePosition.BEGIN));
+            if (erase) {
+                graphicContxt.clearRect(x, y, thickness, thickness);
+            } else {
+                graphicContxt.beginPath();
+                graphicContxt.moveTo(x, y);
+                graphicContxt.stroke();
+            }            
         });
     }
 
     @Override
     public void clearPane() {
         graphicContxt.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawingInfos.clearList();
     }
     
     @Override
@@ -122,12 +162,26 @@ public class DrawingPane extends Region implements IDrawing {
             double x = p.getX();
             double y = p.getY();
             double thickness = p.getThickness();
-            
+
             if (p.isErase()) {
-                graphicContxt.clearRect(x, y, thickness + 1, thickness + 1);
+                graphicContxt.clearRect(x, y, thickness, thickness);
             } else {
-                graphicContxt.setFill(p.getColor());
-                graphicContxt.fillOval(x, y, thickness, thickness);
+                graphicContxt.setStroke(p.getColor());
+                graphicContxt.setLineWidth(thickness);    
+                switch (p.getlinePos()) {
+                    case MIDDLE:
+                        graphicContxt.lineTo(x, y);
+                        graphicContxt.stroke();
+                        break;
+                    case BEGIN:
+                        graphicContxt.beginPath();
+                        graphicContxt.moveTo(x, y);
+                        graphicContxt.stroke();
+                        break;
+                    default:
+                        graphicContxt.closePath();
+                        break;
+                }
             }
         }
     }

@@ -10,6 +10,7 @@ import java.util.ArrayList;
  */
 public class DrawingInfos implements Serializable {
     
+    private boolean modifiable;
     private final ArrayList<Point> listPositions;
     
     /**
@@ -24,8 +25,7 @@ public class DrawingInfos implements Serializable {
      * @param p 
      */
     public void add(Point p) {
-        listPositions.add(new Point(p.getX(), p.getY(), p.getThickness(), 
-                                      p.getColor(), p.isErase()));
+        listPositions.add(p);
     }
     
     /**
@@ -34,5 +34,17 @@ public class DrawingInfos implements Serializable {
      */
     public ArrayList<Point> getListPositions() {
         return listPositions;
+    }
+    
+    public void setModifiable(boolean modifiable) {
+        this.modifiable = modifiable;
+    }
+    
+    public boolean getModifiable() {
+        return modifiable;
+    }
+    
+    public void clearList() {
+        listPositions.clear();
     }
 }

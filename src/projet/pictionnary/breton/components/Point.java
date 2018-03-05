@@ -17,8 +17,10 @@ public class Point implements Serializable {
     private final double colorBlue;
     private final double colorOpacity;
     private final boolean erase;
+    private final LinePosition linePos;
 
-    public Point(double x, double y, int thickness, Color color, boolean erase) {
+    public Point(double x, double y, int thickness, Color color, boolean erase,
+                 LinePosition linePos) {
         this.x = x;
         this.y = y;
         this.thickness = thickness;
@@ -27,6 +29,7 @@ public class Point implements Serializable {
         colorBlue = color.getBlue();
         colorOpacity = color.getOpacity();
         this.erase = erase;
+        this.linePos = linePos;
     }
 
     public double getX() {
@@ -47,5 +50,9 @@ public class Point implements Serializable {
 
     public boolean isErase() {
         return erase;
+    }
+    
+    public LinePosition getlinePos() {
+        return linePos;
     }
 }
