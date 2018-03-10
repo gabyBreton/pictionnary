@@ -193,10 +193,8 @@ public class DrawingPane extends Region implements IDrawing {
     
     /**
      * Draw based on the drawing infos given in parameters.
-     * 
-     * @param drawingInfos the infos to draw.
      */
-    public void drawSavedDrawingInfos(DrawingInfos drawingInfos) {
+    public void drawSavedDrawingInfos() {
         for (Point p : drawingInfos.getListPositions()) {
             double x = p.getX();
             double y = p.getY();
@@ -234,6 +232,6 @@ public class DrawingPane extends Region implements IDrawing {
     public void setDrawingInfos(DrawingInfos drawingInfos) {
         this.drawingInfos = drawingInfos;
         drawingInfos.setModifiable(false);
-        drawSavedDrawingInfos(drawingInfos);
+        drawSavedDrawingInfos();
     }
 }
