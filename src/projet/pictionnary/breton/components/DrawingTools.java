@@ -1,5 +1,6 @@
 package projet.pictionnary.breton.components;
 
+import projet.pictionnary.breton.model.DrawingInfos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -12,8 +13,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-
-
 
 /*
  CREDITS ICONS:
@@ -31,6 +30,7 @@ import javafx.scene.paint.Color;
  */
 public class DrawingTools extends Region {
     
+    private DrawingPane drawingPane;
     private final VBox toolsBox;
     private final HBox rootBox;
     private Spinner<Integer> spinner;
@@ -39,9 +39,9 @@ public class DrawingTools extends Region {
     /**
      * Creates a new DrawingTools component.
      * 
-     * @param drawingPane the drawing pane.
      */
-    public DrawingTools(DrawingPane drawingPane) {
+    public DrawingTools() {
+        drawingPane = new DrawingPane();
         toolsBox = new VBox();
         rootBox = new HBox();
         
@@ -89,6 +89,7 @@ public class DrawingTools extends Region {
         clearAllBtn.setAlignment(Pos.BOTTOM_CENTER);
         clearAllBtn.setOnAction((event) -> {
             drawingPane.clearPane();
+            drawingPane.getDrawingInfos().clearList();
         });
         
         return clearAllBtn;
@@ -164,6 +165,15 @@ public class DrawingTools extends Region {
         });
     }
 
+    public void setDrawingInfos(DrawingInfos drawingInfos) {
+        drawingPane.setDrawingInfos(drawingInfos);
+    }
+    
+    public DrawingInfos getDrawingInfos() {
+        return drawingPane.getDrawingInfos();
+    }
+    
+    
 //    /**
 //     * Creates the button to open a saved draw.
 //     * 
@@ -273,3 +283,4 @@ public class DrawingTools extends Region {
 //        }
 //    }    
 }
+// set et get draingInfos

@@ -1,5 +1,6 @@
 package projet.pictionnary.breton.components;
 
+import projet.pictionnary.breton.model.DrawingInfos;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.canvas.Canvas;
@@ -89,7 +90,6 @@ public class DrawingPane extends Region implements IDrawing {
      */
     private void setOnMousePressed() {
         canvas.setOnMousePressed((event) -> {
-            if (drawingInfos.isModifiable()) {
                 double thickness = graphicContxt.getLineWidth();
                 double x = event.getX() - (thickness / 2);
                 double y = event.getY() - (thickness / 2);
@@ -105,7 +105,6 @@ public class DrawingPane extends Region implements IDrawing {
                     graphicContxt.moveTo(x, y);
                     graphicContxt.stroke();
                 }
-            }
         });
     }
 
@@ -114,7 +113,6 @@ public class DrawingPane extends Region implements IDrawing {
      */
     private void setOnMouseDragged() {
         canvas.setOnMouseDragged((event) -> {
-            if (drawingInfos.isModifiable()) {
                 double thickness = graphicContxt.getLineWidth();
                 double x = event.getX() - (thickness / 2);
                 double y = event.getY() - (thickness / 2);
@@ -129,7 +127,6 @@ public class DrawingPane extends Region implements IDrawing {
                     graphicContxt.lineTo(x, y);
                     graphicContxt.stroke();
                 }
-            }           
         });
     }
 
@@ -138,7 +135,6 @@ public class DrawingPane extends Region implements IDrawing {
      */
     private void setOnMouseReleased() {
         canvas.setOnMouseReleased((event) -> {
-            if (drawingInfos.isModifiable()) {
                 double thickness = graphicContxt.getLineWidth();
                 double x = event.getX() - (thickness / 2);
                 double y = event.getY() - (thickness / 2);
@@ -146,14 +142,13 @@ public class DrawingPane extends Region implements IDrawing {
                                             (int) graphicContxt.getLineWidth(),
                                             (Color) graphicContxt.getStroke(),
                                             erase, LinePosition.END)));            
-            }
         });
     }
 
     @Override
     public void clearPane() {
         graphicContxt.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        drawingInfos.clearList();
+       // drawingInfos.clearList();
     }
     
     @Override
@@ -194,7 +189,7 @@ public class DrawingPane extends Region implements IDrawing {
     /**
      * Draw based on the drawing infos given in parameters.
      */
-    public void drawSavedDrawingInfos() {
+    private void drawSavedDrawingInfos() {
         for (Point p : drawingInfos.getListPositions()) {
             double x = p.getX();
             double y = p.getY();
@@ -231,7 +226,10 @@ public class DrawingPane extends Region implements IDrawing {
     @Override
     public void setDrawingInfos(DrawingInfos drawingInfos) {
         this.drawingInfos = drawingInfos;
-        drawingInfos.setModifiable(false);
         drawSavedDrawingInfos();
+    }
+    
+    public void setDisableCanvas(boolean disable) {
+        canvas.setDisable(disable);
     }
 }

@@ -1,5 +1,7 @@
 package projet.pictionnary.breton.util;
 
+import projet.pictionnary.breton.model.EventKind;
+
 /**
  * Interface to implement the observer/observable pattern.
  * 
@@ -10,5 +12,5 @@ public interface Observer {
     /**
      * Updates an observer.
      */
-    public void update();      
+    public void update(EventKind eventKind);      
 }

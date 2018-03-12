@@ -1,12 +1,11 @@
 package projet.pictionnary.breton.view;
 
-import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import projet.pictionnary.breton.components.DrawingPane;
 import projet.pictionnary.breton.components.DrawingTools;
+import projet.pictionnary.breton.model.DrawingInfos;
 import projet.pictionnary.breton.model.WordCheck;
 
 /**
@@ -15,7 +14,6 @@ import projet.pictionnary.breton.model.WordCheck;
  */
 public class Drawer extends Region {
     
-    private DrawingPane drawingPane;
     private DrawingTools drawingTools;
     
     public Drawer(WordCheck wordCheck) {
@@ -36,5 +34,9 @@ public class Drawer extends Region {
         rootBox.getChildren().addAll(drawingTools, wordBox);
         
         getChildren().add(rootBox);
+    }
+    
+    public DrawingInfos getDrawingInfos() {
+        return drawingTools.getDrawingInfos();
     }
 }
