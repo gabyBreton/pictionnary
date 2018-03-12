@@ -3,8 +3,10 @@ package projet.pictionnary.breton;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import projet.pictionnary.breton.components.DrawingPane;
 import projet.pictionnary.breton.components.DrawingTools;
+import projet.pictionnary.breton.model.WordCheck;
+import projet.pictionnary.breton.view.Drawer;
+import projet.pictionnary.breton.view.Guesser;
 
 /**
  * This class launches the application.
@@ -22,13 +24,30 @@ public class ProjetPictionnaryBreton extends Application {
     
     @Override
     public void start(Stage primaryStage) {
-        primaryStage.setTitle("Pictionnary");
+        primaryStage.setTitle("Pictionnary - Drawer");
         
-        DrawingPane drawingPane = new DrawingPane();
-        DrawingTools root = new DrawingTools(drawingPane);
-        Scene scene = new Scene(root, 1000, 800);
- 
-        primaryStage.setScene(scene);
+       //DrawingTools root = new DrawingTools();
+        WordCheck wordCheck = new WordCheck();
+        
+        Drawer rootDrawer = new Drawer(wordCheck);
+        setAndDisplayDrawerStage(primaryStage, rootDrawer);
+        
+        Stage secondStage = new Stage();
+        Guesser rootGuesser = new Guesser(wordCheck, rootDrawer);
+        rootDrawer.getDrawingInfos().addObserver(rootGuesser);        
+        setAndDisplayGuesserStage(secondStage, rootGuesser);
+    }
+
+    private void setAndDisplayGuesserStage(Stage secondStage, Guesser rootGuesser) {
+        secondStage.setTitle("Pictionnary - Guesser");
+        Scene sceneGuesser = new Scene(rootGuesser, 1200, 800);
+        secondStage.setScene(sceneGuesser);
+        secondStage.show();
+    }
+
+    private void setAndDisplayDrawerStage(Stage primaryStage, Drawer rootDrawer) {
+        Scene sceneDrawer = new Scene(rootDrawer, 1200, 800);
+        primaryStage.setScene(sceneDrawer);
         primaryStage.show();
     }
 }
