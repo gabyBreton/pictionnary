@@ -8,7 +8,7 @@
 <?import javafx.scene.text.Font?>
 
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="projet.pictionnary.breton.client.view.ConnexionStageController">
    <children>
       <Label text="Pictionnary">
          <font>
@@ -26,7 +26,7 @@
             <Insets left="265.5" top="20.0" />
          </VBox.margin>
       </Label>
-      <TextField maxWidth="130.0" minWidth="130.0" prefHeight="26.0" prefWidth="130.0">
+      <TextField fx:id="pseudoTfd" maxWidth="130.0" minWidth="130.0" prefHeight="26.0" prefWidth="130.0">
          <VBox.margin>
             <Insets left="235.0" />
          </VBox.margin>
@@ -39,7 +39,7 @@
             <Insets left="257.0" top="20.0" />
          </VBox.margin>
       </Label>
-      <TextField maxWidth="130.0" minWidth="130.0" prefWidth="130.0">
+      <TextField fx:id="serverIpTfd" maxWidth="130.0" minWidth="130.0" prefWidth="130.0">
          <VBox.margin>
             <Insets left="235.0" />
          </VBox.margin>
@@ -52,12 +52,12 @@
             <Insets left="240.5" top="20.0" />
          </VBox.margin>
       </Label>
-      <TextField maxWidth="130.0" minWidth="130.0" prefWidth="130.0">
+      <TextField fx:id="portNumberTfd" maxWidth="130.0" minWidth="130.0" prefWidth="130.0">
          <VBox.margin>
             <Insets left="235.0" />
          </VBox.margin>
       </TextField>
-      <Button mnemonicParsing="false" text="Connexion">
+      <Button fx:id="connexionBtn" mnemonicParsing="false" onAction="#connect" text="Connexion">
          <font>
             <Font size="15.0" />
          </font>
