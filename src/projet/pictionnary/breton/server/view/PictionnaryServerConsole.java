@@ -1,11 +1,11 @@
-package projet.pictionnary.breton.server.view.console;
+package projet.pictionnary.breton.server.view;
 
 import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import projet.pictionnary.breton.server.model.PictionnaryServer;
+import projet.pictionnary.breton.server.ServerPictionnary;
 import projet.pictionnary.breton.server.users.User;
 
 /**
@@ -16,7 +16,7 @@ public class PictionnaryServerConsole implements Observer {
 
     public static void main(String[] args) {
         try {
-            PictionnaryServer model = new PictionnaryServer();
+            ServerPictionnary model = new ServerPictionnary();
             PictionnaryServerConsole console = new PictionnaryServerConsole(model);
             model.addObserver(console);
             System.out.println("Server started");
@@ -27,14 +27,14 @@ public class PictionnaryServerConsole implements Observer {
         }
     }
     
-    private final PictionnaryServer model;
+    private final ServerPictionnary model;
 
     /**
      * Constructs the console view. Subscribes to the instant messaging server.
      *
      * @param model instant messaging server.
      */
-    public PictionnaryServerConsole(PictionnaryServer model) {
+    public PictionnaryServerConsole(ServerPictionnary model) {
         this.model = model;
     }
     

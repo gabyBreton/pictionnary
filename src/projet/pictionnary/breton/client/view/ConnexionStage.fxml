@@ -57,7 +57,7 @@
             <Insets left="235.0" />
          </VBox.margin>
       </TextField>
-      <Button fx:id="connexionBtn" mnemonicParsing="false" onAction="#connect" text="Connexion">
+      <Button fx:id="connexionBtn" mnemonicParsing="false" onAction="#connectToServer" text="Connexion">
          <font>
             <Font size="15.0" />
          </font>

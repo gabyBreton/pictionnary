@@ -163,7 +163,7 @@ public class ConnectionToClient extends Thread {
     /**
      * Hook method called each time a new message is received by this client. If
      * this method return true, then the method
-     * <code>handleRequestFromClient()</code> of <code>AbstractServer</code>
+     * <code>handleMessageFromClient()</code> of <code>AbstractServer</code>
      * will also be called after. The default implementation simply returns
      * true.
      *
@@ -224,7 +224,7 @@ public class ConnectionToClient extends Thread {
                         server.receiveMessageFromClient(msg, this);
                     }
                 } catch (ClassNotFoundException | RuntimeException ex) { // when an unknown class is received
-                    // or thrown by handleRequestFromClient or receiveMessageFromClient
+                    // or thrown by handleMessageFromClient or receiveMessageFromClient
                     server.clientException(this, ex);
                 }
             }

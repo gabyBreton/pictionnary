@@ -14,7 +14,7 @@ import javafx.fxml.Initializable;
  *
  * @author Gabriel Breton - 43397
  */
-public class TableInfoComponentsController implements Initializable {
+public class TableInfoComponentController implements Initializable {
 
     /**
      * Initializes the controller class.

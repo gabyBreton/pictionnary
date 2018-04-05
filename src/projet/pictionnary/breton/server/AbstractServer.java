@@ -17,7 +17,7 @@ import java.util.Observable;
  * a client is thus connected to the server, the two programs can then exchange <code> Object
  * </code> instances.<p>
  *
- * Method <code> handleRequestFromClient </code> must be defined by a concrete
+ * Method <code> handleMessageFromClient </code> must be defined by a concrete
  * subclass. Several other hook methods may also be overriden.<p>
  *
  * Several public service methods are provided to applications that use this
@@ -321,7 +321,7 @@ public abstract class AbstractServer extends Observable implements Runnable {
      * @param client the connection connected to the client that sent the
      * message.
      */
-    protected abstract void handleRequestFromClient(
+    protected abstract void handleMessageFromClient(
             Object msg, ConnectionToClient client);
 
     /**
@@ -349,7 +349,7 @@ public abstract class AbstractServer extends Observable implements Runnable {
      * messages coming from the server This method is synchronized to ensure
      * that whatever effects it has do not conflict with work being done by
      * other threads. The method simply calls the
-     * <code>handleRequestFromClient</code> slot method.
+     * <code>handleMessageFromClient</code> slot method.
      *
      * @param msg the message sent.
      * @param client the connection connected to the client that sent the
@@ -357,7 +357,7 @@ public abstract class AbstractServer extends Observable implements Runnable {
      */
     final synchronized void receiveMessageFromClient(
             Object msg, ConnectionToClient client) {
-        this.handleRequestFromClient(msg, client);
+        this.handleMessageFromClient(msg, client);
     }
 
     /**

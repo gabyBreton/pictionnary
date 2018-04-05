@@ -1,12 +1,14 @@
 package projet.pictionnary.breton.client.view;
 
+import java.io.IOException;
+import java.net.ConnectException;
 import java.net.URL;
 import java.util.ResourceBundle;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
+import projet.pictionnary.breton.client.ClientPictionnary;
 
 /**
  * FXML Controller class
@@ -15,12 +17,8 @@ import javafx.scene.control.TextField;
  */
 public class ConnexionStageController implements Initializable {
 
-    @FXML
-    private ResourceBundle resources;
-
-    @FXML
-    private URL location;
-
+    private ClientPictionnary clientPictionnary;
+    
     @FXML
     private TextField pseudoTfd;
 
@@ -30,12 +28,16 @@ public class ConnexionStageController implements Initializable {
     @FXML
     private TextField portNumberTfd;
 
-    @FXML
-    private Button connexionBtn;
-
-    @FXML
-    void connect(ActionEvent event) {
-
+   
+    public void connectToServer() {
+        // VERIFY input before !
+        try {
+            clientPictionnary = new ClientPictionnary(serverIpTfd.getText(), Integer.parseInt(portNumberTfd.getText()), pseudoTfd.getText());
+        } catch (IOException ioe) {
+            System.out.println("Connection failed");
+        } catch (NumberFormatException nfe) {
+            System.out.println("Enter an integer for the port number");
+        }
     }
     
     /**
@@ -43,7 +45,6 @@ public class ConnexionStageController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
     }    
     
 }

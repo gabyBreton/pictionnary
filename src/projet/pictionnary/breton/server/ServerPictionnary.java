@@ -1,4 +1,4 @@
-package projet.pictionnary.breton.server.model;
+package projet.pictionnary.breton.server;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -8,15 +8,15 @@ import java.net.SocketException;
 import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import projet.pictionnary.breton.server.AbstractServer;
-import projet.pictionnary.breton.server.ConnectionToClient;
 import projet.pictionnary.breton.server.users.Members;
+import projet.pictionnary.breton.model.*;
+import projet.pictionnary.breton.server.users.User;
 
 /**
  *
  * @author Gabriel Breton - 43397
  */
-public class PictionnaryServer extends AbstractServer {
+public class ServerPictionnary extends AbstractServer {
 
     private static final int PORT = 12_345;
     static final String ID_MAPINFO = "ID";
@@ -32,7 +32,7 @@ public class PictionnaryServer extends AbstractServer {
                 }
             }
         } catch (SocketException e) {
-            Logger.getLogger(PictionnaryServer.class.getName()).log(Level.SEVERE, "NetworkInterface error", e);
+            Logger.getLogger(ServerPictionnary.class.getName()).log(Level.SEVERE, "NetworkInterface error", e);
         }
         return null;
     }
@@ -46,7 +46,7 @@ public class PictionnaryServer extends AbstractServer {
      * @throws IOException if an I/O error occurs when creating the server
      * socket.
      */
-    public PictionnaryServer() throws IOException {
+    public ServerPictionnary() throws IOException {
         super(PORT);
         members = new Members();
         clientId = 0;
@@ -104,9 +104,29 @@ public class PictionnaryServer extends AbstractServer {
     }
     
     @Override
-    protected void handleRequestFromClient(Object msg, ConnectionToClient client) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    protected void handleMessageFromClient(Object msg, ConnectionToClient client) {
+//        Message message = (Message) msg;
+//        Type type = message.getType();
+//        switch (type) {
+//            case PROFILE:
+//                int memberId = (int) client.getInfo(ID_MAPINFO);
+//                User author = message.getAuthor();
+//                members.changeName(author.getName(), memberId);
+//                Message messageName = new MessageProfile(memberId, author.getName());
+//                sendToClient(messageName, memberId);
+//                //sendToAllClients(new MessageMembers(members));
+//                break;
+////            case MAIL_TO:
+////                sendToClient(message, message.getRecipient());
+////                break;
+////            case MEMBERS:
+////                break;
+//            default:
+//                throw new IllegalArgumentException("Message type unknown " + type);
+//        }
+//        setChanged();
+//        notifyObservers(message);    
+    } 
     
     @Override
     protected void clientConnected(ConnectionToClient client) {
@@ -116,5 +136,20 @@ public class PictionnaryServer extends AbstractServer {
         // sendToAllClients(new MessageMembers(members));
         setChanged();
         notifyObservers();
+    }
+    
+    
+    void sendToClient(Message message, User recipient) {
+        sendToClient(message, recipient.getId());
+    }
+
+    void sendToClient(Message message, int clientId) {
+//        members.getUser(clientId);
+//                
+//        if (clientSocket == null || output == null) {
+//            throw new SocketException("socket does not exist");
+//        }
+//        output.reset();
+//        output.writeObject(msg);
     }
 }
