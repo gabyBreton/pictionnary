@@ -1,12 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package projet.pictionnary.breton.client.view;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 
 /**
@@ -14,7 +10,7 @@ import javafx.fxml.Initializable;
  *
  * @author Gabriel Breton - 43397
  */
-public class TableInfoComponentController implements Initializable {
+public class TableSelectionStageController implements Initializable {
 
     /**
      * Initializes the controller class.
@@ -24,7 +20,7 @@ public class TableInfoComponentController implements Initializable {
         // TODO
     }    
     
-    void joinTable() {
+    public void createTable(ActionEvent event) {
         
     }
 }
