@@ -184,6 +184,8 @@ public class ConnectionToClient extends Thread {
      * @exception IOException if an I/O error occur when sending the message.
      */
     public void sendToClient(Object msg) throws IOException {
+        System.out.println("ConnectionToClient.sendToClient()");
+        
         if (clientSocket == null || output == null) {
             throw new SocketException("socket does not exist");
         }

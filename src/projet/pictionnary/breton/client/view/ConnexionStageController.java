@@ -1,21 +1,21 @@
 package projet.pictionnary.breton.client.view;
 
 import java.io.IOException;
-import java.net.ConnectException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import projet.pictionnary.breton.client.ClientPictionnary;
+import projet.pictionnary.breton.server.Table;
 
 /**
  * FXML Controller class
@@ -25,6 +25,7 @@ import projet.pictionnary.breton.client.ClientPictionnary;
 public class ConnexionStageController implements Initializable {
 
     private ClientPictionnary clientPictionnary;
+    private ObservableList<Table> listTables;
     
     @FXML
     private TextField pseudoTfd;
@@ -35,29 +36,45 @@ public class ConnexionStageController implements Initializable {
     @FXML
     private TextField portNumberTfd;
 
-   
     @FXML
     private Button connexionBtn;
     
     public void connectToServer() {
-        // VERIFY input before !
+        // TODO verify input before !        
+        
+        FXMLLoader loader = new FXMLLoader();
+        loader.setLocation(getClass().getResource("TableSelectionStage.fxml"));
+        
         try {
-            clientPictionnary = new ClientPictionnary(serverIpTfd.getText(), Integer.parseInt(portNumberTfd.getText()), pseudoTfd.getText());
+            // TODO : Afficher erreur proprement si mauvais port
+            clientPictionnary = new ClientPictionnary(serverIpTfd.getText(), 
+                                    Integer.parseInt(portNumberTfd.getText()), 
+                                    pseudoTfd.getText());
             
-            Stage connexionStage = (Stage) connexionBtn.getScene().getWindow();
-            connexionStage.close();
-            
-            Parent root = FXMLLoader.load(getClass().getResource("TableSelectionStage.fxml"));
-            Stage tableSelectionStage = new Stage();
-            
-            tableSelectionStage.setScene(new Scene(root));
-            tableSelectionStage.setTitle("Pictionnary");
-            tableSelectionStage.show();            
+            // load the table selection stage        
+            loader.load();
         } catch (IOException ioe) {
-           System.out.println("ConnexionStageController.connectToServer()\nConnection failed");
+            Logger.getLogger(ConnexionStageController.class.getName())
+                    .log(Level.SEVERE, null, ioe);
         } catch (NumberFormatException nfe) {
-            System.out.println("Enter an integer for the port number");
+            Logger.getLogger(ConnexionStageController.class.getName())
+                    .log(Level.SEVERE, null, nfe);            
         }
+        listTables = clientPictionnary.getTables();
+        
+        // pass the client instance to the new stage
+        TableSelectionStageController selectionStage = loader.getController();
+        selectionStage.setClient(clientPictionnary);
+        
+        Parent root = loader.getRoot();
+        Stage tableSelectionStage = new Stage();
+        tableSelectionStage.setScene(new Scene(root));
+        tableSelectionStage.setTitle("Pictionnary - Table selection");
+        tableSelectionStage.show();
+
+        // close the connexion stage          
+        Stage connexionStage = (Stage) connexionBtn.getScene().getWindow();
+        connexionStage.close();
     }
     
     /**

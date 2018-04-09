@@ -4,6 +4,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
+import projet.pictionnary.breton.client.ClientPictionnary;
 
 /**
  * FXML Controller class
@@ -12,15 +13,20 @@ import javafx.fxml.Initializable;
  */
 public class TableSelectionStageController implements Initializable {
 
+    private ClientPictionnary clientPictionnary;
+    
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
     }    
     
     public void createTable(ActionEvent event) {
-        
+        clientPictionnary.createTable();
     }
+    
+    void setClient(ClientPictionnary clientPictionnary) {
+        this.clientPictionnary = clientPictionnary;
+    } 
 }

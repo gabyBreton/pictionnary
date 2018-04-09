@@ -27,7 +27,7 @@ public class ClientMain extends Application {
         Scene scene = new Scene(root);
        
         primaryStage.setScene(scene);
-        primaryStage.setTitle("Pictionnary");
+        primaryStage.setTitle("Pictionnary - Server connexion");
         primaryStage.show();
     }
 }

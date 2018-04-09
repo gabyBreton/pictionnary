@@ -1,10 +1,16 @@
 package projet.pictionnary.breton.client;
 
 import java.io.IOException;
+import java.util.List;
+import javafx.beans.property.SimpleListProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import projet.pictionnary.breton.model.Message;
 import projet.pictionnary.breton.model.MessageProfile;
-import projet.pictionnary.breton.model.MessageTable;
+import projet.pictionnary.breton.model.MessageCreateTable;
+import projet.pictionnary.breton.model.MessageGetTables;
 import projet.pictionnary.breton.model.Type;
+import projet.pictionnary.breton.server.Table;
 import projet.pictionnary.breton.server.users.User;
 
 /**
@@ -14,6 +20,7 @@ import projet.pictionnary.breton.server.users.User;
 public class ClientPictionnary extends AbstractClient {
 
     private User mySelf;
+    private ObservableList<Table> listTables;
     
     /**
      * Constructs the client. Opens the connection with the server. Sends the
@@ -27,9 +34,9 @@ public class ClientPictionnary extends AbstractClient {
      */
     public ClientPictionnary(String host, int port, String name) throws IOException {
         super(host, port);
+        listTables = new SimpleListProperty<>();
         openConnection();
         updateName(name);
-    //    createTable(); la création de table ne doit pas se faire ici. -> à tester lorsque j'aurai le paneau de sélection de table
     }
     
     @Override
@@ -41,14 +48,13 @@ public class ClientPictionnary extends AbstractClient {
                 setMySelf(message.getAuthor());
                 break;
             case CREATE_TABLE:
-                System.out.println("ClientPictionnary.handleMessageFromServer():\n case CREATE_TABLE : " + ((MessageTable) msg).getNameTable());
-//            case MAIL_TO:
-//                showMessage(message);
-//                break;
-//            case MEMBERS:
-//                Members members = (Members) message.getContent();
-//                updateMembers(members);
-//                break;
+                // TODO creer la table
+                System.out.println("ClientPictionnary.handleMessageFromServer():\n case CREATE_TABLE : " + ((MessageCreateTable) msg).getNameTable());
+                break;
+            case GET_TABLES:
+                System.out.println("ClientPictionnary.handleMessageFromServer():\n case GET_TABLES");
+                setTables((List <Table>) message.getContent());
+                break;
             default:
                 throw new IllegalArgumentException("Message type unknown " + type);
         }    }
@@ -56,6 +62,15 @@ public class ClientPictionnary extends AbstractClient {
     void setMySelf(User user) {
         this.mySelf = user;
     }
+    
+    void setTables(List <Table> tables) {
+        listTables = FXCollections.observableArrayList(tables);
+    }
+    
+    public ObservableList<Table> getTables() {
+        return listTables;
+    }
+
     /**
      * Quits the client and closes all aspects of the connection to the server.
      *
@@ -65,9 +80,9 @@ public class ClientPictionnary extends AbstractClient {
         closeConnection();
     }
     
-    private void createTable() {
+    public void createTable() {
         try {
-            sendToServer(new MessageTable(mySelf, User.ADMIN, null, "table_test"));
+            sendToServer(new MessageCreateTable(mySelf, User.ADMIN, null, "table_test"));
         } catch (IOException ioe) {
             System.out.println("IOException in ClientPictionnary.createTable()");
         }
@@ -76,4 +91,8 @@ public class ClientPictionnary extends AbstractClient {
     private void updateName(String name) throws IOException {
         sendToServer(new MessageProfile(0, name));
     }
+    
+    private void getTablesFromServer() throws IOException {
+        sendToServer(new MessageGetTables(mySelf, User.ADMIN, null));
+    }    
 }

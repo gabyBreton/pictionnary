@@ -10,6 +10,10 @@ public enum Type {
      * Message with the profile of a specific user.
      */
     PROFILE,
+    
+    GET_TABLES,
+    
+    CREATE_TABLE;
 //    /**
 //     * General message send between two connected users.
 //     */
