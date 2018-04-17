@@ -80,9 +80,9 @@ public class ClientPictionnary extends AbstractClient {
         closeConnection();
     }
     
-    public void createTable() {
+    public void createTable(String tableName) {
         try {
-            sendToServer(new MessageCreateTable(mySelf, User.ADMIN, null, "table_test"));
+            sendToServer(new MessageCreateTable(mySelf, User.ADMIN, null, tableName));
         } catch (IOException ioe) {
             System.out.println("IOException in ClientPictionnary.createTable()");
         }
