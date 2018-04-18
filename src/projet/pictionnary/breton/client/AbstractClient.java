@@ -5,7 +5,8 @@ package projet.pictionnary.breton.client;
 
 import java.io.*;
 import java.net.*;
-import java.util.Observable;
+import projet.pictionnary.breton.util.Observable;
+//import java.util.Observable;
 
 /**
  * The <code> AbstractClient </code> contains all the methods necessary to set
@@ -28,7 +29,7 @@ import java.util.Observable;
  * @author Paul Holden
  * @version December 2003 (2.31)
  */
-public abstract class AbstractClient extends Observable implements Runnable {
+public abstract class AbstractClient implements Observable, Runnable {
 
     /**
      * Sockets are used in the operating system as channels of communication

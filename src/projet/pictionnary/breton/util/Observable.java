@@ -1,5 +1,8 @@
 package projet.pictionnary.breton.util;
 
+import java.util.List;
+import projet.pictionnary.breton.model.EventKind;
+
 /**
  * Interface to implement the observer/observable pattern.
  *
@@ -20,4 +23,10 @@ public interface Observable {
      * @param o the observer to delete.
      */
     public void deleteObserver(Observer o);
+    
+    /**
+     * 
+     * @param arg
+     */
+    public void notifyObservers(Object arg);
 }

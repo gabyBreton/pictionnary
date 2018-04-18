@@ -8,7 +8,7 @@ import java.net.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Observable;
+import projet.pictionnary.breton.util.Observable;
 
 /**
  * The <code> AbstractServer </code> class maintains a thread that waits for
@@ -34,7 +34,7 @@ import java.util.Observable;
  * @see com.lloseng.ocsf.server.ConnectionToClient
  * @see com.lloseng.ocsf.server.AbstractConnectionFactory
  */
-public abstract class AbstractServer extends Observable implements Runnable {
+public abstract class AbstractServer implements Observable, Runnable {
 
     /**
      * The server socket: listens for clients who want to connect.

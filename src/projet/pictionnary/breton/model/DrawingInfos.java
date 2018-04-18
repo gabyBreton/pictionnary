@@ -78,9 +78,10 @@ public class DrawingInfos implements Serializable, Observable {
     /**
      * Notifies of an update the observers of the list.
      */
-    private void notifyObservers(EventKind eventKind) {
+    @Override
+    public void notifyObservers(Object arg) {
         listObs.forEach((obs) -> {
-            obs.update(eventKind);
+            obs.update(arg);
         });
     }
 }

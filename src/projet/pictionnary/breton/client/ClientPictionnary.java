@@ -1,10 +1,13 @@
 package projet.pictionnary.breton.client;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import projet.pictionnary.breton.model.DataTable;
+import projet.pictionnary.breton.model.EventKind;
 import projet.pictionnary.breton.model.Message;
 import projet.pictionnary.breton.model.MessageProfile;
 import projet.pictionnary.breton.model.MessageCreateTable;
@@ -12,6 +15,7 @@ import projet.pictionnary.breton.model.MessageGetAllTables;
 import projet.pictionnary.breton.model.Type;
 import projet.pictionnary.breton.model.Table;
 import projet.pictionnary.breton.server.users.User;
+import projet.pictionnary.breton.util.Observer;
 
 /**
  *
@@ -22,6 +26,7 @@ public class ClientPictionnary extends AbstractClient {
     private User mySelf;
     private ObservableList<Table> listTables;
     private Table currentTable;
+    private List<Observer> observers;
     
     /**
      * Constructs the client. Opens the connection with the server. Sends the
@@ -35,7 +40,9 @@ public class ClientPictionnary extends AbstractClient {
      */
     public ClientPictionnary(String host, int port, String name) throws IOException {
         super(host, port);
-        listTables = new SimpleListProperty<>();
+        observers = new ArrayList<>();
+        
+        // TODO : n'est plus une liste de property machin truc listTables = new SimpleListProperty<>();
         openConnection();
         updateName(name);
     }
@@ -55,6 +62,7 @@ public class ClientPictionnary extends AbstractClient {
             case GET_ALL_TABLES:
                 System.out.println("ClientPictionnary.handleMessageFromServer():\n case GET_TABLES");
                 setTables((List <Table>) message.getContent());
+               // TODO : notifyChange(message);
                 break;
             default:
                 throw new IllegalArgumentException("Message type unknown " + type);
@@ -91,5 +99,22 @@ public class ClientPictionnary extends AbstractClient {
     
     private void updateName(String name) throws IOException {
         sendToServer(new MessageProfile(0, name));
+    }
+
+    @Override
+    public void addObserver(Observer o) {
+        observers.add(o);
+    }
+
+    @Override
+    public void deleteObserver(Observer o) {
+        observers.remove(o);
+    }
+    
+    @Override
+    public void notifyObservers(Object arg) {
+        observers.forEach((obs) -> {
+            obs.update(arg);
+        });
     }
 }

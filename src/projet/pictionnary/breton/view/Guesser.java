@@ -51,7 +51,9 @@ public class Guesser extends Region implements Observer {
     }
 
     @Override
-    public void update(EventKind eventKind) {
+    public void update(Object arg) {
+        EventKind eventKind = (EventKind) arg;
+        
         if (eventKind == EventKind.CLEARPANE){
             drawingPane.clearPane();
         } else {

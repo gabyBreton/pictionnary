@@ -132,7 +132,7 @@ public class ServerPictionnary extends AbstractServer {
                 System.out.println("ServerPictionnary.handleMessageFromClient()\n case CREATE_TABLE from : " + author.getName());                
                 Table table = new Table(((MessageCreateTable) message).getNameTable(), 
                                         getNextTableId(), author);
-                
+                tables.add(table);
                 Message messageCreateTable = new MessageCreateTable(User.ADMIN, author, 
                                                         table,  
                                                         table.getName());
