@@ -25,4 +25,22 @@ public class Table implements Serializable {
     public String getName() {
         return name;
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public boolean isOpen() {
+        return open;
+    }
+
+    public User getDrawer() {
+        return drawer;
+    }
+
+    public User getPartner() {
+        return partner;
+    }
+    
+    
 }

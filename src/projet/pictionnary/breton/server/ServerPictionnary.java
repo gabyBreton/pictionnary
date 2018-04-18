@@ -14,6 +14,7 @@ import java.util.logging.Logger;
 import projet.pictionnary.breton.server.users.Members;
 import projet.pictionnary.breton.model.*;
 import projet.pictionnary.breton.server.users.User;
+import projet.pictionnary.breton.util.Observer;
 
 /**
  *
@@ -23,7 +24,14 @@ public class ServerPictionnary extends AbstractServer {
 
     private static final int PORT = 12_345;
     static final String ID_MAPINFO = "ID";
-
+    
+    private List<Observer> observers;    
+    private int clientId;
+    private int tableId;
+    private final Members members;
+    private List<Table> tables;
+    private List<DataTable> dataTables;
+    
     private static InetAddress getLocalAddress() {
         try {
             Enumeration<NetworkInterface> b = NetworkInterface.getNetworkInterfaces();
@@ -38,13 +46,7 @@ public class ServerPictionnary extends AbstractServer {
             Logger.getLogger(ServerPictionnary.class.getName()).log(Level.SEVERE, "NetworkInterface error", e);
         }
         return null;
-    }
-        
-    private int clientId;
-    private int tableId;
-    private final Members members;
-    private List<Table> tables;
-    
+    }    
 
     /**
      * Constructs the server. Build a thread to listen connection request.
@@ -58,6 +60,8 @@ public class ServerPictionnary extends AbstractServer {
         clientId = 0;
         tableId = 0;
         tables = new ArrayList<>();
+        dataTables = new ArrayList<>();
+        observers = new ArrayList<>();
         this.listen();
     }
         
@@ -130,26 +134,43 @@ public class ServerPictionnary extends AbstractServer {
                 break;
             case CREATE_TABLE:
                 System.out.println("ServerPictionnary.handleMessageFromClient()\n case CREATE_TABLE from : " + author.getName());                
+                
+                // on crée la table
                 Table table = new Table(((MessageCreateTable) message).getNameTable(), 
                                         getNextTableId(), author);
+                
+                // on la rajoute dans la liste de table
                 tables.add(table);
+                System.out.println("ServerPictionnary.handleMessageFromClient()\n case CREATE_TABLE : tables.size() ==  " + tables.size());
+                // on la renvoi au client
                 Message messageCreateTable = new MessageCreateTable(User.ADMIN, author, 
                                                         table,  
                                                         table.getName());
                 sendToClient(messageCreateTable, memberId);
+                
+                // on met à jour les données de tables
+                String namePartner = (table.getPartner() == null) ? "" : table.getPartner().getName();
+                // TODO : afficher correctement le statut et nom du drawer
+                dataTables.add(new DataTable(table.getName(), table.getId(), 
+                                             table.isOpen(),
+                                             table.getDrawer().getName(), 
+                                             namePartner));
+                System.out.println("ServerPictionnary.handleMessageFromClient()\n case CREATE_TABLE : dataTables.size() == " + dataTables.size());
+                // on envoi toutes les données de tables à tout les clients
                 Message messageGetAllTables = new MessageGetAllTables(User.ADMIN, 
-                                                        User.EVERYBODY, tables);
+                                                        User.EVERYBODY, dataTables);
                 sendToAllClients(messageGetAllTables);
                 break;
             case GET_ALL_TABLES:
-                Message messageGetTables = new MessageGetAllTables(User.ADMIN, author, tables);
+                System.out.println("ServerPictionnary.handleMessageFromClient()\n case GET_ALL_TABLES from : " + author.getName());
+                Message messageGetTables = new MessageGetAllTables(User.ADMIN, author, dataTables);
                 sendToClient(messageGetTables, author);
                 break;
             default:
                 throw new IllegalArgumentException("Message type unknown " + type);
         }
-        setChanged();
-        notifyObservers(message);    
+//        setChanged();
+//        notifyObservers(message);    
     } 
     
     @Override
@@ -157,9 +178,10 @@ public class ServerPictionnary extends AbstractServer {
         super.clientConnected(client);
         int memberId = members.add(getNextClientId(), client.getName(), client.getInetAddress());
         client.setInfo(ID_MAPINFO, memberId);
-        sendToClient(new MessageGetAllTables(User.ADMIN, null, tables), memberId);
-        setChanged();
-        notifyObservers();
+        System.out.println("ServerPictionnary.clientConnected()");
+        sendToClient(new MessageGetAllTables(User.ADMIN, null, dataTables), memberId);
+//        setChanged();
+//        notifyObservers();
     }
     
     void sendToClient(Message message, User recipient) {
@@ -183,5 +205,22 @@ public class ServerPictionnary extends AbstractServer {
                 break;
             }
         }
+    }
+    
+    @Override
+    public void addObserver(Observer o) {
+        observers.add(o);
+    }
+
+    @Override
+    public void deleteObserver(Observer o) {
+        observers.remove(o);
+    }
+    
+    @Override
+    public void notifyObservers(Object arg) {
+        observers.forEach((obs) -> {
+            obs.update(arg);
+        });
     }
 }

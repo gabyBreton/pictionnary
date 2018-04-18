@@ -1,6 +1,7 @@
 package projet.pictionnary.breton.client.view;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import java.util.Optional;
@@ -16,6 +17,7 @@ import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import projet.pictionnary.breton.client.ClientPictionnary;
+import projet.pictionnary.breton.model.DataTable;
 import projet.pictionnary.breton.model.Message;
 import projet.pictionnary.breton.model.Table;
 import projet.pictionnary.breton.model.Type;
@@ -29,39 +31,38 @@ import projet.pictionnary.breton.util.Observer;
 public class TableSelectionStageController implements Initializable, Observer {
 
     private ClientPictionnary clientPictionnary;
-    private ObservableList<Table> listTables = FXCollections.observableArrayList();
+    private List<DataTable> dataTables;
     
     @FXML
-    private TableView<Table> tableView;
+    private TableView<DataTable> tableView;
     
     @FXML
-    private TableColumn<Table, String> nameCol;
+    private TableColumn<DataTable, String> nameCol;
+    
+    @FXML 
+    private TableColumn<DataTable, Integer> idCol;
     
     @FXML
-    private TableColumn<Table, String> statusCol;
+    private TableColumn<DataTable, String> statusCol;
 
     @FXML
-    private TableColumn<Table, String> drawerCol;
+    private TableColumn<DataTable, String> drawerCol;
     
     @FXML
-    private TableColumn<Table, String> partnerCol;
+    private TableColumn<DataTable, String> partnerCol;
     
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        nameCol = new TableColumn<>();
-        statusCol = new TableColumn<>();
-        drawerCol = new TableColumn<>();
-        partnerCol = new TableColumn<>();
+        dataTables = new ArrayList<>();
         
         nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
-        statusCol.setCellValueFactory(new PropertyValueFactory<>("open"));
+        idCol.setCellValueFactory(new PropertyValueFactory<>("id"));
+        statusCol.setCellValueFactory(new PropertyValueFactory<>("status"));
         drawerCol.setCellValueFactory(new PropertyValueFactory<>("drawer"));
         partnerCol.setCellValueFactory(new PropertyValueFactory<>("partner"));
-        
-        tableView.getItems().setAll(listTables);
     }    
     
     @FXML
@@ -79,7 +80,6 @@ public class TableSelectionStageController implements Initializable, Observer {
     void setClient(ClientPictionnary clientPictionnary) {
         this.clientPictionnary = clientPictionnary;
         this.clientPictionnary.addObserver(this);
-        // TODO : this.clientPictionnary.addObserver(this);
     } 
 
     @Override
@@ -90,11 +90,20 @@ public class TableSelectionStageController implements Initializable, Observer {
         switch (type) {
             case GET_ALL_TABLES:
                 System.out.println("TableSelectionStageController.update: GET_ALL_TABLES");                
-                listTables = FXCollections.observableArrayList((List<Table>) message.getContent());
+                dataTables = (List<DataTable>) message.getContent();
+                refreshTableView();
                 break;
             default:
                 System.out.println("TableSelectionStageController.update: default");
                 break;
         }
+    }
+    
+    private void refreshTableView() {
+        System.out.println("TableSelectionStageController.refreshTableView()");
+        tableView.getItems().clear();
+        dataTables.forEach((dataTable) -> {
+            tableView.getItems().add(dataTable);
+        });
     }
 }

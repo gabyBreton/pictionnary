@@ -1,12 +1,11 @@
 package projet.pictionnary.breton.server.view;
 
 import java.io.IOException;
-import java.util.Observable;
-import java.util.Observer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import projet.pictionnary.breton.server.ServerPictionnary;
 import projet.pictionnary.breton.server.users.User;
+import projet.pictionnary.breton.util.Observer;
 
 /**
  *
@@ -39,7 +38,7 @@ public class PictionnaryServerConsole implements Observer {
     }
     
     @Override
-    public void update(Observable o, Object arg) {
+    public void update(Object arg) {
         updateUser();
         if (arg != null) {
            // Message message = (Message) arg;

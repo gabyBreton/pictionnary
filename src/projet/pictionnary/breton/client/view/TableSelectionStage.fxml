@@ -17,10 +17,11 @@
       <Button fx:id="createTableBtn" layoutX="654.0" layoutY="308.0" mnemonicParsing="false" onAction="#createTable" prefHeight="26.0" prefWidth="124.0" text="Create table" />
       <TableView fx:id="tableView" layoutX="30.0" layoutY="89.0" prefHeight="245.0" prefWidth="600.0">
         <columns>
-          <TableColumn prefWidth="150.0" text="Table name" />
-          <TableColumn editable="false" prefWidth="150.0" text="Status" />
-            <TableColumn prefWidth="150.0" text="Drawer" />
-            <TableColumn editable="false" prefWidth="150.0" text="Partner" />
+          <TableColumn fx:id="nameCol" prefWidth="120.0" text="Name" />
+          <TableColumn fx:id="idCol" editable="false" prefWidth="120.0" text="Id" />
+            <TableColumn fx:id="statusCol" prefWidth="120.0" text="Status" />
+            <TableColumn fx:id="drawerCol" editable="false" prefWidth="120.0" text="Drawer" />
+            <TableColumn fx:id="partnerCol" editable="false" prefWidth="120.0" text="Partner" />
         </columns>
       </TableView>
    </children>

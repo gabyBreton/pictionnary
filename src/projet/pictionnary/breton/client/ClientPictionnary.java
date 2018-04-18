@@ -3,15 +3,12 @@ package projet.pictionnary.breton.client;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import projet.pictionnary.breton.model.DataTable;
-import projet.pictionnary.breton.model.EventKind;
 import projet.pictionnary.breton.model.Message;
 import projet.pictionnary.breton.model.MessageProfile;
 import projet.pictionnary.breton.model.MessageCreateTable;
-import projet.pictionnary.breton.model.MessageGetAllTables;
 import projet.pictionnary.breton.model.Type;
 import projet.pictionnary.breton.model.Table;
 import projet.pictionnary.breton.server.users.User;
@@ -24,7 +21,7 @@ import projet.pictionnary.breton.util.Observer;
 public class ClientPictionnary extends AbstractClient {
 
     private User mySelf;
-    private ObservableList<Table> listTables;
+    private List<DataTable> dataTables;
     private Table currentTable;
     private List<Observer> observers;
     
@@ -41,8 +38,7 @@ public class ClientPictionnary extends AbstractClient {
     public ClientPictionnary(String host, int port, String name) throws IOException {
         super(host, port);
         observers = new ArrayList<>();
-        
-        // TODO : n'est plus une liste de property machin truc listTables = new SimpleListProperty<>();
+        dataTables = new ArrayList<>();
         openConnection();
         updateName(name);
     }
@@ -58,11 +54,12 @@ public class ClientPictionnary extends AbstractClient {
             case CREATE_TABLE:
                 System.out.println("ClientPictionnary.handleMessageFromServer():\n case CREATE_TABLE : " + ((MessageCreateTable) msg).getNameTable());
                 currentTable = (Table) message.getContent();
+                // TODO : notifier ?
                 break;
             case GET_ALL_TABLES:
-                System.out.println("ClientPictionnary.handleMessageFromServer():\n case GET_TABLES");
-                setTables((List <Table>) message.getContent());
-               // TODO : notifyChange(message);
+                System.out.println("ClientPictionnary.handleMessageFromServer():\n case GET_ALL_TABLES");
+                setTables((List <DataTable>) message.getContent());
+                notifyObservers(message);
                 break;
             default:
                 throw new IllegalArgumentException("Message type unknown " + type);
@@ -72,12 +69,12 @@ public class ClientPictionnary extends AbstractClient {
         this.mySelf = user;
     }
     
-    void setTables(List <Table> tables) {
-        listTables = FXCollections.observableArrayList(tables);
+    void setTables(List <DataTable> dataTables) {
+        this.dataTables = dataTables;
     }
     
-    public ObservableList<Table> getTables() {
-        return listTables;
+    public List<DataTable> getTables() {
+        return dataTables;
     }
 
     /**
@@ -113,6 +110,7 @@ public class ClientPictionnary extends AbstractClient {
     
     @Override
     public void notifyObservers(Object arg) {
+        System.out.println("ClientPictionnary.notifyObservers");
         observers.forEach((obs) -> {
             obs.update(arg);
         });

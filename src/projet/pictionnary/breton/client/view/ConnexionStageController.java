@@ -15,7 +15,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import projet.pictionnary.breton.client.ClientPictionnary;
-import projet.pictionnary.breton.model.Table;
 
 /**
  * FXML Controller class
@@ -25,7 +24,6 @@ import projet.pictionnary.breton.model.Table;
 public class ConnexionStageController implements Initializable {
 
     private ClientPictionnary clientPictionnary;
-    private ObservableList<Table> listTables;
     
     @FXML
     private TextField pseudoTfd;
@@ -60,8 +58,6 @@ public class ConnexionStageController implements Initializable {
             Logger.getLogger(ConnexionStageController.class.getName())
                     .log(Level.SEVERE, null, nfe);            
         }
-        listTables = clientPictionnary.getTables();
-        
         // pass the client instance to the new stage
         TableSelectionStageController selectionStage = loader.getController();
         selectionStage.setClient(clientPictionnary);

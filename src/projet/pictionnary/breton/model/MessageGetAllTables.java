@@ -11,12 +11,12 @@ public class MessageGetAllTables implements Message {
 
     private final User author;
     private final User recipient;
-    private final List<Table> tables;
+    private final List<DataTable> dataTables;
 
-    public MessageGetAllTables(User author, User recipient, List<Table> tables) {
+    public MessageGetAllTables(User author, User recipient, List<DataTable> dataTables) {
         this.author = author;
         this.recipient = recipient;
-        this.tables = tables;
+        this.dataTables = dataTables;
     }
     
     @Override
@@ -36,6 +36,6 @@ public class MessageGetAllTables implements Message {
 
     @Override
     public Object getContent() {
-        return tables;
+        return dataTables;
     }
 }
