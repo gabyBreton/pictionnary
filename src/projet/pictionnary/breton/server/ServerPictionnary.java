@@ -1,5 +1,6 @@
 package projet.pictionnary.breton.server;
 
+import projet.pictionnary.breton.model.Table;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InterfaceAddress;
@@ -136,9 +137,12 @@ public class ServerPictionnary extends AbstractServer {
                                                         table,  
                                                         table.getName());
                 sendToClient(messageCreateTable, memberId);
+                Message messageGetAllTables = new MessageGetAllTables(User.ADMIN, 
+                                                        User.EVERYBODY, tables);
+                sendToAllClients(messageGetAllTables);
                 break;
-            case GET_TABLES:
-                Message messageGetTables = new MessageGetTables(User.ADMIN, author, tables);
+            case GET_ALL_TABLES:
+                Message messageGetTables = new MessageGetAllTables(User.ADMIN, author, tables);
                 sendToClient(messageGetTables, author);
                 break;
             default:
@@ -153,7 +157,7 @@ public class ServerPictionnary extends AbstractServer {
         super.clientConnected(client);
         int memberId = members.add(getNextClientId(), client.getName(), client.getInetAddress());
         client.setInfo(ID_MAPINFO, memberId);
-        sendToClient(new MessageGetTables(User.ADMIN, null, tables), memberId);
+        sendToClient(new MessageGetAllTables(User.ADMIN, null, tables), memberId);
         setChanged();
         notifyObservers();
     }

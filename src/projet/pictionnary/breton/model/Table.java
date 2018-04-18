@@ -1,4 +1,4 @@
-package projet.pictionnary.breton.server;
+package projet.pictionnary.breton.model;
 
 import java.io.Serializable;
 import projet.pictionnary.breton.server.users.User;
@@ -22,7 +22,7 @@ public class Table implements Serializable {
         this.drawer = drawer;
     }
     
-    String getName() {
+    public String getName() {
         return name;
     }
 }

@@ -15,7 +15,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import projet.pictionnary.breton.client.ClientPictionnary;
-import projet.pictionnary.breton.server.Table;
+import projet.pictionnary.breton.model.Table;
 
 /**
  * FXML Controller class

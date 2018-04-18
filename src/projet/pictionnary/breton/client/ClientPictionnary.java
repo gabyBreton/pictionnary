@@ -8,9 +8,9 @@ import javafx.collections.ObservableList;
 import projet.pictionnary.breton.model.Message;
 import projet.pictionnary.breton.model.MessageProfile;
 import projet.pictionnary.breton.model.MessageCreateTable;
-import projet.pictionnary.breton.model.MessageGetTables;
+import projet.pictionnary.breton.model.MessageGetAllTables;
 import projet.pictionnary.breton.model.Type;
-import projet.pictionnary.breton.server.Table;
+import projet.pictionnary.breton.model.Table;
 import projet.pictionnary.breton.server.users.User;
 
 /**
@@ -21,6 +21,7 @@ public class ClientPictionnary extends AbstractClient {
 
     private User mySelf;
     private ObservableList<Table> listTables;
+    private Table currentTable;
     
     /**
      * Constructs the client. Opens the connection with the server. Sends the
@@ -48,10 +49,10 @@ public class ClientPictionnary extends AbstractClient {
                 setMySelf(message.getAuthor());
                 break;
             case CREATE_TABLE:
-                // TODO creer la table
                 System.out.println("ClientPictionnary.handleMessageFromServer():\n case CREATE_TABLE : " + ((MessageCreateTable) msg).getNameTable());
+                currentTable = (Table) message.getContent();
                 break;
-            case GET_TABLES:
+            case GET_ALL_TABLES:
                 System.out.println("ClientPictionnary.handleMessageFromServer():\n case GET_TABLES");
                 setTables((List <Table>) message.getContent());
                 break;
@@ -91,8 +92,4 @@ public class ClientPictionnary extends AbstractClient {
     private void updateName(String name) throws IOException {
         sendToServer(new MessageProfile(0, name));
     }
-    
-    private void getTablesFromServer() throws IOException {
-        sendToServer(new MessageGetTables(mySelf, User.ADMIN, null));
-    }    
 }

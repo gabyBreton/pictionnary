@@ -11,7 +11,7 @@ public enum Type {
      */
     PROFILE,
     
-    GET_TABLES,
+    GET_ALL_TABLES,
     
     CREATE_TABLE;
 //    /**

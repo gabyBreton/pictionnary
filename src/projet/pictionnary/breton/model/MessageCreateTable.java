@@ -1,6 +1,5 @@
 package projet.pictionnary.breton.model;
 
-import projet.pictionnary.breton.server.Table;
 import projet.pictionnary.breton.server.users.User;
 
 /**
