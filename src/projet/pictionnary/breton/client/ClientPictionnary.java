@@ -104,9 +104,6 @@ public class ClientPictionnary extends AbstractClient {
         sendToServer(new MessageProfile(0, name));
     }
 
-    public void getAllTables() throws IOException {
-         sendToServer(new MessageGetAllTables(mySelf, User.ADMIN, dataTables));
-    }
     @Override
     public void addObserver(Observer o) {
         observers.add(o);

@@ -131,6 +131,9 @@ public class ServerPictionnary extends AbstractServer {
                 members.changeName(author.getName(), memberId);
                 Message messageName = new MessageProfile(memberId, author.getName());
                 sendToClient(messageName, memberId);
+                
+                // on envoi les tables à ce moment là car le client est en attente de message
+                sendToClient(new MessageGetAllTables(User.ADMIN, author, dataTables), memberId);
                 break;
             case CREATE_TABLE:
                 System.out.println("\nServerPictionnary.handleMessageFromClient()\n case CREATE_TABLE from : " + author.getName());                
