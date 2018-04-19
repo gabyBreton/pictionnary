@@ -10,17 +10,17 @@ public class DataTable implements Serializable {
 
     private final String name;
     private final int id;
-    private final String open;
-    private final String drawerName;
-    private final String partnerName;
+    private final String status;
+    private final String drawer;
+    private final String partner;
 
-    public DataTable(String name, int id, String open, String drawerName,
-                     String partnerName) {
+    public DataTable(String name, int id, String status, String drawer,
+                     String partner) {
         this.name = name;
         this.id = id;
-        this.open = open;
-        this.drawerName = drawerName;
-        this.partnerName = partnerName;
+        this.status = status;
+        this.drawer = drawer;
+        this.partner = partner;
     }
 
     public String getName() {
@@ -31,15 +31,15 @@ public class DataTable implements Serializable {
         return id;
     }
 
-    public String isOpen() {
-        return open;
+    public String getStatus() {
+        return status;
     }
 
-    public String getDrawerName() {
-        return drawerName;
+    public String getDrawer() {
+        return drawer;
     }
 
-    public String getPartnerName() {
-        return partnerName;
+    public String getPartner() {
+        return partner;
     }
 }
