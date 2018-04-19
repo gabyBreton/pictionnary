@@ -9,6 +9,7 @@ import projet.pictionnary.breton.model.DataTable;
 import projet.pictionnary.breton.model.Message;
 import projet.pictionnary.breton.model.MessageProfile;
 import projet.pictionnary.breton.model.MessageCreateTable;
+import projet.pictionnary.breton.model.MessageGetAllTables;
 import projet.pictionnary.breton.model.Type;
 import projet.pictionnary.breton.model.Table;
 import projet.pictionnary.breton.server.users.User;
@@ -52,23 +53,28 @@ public class ClientPictionnary extends AbstractClient {
                 setMySelf(message.getAuthor());
                 break;
             case CREATE_TABLE:
-                System.out.println("ClientPictionnary.handleMessageFromServer():\n case CREATE_TABLE : " + ((MessageCreateTable) msg).getNameTable());
+                System.out.println("\nClientPictionnary.handleMessageFromServer():\n case CREATE_TABLE : " + ((MessageCreateTable) msg).getNameTable());
                 currentTable = (Table) message.getContent();
                 // TODO : notifier ?
                 break;
             case GET_ALL_TABLES:
-                System.out.println("ClientPictionnary.handleMessageFromServer():\n case GET_ALL_TABLES");
+                System.out.println("\nClientPictionnary.handleMessageFromServer():\n case GET_ALL_TABLES");
                 setTables((List <DataTable>) message.getContent());
                 notifyObservers(message);
                 break;
             default:
-                throw new IllegalArgumentException("Message type unknown " + type);
+                throw new IllegalArgumentException("\nMessage type unknown " + type);
         }    }
     
     void setMySelf(User user) {
         this.mySelf = user;
     }
-    
+
+    @Override
+    protected void connectionException(Exception exception) {
+        System.out.println(exception.getMessage());
+    }
+      
     void setTables(List <DataTable> dataTables) {
         this.dataTables = dataTables;
     }
@@ -90,7 +96,7 @@ public class ClientPictionnary extends AbstractClient {
         try {
             sendToServer(new MessageCreateTable(mySelf, User.ADMIN, null, tableName));
         } catch (IOException ioe) {
-            System.out.println("IOException in ClientPictionnary.createTable()");
+            System.out.println("\nIOException in ClientPictionnary.createTable()");
         }
     }
     
@@ -98,6 +104,9 @@ public class ClientPictionnary extends AbstractClient {
         sendToServer(new MessageProfile(0, name));
     }
 
+    public void getAllTables() throws IOException {
+         sendToServer(new MessageGetAllTables(mySelf, User.ADMIN, dataTables));
+    }
     @Override
     public void addObserver(Observer o) {
         observers.add(o);
@@ -110,7 +119,7 @@ public class ClientPictionnary extends AbstractClient {
     
     @Override
     public void notifyObservers(Object arg) {
-        System.out.println("ClientPictionnary.notifyObservers");
+        System.out.println("\nClientPictionnary.notifyObservers");
         observers.forEach((obs) -> {
             obs.update(arg);
         });

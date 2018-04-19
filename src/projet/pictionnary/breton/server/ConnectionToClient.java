@@ -191,6 +191,7 @@ public class ConnectionToClient extends Thread {
         }
         output.reset();
         output.writeObject(msg);
+        output.flush();
     }
 
     /**

@@ -270,6 +270,7 @@ public abstract class AbstractClient implements Observable, Runnable {
                 // statement until something is received from the server
                 try {
                     msg = input.readObject();
+                    System.out.println("\nAbstractClient.run()" + msg);
                     // Concrete subclasses do what they want with the
                     // msg by implementing the following method
                     if (!readyToStop) {

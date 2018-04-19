@@ -1,5 +1,6 @@
 package projet.pictionnary.breton.client.view;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +20,6 @@ import javafx.stage.Modality;
 import projet.pictionnary.breton.client.ClientPictionnary;
 import projet.pictionnary.breton.model.DataTable;
 import projet.pictionnary.breton.model.Message;
-import projet.pictionnary.breton.model.Table;
 import projet.pictionnary.breton.model.Type;
 import projet.pictionnary.breton.util.Observer;
 

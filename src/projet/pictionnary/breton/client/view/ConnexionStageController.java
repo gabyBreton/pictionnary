@@ -58,10 +58,11 @@ public class ConnexionStageController implements Initializable {
             Logger.getLogger(ConnexionStageController.class.getName())
                     .log(Level.SEVERE, null, nfe);            
         }
+        
         // pass the client instance to the new stage
         TableSelectionStageController selectionStage = loader.getController();
         selectionStage.setClient(clientPictionnary);
-        
+
         Parent root = loader.getRoot();
         Stage tableSelectionStage = new Stage();
         tableSelectionStage.setScene(new Scene(root));
@@ -78,5 +79,7 @@ public class ConnexionStageController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        serverIpTfd.setText("localhost");
+        portNumberTfd.setText("12345");
     }      
 }

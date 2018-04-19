@@ -10,11 +10,11 @@ public class DataTable implements Serializable {
 
     private final String name;
     private final int id;
-    private final boolean open;
+    private final String open;
     private final String drawerName;
     private final String partnerName;
 
-    public DataTable(String name, int id, boolean open, String drawerName,
+    public DataTable(String name, int id, String open, String drawerName,
                      String partnerName) {
         this.name = name;
         this.id = id;
@@ -31,7 +31,7 @@ public class DataTable implements Serializable {
         return id;
     }
 
-    public boolean isOpen() {
+    public String isOpen() {
         return open;
     }
 

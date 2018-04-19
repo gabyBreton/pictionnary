@@ -133,7 +133,7 @@ public class ServerPictionnary extends AbstractServer {
                 sendToClient(messageName, memberId);
                 break;
             case CREATE_TABLE:
-                System.out.println("ServerPictionnary.handleMessageFromClient()\n case CREATE_TABLE from : " + author.getName());                
+                System.out.println("\nServerPictionnary.handleMessageFromClient()\n case CREATE_TABLE from : " + author.getName());                
                 
                 // on crée la table
                 Table table = new Table(((MessageCreateTable) message).getNameTable(), 
@@ -141,7 +141,7 @@ public class ServerPictionnary extends AbstractServer {
                 
                 // on la rajoute dans la liste de table
                 tables.add(table);
-                System.out.println("ServerPictionnary.handleMessageFromClient()\n case CREATE_TABLE : tables.size() ==  " + tables.size());
+                System.out.println("\nServerPictionnary.handleMessageFromClient()\n case CREATE_TABLE : tables.size() ==  " + tables.size());
                 // on la renvoi au client
                 Message messageCreateTable = new MessageCreateTable(User.ADMIN, author, 
                                                         table,  
@@ -150,19 +150,21 @@ public class ServerPictionnary extends AbstractServer {
                 
                 // on met à jour les données de tables
                 String namePartner = (table.getPartner() == null) ? "" : table.getPartner().getName();
+                String statusTable = (table.isOpen() == true) ? "Open" : "Closed";
+                
                 // TODO : afficher correctement le statut et nom du drawer
                 dataTables.add(new DataTable(table.getName(), table.getId(), 
-                                             table.isOpen(),
+                                             statusTable,
                                              table.getDrawer().getName(), 
                                              namePartner));
-                System.out.println("ServerPictionnary.handleMessageFromClient()\n case CREATE_TABLE : dataTables.size() == " + dataTables.size());
+                System.out.println("\nServerPictionnary.handleMessageFromClient()\n case CREATE_TABLE : dataTables.size() == " + dataTables.size());
                 // on envoi toutes les données de tables à tout les clients
                 Message messageGetAllTables = new MessageGetAllTables(User.ADMIN, 
                                                         User.EVERYBODY, dataTables);
                 sendToAllClients(messageGetAllTables);
                 break;
             case GET_ALL_TABLES:
-                System.out.println("ServerPictionnary.handleMessageFromClient()\n case GET_ALL_TABLES from : " + author.getName());
+                System.out.println("\nServerPictionnary.handleMessageFromClient()\n case GET_ALL_TABLES from : " + author.getName());
                 Message messageGetTables = new MessageGetAllTables(User.ADMIN, author, dataTables);
                 sendToClient(messageGetTables, author);
                 break;
@@ -178,7 +180,7 @@ public class ServerPictionnary extends AbstractServer {
         super.clientConnected(client);
         int memberId = members.add(getNextClientId(), client.getName(), client.getInetAddress());
         client.setInfo(ID_MAPINFO, memberId);
-        System.out.println("ServerPictionnary.clientConnected()");
+        System.out.println("\nServerPictionnary.clientConnected() " + memberId);
         sendToClient(new MessageGetAllTables(User.ADMIN, null, dataTables), memberId);
 //        setChanged();
 //        notifyObservers();
@@ -189,18 +191,16 @@ public class ServerPictionnary extends AbstractServer {
     }
 
     void sendToClient(Message message, int clientId) {
-        User user = members.getUser(clientId);    
+        System.out.println("\nServerPictionnary.sendToClient " + clientId);
                         
-        for (Thread clientThreadList1 : getClientConnections()) {
-            String adressClient = ((ConnectionToClient) clientThreadList1)
-                                        .getInetAddress()
-                                        .getHostAddress();
+        for (Thread clientThreadList : getClientConnections()) {
+            int idClientThread = (Integer) ((ConnectionToClient) clientThreadList).getInfo(ID_MAPINFO);
             
-            if (user.getAddress().equals(adressClient)) {
+            if (clientId == idClientThread) {
                 try {
-                    ((ConnectionToClient) clientThreadList1).sendToClient(message);
+                    ((ConnectionToClient) clientThreadList).sendToClient(message);
                 } catch (IOException ioe) {
-                    System.out.println("ServerPictionnary: Connection failed");
+                    System.out.println("\nServerPictionnary: Connection failed");
                 }
                 break;
             }
