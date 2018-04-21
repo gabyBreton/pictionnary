@@ -1,37 +1,35 @@
 package projet.pictionnary.breton.model;
 
-import java.util.List;
 import projet.pictionnary.breton.server.users.User;
 
 /**
- * This class is used to send or get all the data of the tables on the server.
- * 
+ * This class is used to send message for manage the quit action.
  * @author Gabriel Breton - 43397
  */
-public class MessageGetAllTables implements Message {
-
+public class MessageQuit implements Message {
+    
     private final User author;
     private final User recipient;
-    private final List<DataTable> dataTables;
+    private final Role role;
 
     /**
-     * Creates a new MessageGetAllTables.
+     * Creates a new MessageQuitGame.
      * 
      * @param author the author of the message.
      * @param recipient the recipient of the message.
-     * @param dataTables the list of all the data of the tables.
+     * @param role the role of the user.
      */
-    public MessageGetAllTables(User author, User recipient, List<DataTable> dataTables) {
+    public MessageQuit(User author, User recipient, Role role) {
         this.author = author;
         this.recipient = recipient;
-        this.dataTables = dataTables;
+        this.role = role;
     }
     
     @Override
     public Type getType() {
-        return Type.GET_ALL_TABLES;
+        return Type.QUIT;
     }
-
+    
     @Override
     public User getAuthor() {
         return author;
@@ -44,6 +42,6 @@ public class MessageGetAllTables implements Message {
 
     @Override
     public Object getContent() {
-        return dataTables;
-    }
+        return role;
+    }   
 }

@@ -12,7 +12,6 @@ public class Table implements Serializable {
     
     private String name;
     private int id;
-    private boolean open;
     private User drawer;
     private User partner;   
     private final String word;
@@ -30,7 +29,6 @@ public class Table implements Serializable {
     public Table(String name, int id, User drawer, String word) {
         this.name = name;
         this.id = id;
-        open = true;
         this.drawer = drawer;
         partner = null;
         this.word = word;
@@ -61,7 +59,7 @@ public class Table implements Serializable {
      * @return true if the table is open, or else false.
      */
     public boolean isOpen() {
-        return open;
+        return playerCount == 1;
     }
 
     /**

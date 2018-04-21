@@ -6,9 +6,10 @@ import java.util.List;
 import projet.pictionnary.breton.model.DataTable;
 import projet.pictionnary.breton.model.Message;
 import projet.pictionnary.breton.model.MessageProfile;
-import projet.pictionnary.breton.model.MessageCreateTable;
+import projet.pictionnary.breton.model.MessageCreate;
 import projet.pictionnary.breton.model.MessageGetWord;
-import projet.pictionnary.breton.model.MessageQuitGame;
+import projet.pictionnary.breton.model.MessageJoin;
+import projet.pictionnary.breton.model.MessageQuit;
 import projet.pictionnary.breton.model.Role;
 import projet.pictionnary.breton.model.Type;
 import projet.pictionnary.breton.server.users.User;
@@ -54,24 +55,36 @@ public class ClientPictionnary extends AbstractClient {
             case PROFILE:
                 setMySelf(message.getAuthor());
                 break;
-            case CREATE_TABLE:
+                
+            case CREATE:
                 role = (Role) message.getContent();
+                notifyObservers(message);
                 System.out.println("Role : " + role.toString());
                 break;
-            case GET_ALL_TABLES:
+                
+            case GET_TABLES:
                 setTables((List <DataTable>) message.getContent());
                 notifyObservers(message);
                 break;
+                
             case GET_WORD:
                 word = (String) message.getContent();
+                notifyObservers(message);
                 break;
-            case QUIT_GAME:
+                
+            case QUIT:
                 role = (Role) message.getContent();
                 System.out.println("Role : " + role.toString());        
                 break;
+                
             case BAD_REQUEST:
                 System.out.println((String) message.getContent());
                 break;
+                
+            case JOIN:
+                role = (Role) message.getContent();
+                break;
+                        
             default:
                 throw new IllegalArgumentException("\nMessage type unknown " + type);
         }    }
@@ -104,7 +117,7 @@ public class ClientPictionnary extends AbstractClient {
     
     public void createTable(String tableName) {
         try {
-            sendToServer(new MessageCreateTable(mySelf, User.ADMIN, role, tableName));
+            sendToServer(new MessageCreate(mySelf, User.ADMIN, role, tableName));
         } catch (IOException ioe) {
             System.out.println(ioe.getMessage());            
         }
@@ -128,8 +141,21 @@ public class ClientPictionnary extends AbstractClient {
     
     public void quitGame() {
         try {
-            System.out.println("ClientPictionnary.quitGame()");
-            sendToServer(new MessageQuitGame(mySelf, User.ADMIN, role));
+            sendToServer(new MessageQuit(mySelf, User.ADMIN, role));
+        } catch (IOException ioe) {
+            System.out.println(ioe.getMessage());            
+        }
+    }
+    
+    /**
+     * Sends a message to the server to join the table specified by the id given
+     * in parameters.
+     * 
+     * @param tableId the id of the table to join.
+     */
+    public void join(int tableId) {
+        try {
+            sendToServer(new MessageJoin(mySelf, User.ADMIN, role, tableId));
         } catch (IOException ioe) {
             System.out.println(ioe.getMessage());            
         }
@@ -147,7 +173,6 @@ public class ClientPictionnary extends AbstractClient {
     
     @Override
     public void notifyObservers(Object arg) {
-        System.out.println("\nClientPictionnary.notifyObservers");
         observers.forEach((obs) -> {
             obs.update(arg);
         });

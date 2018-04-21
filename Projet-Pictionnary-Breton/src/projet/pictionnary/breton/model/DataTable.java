@@ -12,7 +12,7 @@ public class DataTable implements Serializable {
 
     private final String name;
     private final int id;
-    private final String status;
+    private String status;
     private String drawer;
     private String partner;
 
@@ -97,5 +97,9 @@ public class DataTable implements Serializable {
      */
     public void setPartner(String partner) {
         this.partner = partner;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

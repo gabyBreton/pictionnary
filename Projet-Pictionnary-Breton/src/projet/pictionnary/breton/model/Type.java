@@ -14,7 +14,7 @@ public enum Type {
     /**
      * Message to share the data for all the tables.
      */
-    GET_ALL_TABLES,
+    GET_TABLES,
     
     /**
      * Message to share the word to draw.
@@ -24,12 +24,14 @@ public enum Type {
     /**
      * Message to quit the game.
      */
-    QUIT_GAME,
+    QUIT,
     
     /**
      * Message to create the table.
      */
-    CREATE_TABLE,
+    CREATE,
+    
+    JOIN,
     
     /**
      * Message when a bad request is send to the server.

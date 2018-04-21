@@ -3,40 +3,34 @@ package projet.pictionnary.breton.model;
 import projet.pictionnary.breton.server.users.User;
 
 /**
- * This class is used to send message about a table creation.
- * 
+ *
  * @author Gabriel Breton - 43397
  */
-public class MessageCreateTable implements Message {
-
+public class MessageJoin implements Message {
+    
     private final User author;
     private final User recipient;
     private final Role role;
-    private final String nameTable;
+    private final int tableId;
 
     /**
-     * Creates a new MessageCreateTable.
+     * Creates a new MessageQuitGame.
      * 
      * @param author the author of the message.
      * @param recipient the recipient of the message.
      * @param role the role of the user.
-     * @param nameTable the name of the table.
+     * @param tableId the id of the table to join.
      */
-    public MessageCreateTable(User author, User recipient, Role role, 
-                                String nameTable) {
+    public MessageJoin(User author, User recipient, Role role, int tableId) {
         this.author = author;
         this.recipient = recipient;
         this.role = role;
-        this.nameTable = nameTable;
+        this.tableId = tableId;
     }
     
     @Override
     public Type getType() {
-        return Type.CREATE_TABLE;
-    }
-
-    public String getNameTable() {
-        return nameTable;
+        return Type.QUIT;
     }
     
     @Override
@@ -51,6 +45,10 @@ public class MessageCreateTable implements Message {
 
     @Override
     public Object getContent() {
+        return tableId;
+    }     
+    
+    public Role getRole() {
         return role;
-    }    
+    }
 }

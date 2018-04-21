@@ -133,10 +133,10 @@ public class ServerPictionnary extends AbstractServer {
                 sendToClient(msgName, memberId);
                 
                 // on envoi les tables à ce moment là car le client est en attente de message
-                sendToClient(new MessageGetAllTables(User.ADMIN, author, dataTables), memberId);
+                sendToClient(new MessageGetTables(User.ADMIN, author, dataTables), memberId);
                 break;
             
-            case CREATE_TABLE:
+            case CREATE:
                 if ((Role) message.getContent() == Role.NOT_IN_GAME) {
                     createNewTable(message, author, memberId);
                 } else {
@@ -145,8 +145,8 @@ public class ServerPictionnary extends AbstractServer {
                 }
                 break;
     
-            case GET_ALL_TABLES:
-                Message msgGetTables = new MessageGetAllTables(User.ADMIN, author, dataTables);
+            case GET_TABLES:
+                Message msgGetTables = new MessageGetTables(User.ADMIN, author, dataTables);
                 sendToClient(msgGetTables, author);
                 break;
                 
@@ -156,61 +156,100 @@ public class ServerPictionnary extends AbstractServer {
                 sendToClient(msgGetWord, memberId);
                 break;
             
-            case QUIT_GAME:
-                Table table = findTable(clientId);
-                Role role = (Role) message.getContent();
-                
-                if (table != null && table.getPlayerCount() == 1) {
-                    destroyTable(table);
-                } else if (table != null && table.getPlayerCount() == 2) {
-                    switch (role) {
-                        case DRAWER:
-                            table.removeDrawer();
-                            updateDataTables(memberId, role);
-                            // TODO notifier autre joueur
-                            break;
-                        case PARTNER:
-                            table.removePartner();
-                            updateDataTables(memberId, role);
-                            // TODO notifier autre joueur
-                            break;
-                        case NOT_IN_GAME:
-                            Message msgBadRequestQuit = new MessageBadRequest(User.ADMIN, 
-                                                                              author, 
-                                                                              "Can't quit, not in game.");
-                            sendToClient(msgBadRequestQuit, memberId);
-                            break;
-                        default:
-                            throw new IllegalArgumentException("Role type unknown " + role);
-                    }
-                }
+            case QUIT:
+                Table tableQuit = findTable(memberId);
+                Role roleQuit = (Role) message.getContent();
+                handleQuitRequest(tableQuit, roleQuit, memberId, author);
                 sendMessagesAfterQuit(author, memberId);
                 break;
 
+            case JOIN:
+                Table tableJoin = findTable(memberId);
+                Role roleJoin = (Role) message.getContent();                
+                handleJoinRequest(tableJoin, author, memberId, roleJoin);
+                break;
+                
             default:
                 throw new IllegalArgumentException("Message type unknown " + type);
         }
     } 
 
-    private void sendMessagesAfterQuit(User author, int memberId) {
-        Message msgGetAllTablesRefresh = new MessageGetAllTables(User.ADMIN,
+    private void handleQuitRequest(Table tableQuit, Role roleQuit, int memberId, User author) throws IllegalArgumentException {
+        if (tableQuit != null && tableQuit.getPlayerCount() == 1) {
+            destroyTable(tableQuit);
+        } else if (tableQuit != null && tableQuit.getPlayerCount() == 2) {
+            switch (roleQuit) {
+                case DRAWER:
+                    tableQuit.removeDrawer();
+                    updateDataTables(memberId, roleQuit, "", "Closed");
+                    // TODO notifier autre joueur
+                    break;
+                case PARTNER:
+                    tableQuit.removePartner();
+                    updateDataTables(memberId, roleQuit, "", "Closed");
+                    // TODO notifier autre joueur
+                    break;
+                case NOT_IN_GAME:
+                    Message msgBadRequestQuit = new MessageBadRequest(User.ADMIN,
+                            author, "Can't quit, not in game.");
+                    sendToClient(msgBadRequestQuit, memberId);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Role type unknown " + roleQuit);
+            }
+        }
+    }
+
+    private void handleJoinRequest(Table tableJoin, User author, int memberId, Role roleJoin) {
+        if (tableJoin != null) {
+            if (!tableJoin.isOpen()) {
+                Message msgBadRequestClosed = new MessageBadRequest(User.ADMIN,
+                        author, "Can't join, table closed.");
+                sendToClient(msgBadRequestClosed, memberId);
+                
+            } else if (roleJoin != Role.NOT_IN_GAME) {
+                Message msgBadRequestInGame = new MessageBadRequest(User.ADMIN,
+                        author, "Can't join, you are already in game.");
+                sendToClient(msgBadRequestInGame, memberId);
+                
+            } else if (tableJoin.getPlayerCount() == 1) {
+                tableJoin.addPartner(author);
+                updateDataTables(tableJoin.getId(), Role.PARTNER, author.getName(), "Closed");
+                sendMessagesAfterJoin(author, tableJoin, memberId);
+            }
+        } else {
+            Message msgBadRequestNoTable = new MessageBadRequest(User.ADMIN,
+                    author, "Can't find table");
+            sendToClient(msgBadRequestNoTable, memberId);
+        }
+    }
+
+    private void sendMessagesAfterJoin(User author, Table tableJoin, int memberId) {
+        Message msgGetAllTablesRefresh = new MessageGetTables(User.ADMIN,
                 User.EVERYBODY, dataTables);
         sendToAllClients(msgGetAllTablesRefresh);
-        Message messageQuitGame = new MessageQuitGame(User.ADMIN, author, Role.NOT_IN_GAME);
-        sendToClient(messageQuitGame, memberId);
+        Message msgJoin = new MessageJoin(User.ADMIN, author, Role.PARTNER, tableJoin.getId());
+        sendToClient(msgJoin, memberId);
+    }
+
+    private void sendMessagesAfterQuit(User author, int memberId) {
+        Message msgGetAllTablesRefresh = new MessageGetTables(User.ADMIN,
+                                                    User.EVERYBODY, dataTables);
+        sendToAllClients(msgGetAllTablesRefresh);
+        Message msgQuitGame = new MessageQuit(User.ADMIN, author, Role.NOT_IN_GAME);
+        sendToClient(msgQuitGame, memberId);
     }
 
     private void createNewTable(Message message, User author, int memberId) {
-        Table table = new Table(((MessageCreateTable) message).getNameTable(),
+        Table table = new Table(((MessageCreate) message).getNameTable(),
                 getNextTableId(), author, "Stylo");
         // TODO : aller chercher le mot dans une BD
         
         // on la rajoute dans la liste de table
         tables.add(table);
         // on la renvoi au client
-        Message messageCreateTable = new MessageCreateTable(User.ADMIN, author,
-                Role.DRAWER,
-                table.getName());
+        Message messageCreateTable = new MessageCreate(User.ADMIN, author,
+                                                   Role.DRAWER,table.getName());
         sendToClient(messageCreateTable, memberId);
         
         // on met à jour les données de tables
@@ -222,7 +261,7 @@ public class ServerPictionnary extends AbstractServer {
                 table.getDrawer().getName(),
                 namePartner));
         // on envoi toutes les données de tables à tout les clients
-        Message messageGetAllTables = new MessageGetAllTables(User.ADMIN,
+        Message messageGetAllTables = new MessageGetTables(User.ADMIN,
                 User.EVERYBODY, dataTables);
         sendToAllClients(messageGetAllTables);
     }
@@ -232,7 +271,7 @@ public class ServerPictionnary extends AbstractServer {
         super.clientConnected(client);
         int memberId = members.add(getNextClientId(), client.getName(), client.getInetAddress());
         client.setInfo(ID_MAPINFO, memberId);
-        sendToClient(new MessageGetAllTables(User.ADMIN, null, dataTables), memberId);
+        sendToClient(new MessageGetTables(User.ADMIN, null, dataTables), memberId);
     }
     
     void sendToClient(Message message, User recipient) {
@@ -290,14 +329,15 @@ public class ServerPictionnary extends AbstractServer {
         tables.remove(table);
     }
 
-    private void updateDataTables(int tableId, Role role) {
+    private void updateDataTables(int tableId, Role role, String name, String status) {
         for(DataTable data : dataTables) {
             if (data.getId() == tableId) {
                 if (role == Role.DRAWER) {
-                    data.setDrawer("");
+                    data.setDrawer(name);
                 } else if (role == Role.PARTNER) {
-                    data.setPartner("");
+                    data.setPartner(name);
                 }
+                data.setStatus(status);
                 break;
             }
         }
