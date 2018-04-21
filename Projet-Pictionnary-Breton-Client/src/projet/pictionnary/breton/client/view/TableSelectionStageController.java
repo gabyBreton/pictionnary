@@ -25,6 +25,7 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import projet.pictionnary.breton.client.ClientPictionnary;
 import projet.pictionnary.breton.drawing.DrawerSide;
+import projet.pictionnary.breton.drawing.PartnerSide;
 import projet.pictionnary.breton.model.DataTable;
 import projet.pictionnary.breton.model.Message;
 import projet.pictionnary.breton.model.MessageJoin;
@@ -78,23 +79,6 @@ public class TableSelectionStageController implements Initializable, Observer {
     @FXML
     public void createTable(ActionEvent event) {
         displayTableNameDialog();
-        // TODO créer la fenetre seulement qu'on a reçu la réponse du serveur.
-        //displayDrawerWindow();
-    }
-
-    private void displayDrawerWindow() {
-        DrawerSide drawerWindow = new DrawerSide(clientPictionnary.getWord());
-        Scene sceneDrawer = new Scene(drawerWindow, 1200, 800);
-
-        Platform.runLater(() -> {
-            Stage stage = new Stage();
-            stage.setScene(sceneDrawer);
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setOnCloseRequest((WindowEvent event) -> {
-                Platform.runLater(clientPictionnary::quitGame);
-            });
-            stage.show();
-        });
     }
 
     private void displayTableNameDialog() {
@@ -110,25 +94,8 @@ public class TableSelectionStageController implements Initializable, Observer {
 
     @FXML
     public void join() {
-        System.out.println("TableSelectionStageController.join() : "
-                + tableView.getSelectionModel().getSelectedItem().getName());
-
+        System.out.println("Controller : join");
         clientPictionnary.join(tableView.getSelectionModel().getSelectedItem().getId());
-//        
-//        
-//        if ("Closed".equals(tableView.getSelectionModel().getSelectedItem()
-//                                                         .getStatus())) {
-//            displayAlertTableClosed();
-//        } // alert else if client déjà dans cette partie ou dans une partie tout court
-//        
-//        // else il rejoint la table en tant que partner
-    }
-
-    private void displayAlertTableClosed() {
-        Alert alertTableClosed = new Alert(Alert.AlertType.WARNING);
-        alertTableClosed.setTitle("Table closed");
-        alertTableClosed.setHeaderText("This table is closed, you can't join it.");
-        alertTableClosed.showAndWait();
     }
 
     void setClient(ClientPictionnary clientPictionnary) {
@@ -143,23 +110,17 @@ public class TableSelectionStageController implements Initializable, Observer {
 
         switch (type) {
             case GET_TABLES:
-                System.out.println("TableSelectionStageController.update: GET_ALL_TABLES");
                 dataTables = (List<DataTable>) message.getContent();
                 refreshTableView();
                 break;
 
             case CREATE:
                 clientPictionnary.askWord();
-//                try {
-//                    Thread.sleep(500);
-//                } catch (InterruptedException intE) {
-//                    System.out.println(intE.getMessage());
-//                }
-
                 break;
 
             case JOIN:
-                // TODO
+                System.out.println("Controller : join : update");
+                displayPartnerWindow();
                 break;
 
             case GET_WORD:
@@ -172,6 +133,36 @@ public class TableSelectionStageController implements Initializable, Observer {
         }
     }
 
+    private void displayPartnerWindow() {
+        PartnerSide partnerWindow = new PartnerSide();
+        Scene scenePartner = new Scene(partnerWindow, 1200, 800);
+        
+        Platform.runLater(() -> {
+            Stage stage = new Stage();
+            stage.setScene(scenePartner);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setOnCloseRequest((WindowEvent event) -> {
+                Platform.runLater(clientPictionnary::quitGame);
+            });
+            stage.show();
+        });
+    }
+    
+    private void displayDrawerWindow() {
+        DrawerSide drawerWindow = new DrawerSide(clientPictionnary.getWord());
+        Scene sceneDrawer = new Scene(drawerWindow, 1200, 800);
+
+        Platform.runLater(() -> {
+            Stage stage = new Stage();
+            stage.setScene(sceneDrawer);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setOnCloseRequest((WindowEvent event) -> {
+                Platform.runLater(clientPictionnary::quitGame);
+            });
+            stage.show();
+        });
+    }    
+    
     private void refreshTableView() {
         System.out.println("TableSelectionStageController.refreshTableView()");
         tableView.getItems().clear();

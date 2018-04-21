@@ -14,7 +14,7 @@ public class MessageJoin implements Message {
     private final int tableId;
 
     /**
-     * Creates a new MessageQuitGame.
+     * Creates a new MessageJoin.
      * 
      * @param author the author of the message.
      * @param recipient the recipient of the message.
@@ -30,7 +30,7 @@ public class MessageJoin implements Message {
     
     @Override
     public Type getType() {
-        return Type.QUIT;
+        return Type.JOIN;
     }
     
     @Override

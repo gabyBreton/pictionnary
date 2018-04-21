@@ -59,7 +59,6 @@ public class ClientPictionnary extends AbstractClient {
             case CREATE:
                 role = (Role) message.getContent();
                 notifyObservers(message);
-                System.out.println("Role : " + role.toString());
                 break;
                 
             case GET_TABLES:
@@ -74,7 +73,6 @@ public class ClientPictionnary extends AbstractClient {
                 
             case QUIT:
                 role = (Role) message.getContent();
-                System.out.println("Role : " + role.toString());        
                 break;
                 
             case BAD_REQUEST:
@@ -82,7 +80,10 @@ public class ClientPictionnary extends AbstractClient {
                 break;
                 
             case JOIN:
-                role = (Role) message.getContent();
+                System.out.println("ClientP : msg Join");                
+                MessageJoin msgJoin = (MessageJoin) message;
+                role = msgJoin.getRole();
+                notifyObservers(msgJoin);
                 break;
                         
             default:
@@ -155,6 +156,7 @@ public class ClientPictionnary extends AbstractClient {
      */
     public void join(int tableId) {
         try {
+            System.out.println("Role : " +  role.toString());
             sendToServer(new MessageJoin(mySelf, User.ADMIN, role, tableId));
         } catch (IOException ioe) {
             System.out.println(ioe.getMessage());            

@@ -164,8 +164,10 @@ public class ServerPictionnary extends AbstractServer {
                 break;
 
             case JOIN:
-                Table tableJoin = findTable(memberId);
-                Role roleJoin = (Role) message.getContent();                
+                MessageJoin msgJoin = (MessageJoin) message;
+                Table tableJoin = tables.get((Integer) msgJoin.getContent() - 1);
+                Role roleJoin = msgJoin.getRole();       
+                System.out.println("ServerP.handleFromCli : join request !");
                 handleJoinRequest(tableJoin, author, memberId, roleJoin);
                 break;
                 
@@ -181,12 +183,12 @@ public class ServerPictionnary extends AbstractServer {
             switch (roleQuit) {
                 case DRAWER:
                     tableQuit.removeDrawer();
-                    updateDataTables(memberId, roleQuit, "", "Closed");
+                    updateDataTables(tableQuit.getId(), roleQuit, "", "Closed");
                     // TODO notifier autre joueur
                     break;
                 case PARTNER:
                     tableQuit.removePartner();
-                    updateDataTables(memberId, roleQuit, "", "Closed");
+                    updateDataTables(tableQuit.getId(), roleQuit, "", "Closed");
                     // TODO notifier autre joueur
                     break;
                 case NOT_IN_GAME:
@@ -203,16 +205,25 @@ public class ServerPictionnary extends AbstractServer {
     private void handleJoinRequest(Table tableJoin, User author, int memberId, Role roleJoin) {
         if (tableJoin != null) {
             if (!tableJoin.isOpen()) {
+                
+                System.out.println("ServerP.handleJoin : not open !");                
+                
                 Message msgBadRequestClosed = new MessageBadRequest(User.ADMIN,
                         author, "Can't join, table closed.");
                 sendToClient(msgBadRequestClosed, memberId);
                 
             } else if (roleJoin != Role.NOT_IN_GAME) {
+
+                System.out.println("ServerP.handleJoin : not in game !");                                
+                
                 Message msgBadRequestInGame = new MessageBadRequest(User.ADMIN,
                         author, "Can't join, you are already in game.");
                 sendToClient(msgBadRequestInGame, memberId);
                 
             } else if (tableJoin.getPlayerCount() == 1) {
+                
+                System.out.println("ServerP.handleJoin : playerCount == 1");                
+                
                 tableJoin.addPartner(author);
                 updateDataTables(tableJoin.getId(), Role.PARTNER, author.getName(), "Closed");
                 sendMessagesAfterJoin(author, tableJoin, memberId);
@@ -230,6 +241,9 @@ public class ServerPictionnary extends AbstractServer {
         sendToAllClients(msgGetAllTablesRefresh);
         Message msgJoin = new MessageJoin(User.ADMIN, author, Role.PARTNER, tableJoin.getId());
         sendToClient(msgJoin, memberId);
+        
+        System.out.println("ServerP.sendMsgAfterJoin !");                
+        
     }
 
     private void sendMessagesAfterQuit(User author, int memberId) {
