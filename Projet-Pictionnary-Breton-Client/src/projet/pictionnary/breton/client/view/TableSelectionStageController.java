@@ -1,6 +1,5 @@
 package projet.pictionnary.breton.client.view;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,14 +7,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextInputDialog;
@@ -27,11 +22,11 @@ import projet.pictionnary.breton.client.ClientPictionnary;
 import projet.pictionnary.breton.drawing.DrawerSide;
 import projet.pictionnary.breton.drawing.PartnerSide;
 import projet.pictionnary.breton.model.DataTable;
+import projet.pictionnary.breton.model.DrawEvent;
 import projet.pictionnary.breton.model.Message;
-import projet.pictionnary.breton.model.MessageJoin;
-import projet.pictionnary.breton.model.Role;
+import projet.pictionnary.breton.model.MessageReceptDraw;
+import projet.pictionnary.breton.model.MessageSendDraw;
 import projet.pictionnary.breton.model.Type;
-import projet.pictionnary.breton.server.users.User;
 import projet.pictionnary.breton.util.Observer;
 
 /**
@@ -41,8 +36,12 @@ import projet.pictionnary.breton.util.Observer;
  */
 public class TableSelectionStageController implements Initializable, Observer {
 
+    // TODO : ne peux dessiner tant que l'autre n'est pas connecté.
+    
     private ClientPictionnary clientPictionnary;
     private List<DataTable> dataTables;
+    private DrawerSide drawerWindow;
+    private PartnerSide partnerWindow;
 
     @FXML
     private TableView<DataTable> tableView;
@@ -127,6 +126,29 @@ public class TableSelectionStageController implements Initializable, Observer {
                 displayDrawerWindow();                
                 break;
                 
+            case SEND_DRAW:
+                MessageSendDraw msgSendDraw = (MessageSendDraw) message;
+                DrawEvent eventSendDraw = (DrawEvent) msgSendDraw.getContent();
+                
+                if (eventSendDraw == DrawEvent.DRAW) {
+                    clientPictionnary.draw(msgSendDraw.getDrawingInfos());
+                } else {
+                    clientPictionnary.clearPane();
+                }
+                break;
+                
+            case RECEPT_DRAW:
+                System.out.println("Controller : Recept_Draw");
+                MessageReceptDraw msgReceptDraw = (MessageReceptDraw) message;
+                DrawEvent eventReceptDraw = (DrawEvent) msgReceptDraw.getContent();
+                        
+                if (eventReceptDraw == DrawEvent.DRAW) {
+                    partnerWindow.draw(msgReceptDraw.getDrawingInfos());
+                } else {
+                    partnerWindow.clearPane();
+                }
+                break;
+                
             default:
                 System.out.println("TableSelectionStageController.update: default");
                 break;
@@ -134,7 +156,7 @@ public class TableSelectionStageController implements Initializable, Observer {
     }
 
     private void displayPartnerWindow() {
-        PartnerSide partnerWindow = new PartnerSide();
+        partnerWindow = new PartnerSide();
         Scene scenePartner = new Scene(partnerWindow, 1200, 800);
         
         Platform.runLater(() -> {
@@ -149,7 +171,9 @@ public class TableSelectionStageController implements Initializable, Observer {
     }
     
     private void displayDrawerWindow() {
-        DrawerSide drawerWindow = new DrawerSide(clientPictionnary.getWord());
+        drawerWindow = new DrawerSide(clientPictionnary.getWord());
+        drawerWindow.addObserver(this);
+        
         Scene sceneDrawer = new Scene(drawerWindow, 1200, 800);
 
         Platform.runLater(() -> {

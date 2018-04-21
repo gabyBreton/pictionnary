@@ -1,7 +1,7 @@
 package projet.pictionnary.breton.util;
 
 import java.util.List;
-import projet.pictionnary.breton.model.DrawEventKind;
+import projet.pictionnary.breton.model.DrawEvent;
 
 /**
  * Interface to implement the observer/observable pattern.

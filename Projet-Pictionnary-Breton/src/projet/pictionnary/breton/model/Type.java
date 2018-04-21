@@ -36,5 +36,15 @@ public enum Type {
     /**
      * Message when a bad request is send to the server.
      */
-    BAD_REQUEST;
+    BAD_REQUEST,
+    
+    /**
+     * When the drawer draws or clear the pane.
+     */
+    SEND_DRAW,
+    
+    /**
+     * When the partner recept the draw.
+     */
+    RECEPT_DRAW;
 }

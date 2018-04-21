@@ -1,6 +1,8 @@
 package projet.pictionnary.breton.drawing.components;
 
-import projet.pictionnary.breton.drawing.model.DrawingInfos;
+import projet.pictionnary.breton.model.LinePosition;
+import projet.pictionnary.breton.model.Point;
+import projet.pictionnary.breton.model.DrawingInfos;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.canvas.Canvas;
@@ -10,6 +12,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
+import projet.pictionnary.breton.util.Observer;
 
 /**
  * This class is used as a canvas where to draw.
@@ -35,6 +38,10 @@ public class DrawingPane extends Region implements IDrawing {
         initialize();
     }
 
+    public void addObserver(Observer obs) {
+        drawingInfos.addObserver(obs);
+    }
+    
     @Override
     public final void initialize() {
         canvas = new Canvas(1000, 800);

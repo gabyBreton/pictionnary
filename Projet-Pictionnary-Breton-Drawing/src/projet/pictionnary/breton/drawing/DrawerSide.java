@@ -5,7 +5,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import projet.pictionnary.breton.drawing.components.DrawingTools;
-import projet.pictionnary.breton.drawing.model.DrawingInfos;
+import projet.pictionnary.breton.util.Observer;
 
 /**
  * 
@@ -35,7 +35,7 @@ public class DrawerSide extends Region {
         getChildren().add(rootBox);
     }
     
-    public DrawingInfos getDrawingInfos() {
-        return drawingTools.getDrawingInfos();
+    public void addObserver(Observer obs) {
+        drawingTools.addObserver(obs);
     }
 }

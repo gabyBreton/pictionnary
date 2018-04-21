@@ -1,10 +1,9 @@
-package projet.pictionnary.breton.drawing.model;
+package projet.pictionnary.breton.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import projet.pictionnary.breton.drawing.components.Point;
-import projet.pictionnary.breton.model.DrawEventKind;
+import projet.pictionnary.breton.server.users.User;
 import projet.pictionnary.breton.util.Observable;
 import projet.pictionnary.breton.util.Observer;
 
@@ -33,7 +32,7 @@ public class DrawingInfos implements Serializable, Observable {
      */
     public void add(Point p) {
         listPositions.add(p);
-        notifyObservers(DrawEventKind.DRAW);
+        notifyObservers(new MessageSendDraw(null, User.ADMIN, DrawEvent.DRAW, this));
     }
     
     /**
@@ -50,7 +49,7 @@ public class DrawingInfos implements Serializable, Observable {
      */
     public void clearList() {
         listPositions = new ArrayList<>();
-        notifyObservers(DrawEventKind.CLEARPANE);
+        notifyObservers(new MessageSendDraw(null, User.ADMIN, DrawEvent.CLEARPANE, null));
     }
 
     

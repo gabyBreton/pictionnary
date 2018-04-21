@@ -5,7 +5,7 @@ package projet.pictionnary.breton.model;
  * 
  * @author Gabriel Breton - 43397
  */
-public enum DrawEventKind {
+public enum DrawEvent {
     
     /**
      * When the drawing pane is cleared.

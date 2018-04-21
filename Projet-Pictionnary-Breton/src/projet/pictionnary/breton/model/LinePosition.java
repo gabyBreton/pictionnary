@@ -1,4 +1,4 @@
-package projet.pictionnary.breton.drawing.components;
+package projet.pictionnary.breton.model;
 
 /**
  * This enum is used to specify the position of a point in a line.

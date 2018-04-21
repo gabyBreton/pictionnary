@@ -7,14 +7,13 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import projet.pictionnary.breton.drawing.components.DrawingPane;
-import projet.pictionnary.breton.model.DrawEventKind;
-import projet.pictionnary.breton.util.Observer;
+import projet.pictionnary.breton.model.DrawingInfos;
 
 /**
  *
  * @author Gabriel Breton - 43397
  */
-public class PartnerSide extends Region implements Observer {
+public class PartnerSide extends Region {
         
     private final DrawingPane drawingPane;
     
@@ -40,22 +39,18 @@ public class PartnerSide extends Region implements Observer {
         getChildren().add(rootBox);
     }
 
+    public void draw(DrawingInfos drawingInfos) {
+        drawingPane.setDrawingInfos(drawingInfos);
+    }
+    
+    public void clearPane() {
+        drawingPane.clearPane();
+    }    
+    
     private Label createToGuessTitleLbl() {
         Label toGuessTitleLbl = new Label();
         toGuessTitleLbl.setText("Proposition");
         toGuessTitleLbl.setUnderline(true);
         return toGuessTitleLbl;
-    }
-
-    @Override
-    public void update(Object arg) {
-        // TODO : revoir la méthode d'update via serveur plutot qu'en dedans à la fenetre de dessin
-        DrawEventKind eventKind = (DrawEventKind) arg;
-        
-        if (eventKind == DrawEventKind.CLEARPANE){
-            drawingPane.clearPane();
-        } else {
-//            drawingPane.setDrawingInfos(drawer.getDrawingInfos());        
-        }
     }
 }

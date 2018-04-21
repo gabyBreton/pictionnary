@@ -171,11 +171,27 @@ public class ServerPictionnary extends AbstractServer {
                 handleJoinRequest(tableJoin, author, memberId, roleJoin);
                 break;
                 
+            case SEND_DRAW:
+                MessageSendDraw msgSendDraw = (MessageSendDraw) message;
+                Table tableDrawer = findTable(memberId);
+                User partner = tableDrawer.getPartner();
+                DrawEvent event = (DrawEvent) msgSendDraw.getContent();
+                Message msgReceptDraw;
+                
+                if (event == DrawEvent.DRAW) {
+                    msgReceptDraw = new MessageReceptDraw(User.ADMIN, partner, 
+                                              event, msgSendDraw.getDrawingInfos());
+                } else {
+                    msgReceptDraw = new MessageReceptDraw(User.ADMIN, partner, event, null);
+                }
+                sendToClient(msgReceptDraw, partner.getId());
+                break;
+                
             default:
                 throw new IllegalArgumentException("Message type unknown " + type);
         }
     } 
-
+    
     private void handleQuitRequest(Table tableQuit, Role roleQuit, int memberId, User author) throws IllegalArgumentException {
         if (tableQuit != null && tableQuit.getPlayerCount() == 1) {
             destroyTable(tableQuit);
@@ -253,7 +269,7 @@ public class ServerPictionnary extends AbstractServer {
         Message msgQuitGame = new MessageQuit(User.ADMIN, author, Role.NOT_IN_GAME);
         sendToClient(msgQuitGame, memberId);
     }
-
+    
     private Table findTableFromId(int tableId) {
         for (Table table : tables) {
             if (table.getId() == tableId) {
@@ -262,6 +278,8 @@ public class ServerPictionnary extends AbstractServer {
         }
         return null;
     }
+    
+    // TODO : gerer clientDisconnected
     
     private void createNewTable(Message message, User author, int memberId) {
         Table table = new Table(((MessageCreate) message).getNameTable(),
@@ -349,22 +367,6 @@ public class ServerPictionnary extends AbstractServer {
             }
         }
     }
-//    private void destroyTable(int clientId) {
-//        for (Table table : tables) {
-//            if ((table.getDrawer() != null && table.getDrawer().getId() == clientId) 
-//                    || (table.getPartner() != null && table.getPartner().getId() == clientId)) {
-//                
-//                for(DataTable data : dataTables) {
-//                    if (data.getId() == table.getId()) {
-//                        dataTables.remove(data);
-//                        break;
-//                    }
-//                }
-//                tables.remove(table);
-//                break;
-//            }
-//        }
-//    }
     
     private String getWord(int clientId) {
         String word = "";

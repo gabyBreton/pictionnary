@@ -1,6 +1,6 @@
 package projet.pictionnary.breton.drawing.components;
 
-import projet.pictionnary.breton.drawing.model.DrawingInfos;
+import projet.pictionnary.breton.model.DrawingInfos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -13,6 +13,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import projet.pictionnary.breton.util.Observer;
 
 /*
  CREDITS ICONS:
@@ -58,6 +59,10 @@ public class DrawingTools extends Region {
         getChildren().add(rootBox);
     }
 
+    public void addObserver(Observer obs) {
+        drawingPane.addObserver(obs);
+    }
+    
     /**
      * Set the root box and add its elements
      * 
@@ -164,123 +169,4 @@ public class DrawingTools extends Region {
             drawingPane.setThickness(newValue);
         });
     }
-
-    public void setDrawingInfos(DrawingInfos drawingInfos) {
-        drawingPane.setDrawingInfos(drawingInfos);
-    }
-    
-    public DrawingInfos getDrawingInfos() {
-        return drawingPane.getDrawingInfos();
-    }
-    
-    
-//    /**
-//     * Creates the button to open a saved draw.
-//     * 
-//     * @param drawingPane the drawing pane.
-//     * @return the open button.
-//     */
-//    private Button createsOpenBtn(DrawingPane drawingPane) {
-//        Image openImg = new Image(getClass().getResourceAsStream("folder.png"));
-//        
-//        Button openBtn = new Button();
-//        openBtn.setTooltip(new Tooltip("Open..."));
-//        openBtn.setGraphic(new ImageView(openImg));
-//        openBtn.setOnAction((event) -> {
-//            FileChooser fileChooser = createsFileChooser("Open draw", "ser");
-//            drawingPane.setDrawingInfos(recoverDraw(fileChooser));
-//        });
-//        
-//        return openBtn;
-//    }
-//
-//    /**
-//     * Creates the button to save a draw.
-//     * 
-//     * @param drawingPane the drawing pane.
-//     * @return the save button.
-//     */    
-//     private Button createsSaveBtn(DrawingPane drawingPane) {
-//        Image saveImg = new Image(getClass().getResourceAsStream("save.png"));                
-//        
-//        Button saveBtn = new Button();
-//        saveBtn.setTooltip(new Tooltip("Save..."));
-//        saveBtn.setGraphic(new ImageView(saveImg));
-//        saveBtn.setOnAction((event) -> {
-//            FileChooser fileChooser = createsFileChooser("Register draw","ser");
-//            registerDraw(fileChooser, drawingPane.getDrawingInfos());
-//        });
-//        
-//        return saveBtn;
-//    }
-//
-//    /**
-//     * Handle the action to recover a draw saved on the file system.
-//     * 
-//     * @param fileChooser the file chooser to select a draw.
-//     * @return the draw as an DrawingInfos instance.
-//     */
-//    private DrawingInfos recoverDraw(FileChooser fileChooser) {
-//        DrawingInfos drawingInfos = null;
-//        try {
-//            FileInputStream fileIn = new FileInputStream(
-//                    fileChooser.showOpenDialog(new Stage())
-//            );
-//            ObjectInputStream in = new ObjectInputStream(fileIn);
-//            drawingInfos = (DrawingInfos) in.readObject();
-//            in.close();
-//            fileIn.close();                
-//        } catch (IOException | ClassNotFoundException ioe) {
-//            ioe.printStackTrace();
-//        }
-//        
-//        return drawingInfos;
-//    }
-//
-//    /**
-//     * Creates a file chooser.
-//     * 
-//     * @param title the title of the file chooser.
-//     * @param extensions the extensions displayed by the file chooser.
-//     * 
-//     * @return the new file chooser.
-//     */
-//    private FileChooser createsFileChooser(String title, String... extensions) {
-//        FileChooser fileChooser = new FileChooser();
-//        fileChooser.setTitle(title);
-//        fileChooser.setInitialDirectory(
-//                new File(System.getProperty("user.home"))
-//        );
-//        
-//        for (String extension : extensions) {
-//            fileChooser.getExtensionFilters().addAll(
-//                    new FileChooser.ExtensionFilter(extension, "*." + extension)
-//            );            
-//        }
-//       
-//        return fileChooser;
-//    }
-//
-//    /**
-//     * Handle the action to save a draw.
-//     * 
-//     * @param fileChooser the file chooser to select where to save the draw on 
-//     * the file system.
-//     * @param drawingInfos the draw as an instance of DrawingInfos.
-//     */
-//    private void registerDraw(FileChooser fileChooser, 
-//                              DrawingInfos drawingInfos) {
-//        try {
-//            FileOutputStream fileOut = new FileOutputStream(
-//                    fileChooser.showSaveDialog(new Stage()) + ".ser"
-//            );
-//            ObjectOutputStream out = new ObjectOutputStream(fileOut);
-//            out.writeObject(drawingInfos);
-//            out.close();
-//            fileOut.close();
-//        } catch (IOException ioe) {
-//            ioe.printStackTrace();
-//        }
-//    }    
 }
-// set et get draingInfos

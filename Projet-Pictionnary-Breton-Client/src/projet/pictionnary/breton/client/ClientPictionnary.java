@@ -4,9 +4,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import projet.pictionnary.breton.model.DataTable;
+import projet.pictionnary.breton.model.DrawEvent;
+import projet.pictionnary.breton.model.DrawingInfos;
 import projet.pictionnary.breton.model.Message;
 import projet.pictionnary.breton.model.MessageProfile;
 import projet.pictionnary.breton.model.MessageCreate;
+import projet.pictionnary.breton.model.MessageSendDraw;
 import projet.pictionnary.breton.model.MessageGetWord;
 import projet.pictionnary.breton.model.MessageJoin;
 import projet.pictionnary.breton.model.MessageQuit;
@@ -85,7 +88,11 @@ public class ClientPictionnary extends AbstractClient {
                 role = msgJoin.getRole();
                 notifyObservers(msgJoin);
                 break;
-                        
+            
+            case SEND_DRAW: case RECEPT_DRAW:
+                notifyObservers(message);
+                break;
+                
             default:
                 throw new IllegalArgumentException("\nMessage type unknown " + type);
         }    }
@@ -158,6 +165,24 @@ public class ClientPictionnary extends AbstractClient {
         try {
             System.out.println("Role : " +  role.toString());
             sendToServer(new MessageJoin(mySelf, User.ADMIN, role, tableId));
+        } catch (IOException ioe) {
+            System.out.println(ioe.getMessage());            
+        }
+    }
+    
+    public void draw(DrawingInfos drawingInfos) {
+        try {
+            System.out.println("ClientP.draw()");
+            sendToServer(new MessageSendDraw(mySelf, User.ADMIN, DrawEvent.DRAW, drawingInfos));
+        } catch (IOException ioe) {
+            System.out.println(ioe.getMessage());            
+        }        
+    }
+    
+    public void clearPane() {
+        try {
+            System.out.println("ClientP.clearPane");
+            sendToServer(new MessageSendDraw(mySelf, User.ADMIN, DrawEvent.CLEARPANE, null));
         } catch (IOException ioe) {
             System.out.println(ioe.getMessage());            
         }
