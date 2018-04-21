@@ -165,7 +165,7 @@ public class ServerPictionnary extends AbstractServer {
 
             case JOIN:
                 MessageJoin msgJoin = (MessageJoin) message;
-                Table tableJoin = tables.get((Integer) msgJoin.getContent() - 1);
+                Table tableJoin = findTableFromId((Integer) msgJoin.getContent());
                 Role roleJoin = msgJoin.getRole();       
                 System.out.println("ServerP.handleFromCli : join request !");
                 handleJoinRequest(tableJoin, author, memberId, roleJoin);
@@ -254,10 +254,18 @@ public class ServerPictionnary extends AbstractServer {
         sendToClient(msgQuitGame, memberId);
     }
 
+    private Table findTableFromId(int tableId) {
+        for (Table table : tables) {
+            if (table.getId() == tableId) {
+                return table;
+            }
+        }
+        return null;
+    }
+    
     private void createNewTable(Message message, User author, int memberId) {
         Table table = new Table(((MessageCreate) message).getNameTable(),
                 getNextTableId(), author, "Stylo");
-        // TODO : aller chercher le mot dans une BD
         
         // on la rajoute dans la liste de table
         tables.add(table);
@@ -306,21 +314,6 @@ public class ServerPictionnary extends AbstractServer {
             }
         }
     }
-    
-//    private boolean isAlone(int clientId) {
-//        for (Table table : tables) {
-//            if (table.getDrawer() != null
-//                    && table.getDrawer().getId() == clientId) {
-//                
-//                return table.getPartner() == null;
-//            } else if (table.getPartner() != null 
-//                    && table.getPartner().getId() == clientId) {
-//                
-//                return table.getDrawer() == null;
-//            }
-//        }
-//        return false;
-//    }
     
     private Table findTable(int clientId) {
         for (Table table : tables) {

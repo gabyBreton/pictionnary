@@ -17,17 +17,18 @@
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/sirius/NetBeansProjects/jline/Projet-Pictionnary-Breton/Projet-Pictionnary-Breton/src/projet/pictionnary/breton/model/MessageQuitGame.java</file>
             <file>file:/home/sirius/NetBeansProjects/jline/Projet-Pictionnary-Breton/Projet-Pictionnary-Breton/src/projet/pictionnary/breton/model/MessageBadRequest.java</file>
-            <file>file:/home/sirius/NetBeansProjects/jline/Projet-Pictionnary-Breton/Projet-Pictionnary-Breton/src/projet/pictionnary/breton/model/MessageCreateTable.java</file>
-            <file>file:/home/sirius/NetBeansProjects/jline/Projet-Pictionnary-Breton/Projet-Pictionnary-Breton/src/projet/pictionnary/breton/model/MessageGetAllTables.java</file>
+            <file>file:/home/sirius/NetBeansProjects/jline/Projet-Pictionnary-Breton/Projet-Pictionnary-Breton/src/projet/pictionnary/breton/model/MessageGetTables.java</file>
             <file>file:/home/sirius/NetBeansProjects/jline/Projet-Pictionnary-Breton/Projet-Pictionnary-Breton/src/projet/pictionnary/breton/model/Role.java</file>
-            <file>file:/home/sirius/NetBeansProjects/jline/Projet-Pictionnary-Breton/Projet-Pictionnary-Breton/src/projet/pictionnary/breton/model/Table.java</file>
             <file>file:/home/sirius/NetBeansProjects/jline/Projet-Pictionnary-Breton/Projet-Pictionnary-Breton/src/projet/pictionnary/breton/model/Type.java</file>
+            <file>file:/home/sirius/NetBeansProjects/jline/Projet-Pictionnary-Breton/Projet-Pictionnary-Breton/src/projet/pictionnary/breton/model/MessageProfile.java</file>
+            <file>file:/home/sirius/NetBeansProjects/jline/Projet-Pictionnary-Breton/Projet-Pictionnary-Breton/src/projet/pictionnary/breton/model/MessageCreate.java</file>
+            <file>file:/home/sirius/NetBeansProjects/jline/Projet-Pictionnary-Breton/Projet-Pictionnary-Breton/src/projet/pictionnary/breton/model/MessageQuit.java</file>
+            <file>file:/home/sirius/NetBeansProjects/jline/Projet-Pictionnary-Breton/Projet-Pictionnary-Breton/src/projet/pictionnary/breton/model/Table.java</file>
             <file>file:/home/sirius/NetBeansProjects/jline/Projet-Pictionnary-Breton/Projet-Pictionnary-Breton/src/projet/pictionnary/breton/model/Message.java</file>
             <file>file:/home/sirius/NetBeansProjects/jline/Projet-Pictionnary-Breton/Projet-Pictionnary-Breton/src/projet/pictionnary/breton/model/DataTable.java</file>
-            <file>file:/home/sirius/NetBeansProjects/jline/Projet-Pictionnary-Breton/Projet-Pictionnary-Breton/src/projet/pictionnary/breton/model/MessageProfile.java</file>
             <file>file:/home/sirius/NetBeansProjects/jline/Projet-Pictionnary-Breton/Projet-Pictionnary-Breton/src/projet/pictionnary/breton/model/MessageGetWord.java</file>
+            <file>file:/home/sirius/NetBeansProjects/jline/Projet-Pictionnary-Breton/Projet-Pictionnary-Breton/src/projet/pictionnary/breton/model/MessageJoin.java</file>
             <file>file:/home/sirius/NetBeansProjects/jline/Projet-Pictionnary-Breton/Projet-Pictionnary-Breton/src/projet/pictionnary/breton/model/DrawEventKind.java</file>
         </group>
     </open-files>
