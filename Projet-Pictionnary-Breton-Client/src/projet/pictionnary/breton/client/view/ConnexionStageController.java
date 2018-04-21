@@ -26,7 +26,7 @@ public class ConnexionStageController implements Initializable {
     private ClientPictionnary clientPictionnary;
     
     @FXML
-    private TextField pseudoTfd;
+    private TextField pseudoTfd; // TODO : make unique on server
 
     @FXML
     private TextField serverIpTfd;

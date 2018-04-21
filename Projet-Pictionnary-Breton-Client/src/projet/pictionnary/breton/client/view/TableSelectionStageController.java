@@ -7,17 +7,24 @@ import java.util.List;
 
 import java.util.Optional;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import projet.pictionnary.breton.client.ClientPictionnary;
+import projet.pictionnary.breton.drawing.DrawerSide;
 import projet.pictionnary.breton.model.DataTable;
 import projet.pictionnary.breton.model.Message;
 import projet.pictionnary.breton.model.Type;
@@ -67,14 +74,63 @@ public class TableSelectionStageController implements Initializable, Observer {
     
     @FXML
     public void createTable(ActionEvent event) {
-        TextInputDialog createTableDialog = new TextInputDialog();
-        createTableDialog.setTitle("Create table");
-        createTableDialog.setHeaderText("Table name");
-        createTableDialog.setContentText("Enter the name of the table");
-        createTableDialog.initModality(Modality.APPLICATION_MODAL);
+        displayTableNameDialog();
+        displayDrawerWindow();
+    }
+
+    private void displayDrawerWindow() {
+        clientPictionnary.askWord();
+        try {
+            Thread.sleep(100);            
+        } catch (InterruptedException intE) {
+            System.out.println(intE.getMessage());
+        }
         
-        Optional<String> result = createTableDialog.showAndWait();
+        DrawerSide drawerWindow = new DrawerSide(clientPictionnary.getWord()); 
+        Scene sceneDrawer = new Scene(drawerWindow, 1200, 800);
+        
+        setDrawerStage(sceneDrawer);                
+    }
+
+    private void setDrawerStage(Scene sceneDrawer) {
+        Stage stage = new Stage();
+        stage.setScene(sceneDrawer);
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.setOnCloseRequest((WindowEvent event) -> {
+            Platform.runLater(clientPictionnary::quitGame);
+        });
+        stage.show();
+    }
+
+    private void displayTableNameDialog() {
+        TextInputDialog tableNameDialog = new TextInputDialog();
+        tableNameDialog.setTitle("Create table");
+        tableNameDialog.setHeaderText("Table name");
+        tableNameDialog.setContentText("Enter the name of the table");
+        tableNameDialog.initModality(Modality.APPLICATION_MODAL);
+        
+        Optional<String> result = tableNameDialog.showAndWait();
         result.ifPresent(tableName -> clientPictionnary.createTable(tableName));
+    }
+    
+    @FXML
+    public void join() {
+        System.out.println("TableSelectionStageController.join() : " 
+                + tableView.getSelectionModel().getSelectedItem().getName());
+        
+        if ("Closed".equals(tableView.getSelectionModel().getSelectedItem()
+                                                         .getStatus())) {
+            displayAlertTableClosed();
+        } // alert else if client déjà dans cette partie ou dans une partie tout court
+        
+        // else il rejoint la table en tant que partner
+    }
+
+    private void displayAlertTableClosed() {
+        Alert alertTableClosed = new Alert(Alert.AlertType.WARNING);
+        alertTableClosed.setTitle("Table closed");
+        alertTableClosed.setHeaderText("This table is closed, you can't join it.");
+        alertTableClosed.showAndWait();
     }
     
     void setClient(ClientPictionnary clientPictionnary) {

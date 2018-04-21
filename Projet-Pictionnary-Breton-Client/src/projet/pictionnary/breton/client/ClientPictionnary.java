@@ -3,15 +3,14 @@ package projet.pictionnary.breton.client;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import projet.pictionnary.breton.model.DataTable;
 import projet.pictionnary.breton.model.Message;
 import projet.pictionnary.breton.model.MessageProfile;
 import projet.pictionnary.breton.model.MessageCreateTable;
-import projet.pictionnary.breton.model.MessageGetAllTables;
+import projet.pictionnary.breton.model.MessageGetWord;
+import projet.pictionnary.breton.model.MessageQuitGame;
+import projet.pictionnary.breton.model.Role;
 import projet.pictionnary.breton.model.Type;
-import projet.pictionnary.breton.model.Table;
 import projet.pictionnary.breton.server.users.User;
 import projet.pictionnary.breton.util.Observer;
 
@@ -23,8 +22,9 @@ public class ClientPictionnary extends AbstractClient {
 
     private User mySelf;
     private List<DataTable> dataTables;
-    private Table currentTable;
     private List<Observer> observers;
+    private String word; // TODO : retirer le mot lors de la destruction de la table.
+    private Role role; // TODO : changer le role lorsqu'on quitte/rentre dans une table.
     
     /**
      * Constructs the client. Opens the connection with the server. Sends the
@@ -40,6 +40,8 @@ public class ClientPictionnary extends AbstractClient {
         super(host, port);
         observers = new ArrayList<>();
         dataTables = new ArrayList<>();
+        role = Role.NOT_IN_GAME;
+        System.out.println("Role : " + role.toString());
         openConnection();
         updateName(name);
     }
@@ -53,14 +55,22 @@ public class ClientPictionnary extends AbstractClient {
                 setMySelf(message.getAuthor());
                 break;
             case CREATE_TABLE:
-                System.out.println("\nClientPictionnary.handleMessageFromServer():\n case CREATE_TABLE : " + ((MessageCreateTable) msg).getNameTable());
-                currentTable = (Table) message.getContent();
-                // TODO : notifier ?
+                role = (Role) message.getContent();
+                System.out.println("Role : " + role.toString());
                 break;
             case GET_ALL_TABLES:
-                System.out.println("\nClientPictionnary.handleMessageFromServer():\n case GET_ALL_TABLES");
                 setTables((List <DataTable>) message.getContent());
                 notifyObservers(message);
+                break;
+            case GET_WORD:
+                word = (String) message.getContent();
+                break;
+            case QUIT_GAME:
+                role = (Role) message.getContent();
+                System.out.println("Role : " + role.toString());        
+                break;
+            case BAD_REQUEST:
+                System.out.println((String) message.getContent());
                 break;
             default:
                 throw new IllegalArgumentException("\nMessage type unknown " + type);
@@ -94,9 +104,9 @@ public class ClientPictionnary extends AbstractClient {
     
     public void createTable(String tableName) {
         try {
-            sendToServer(new MessageCreateTable(mySelf, User.ADMIN, null, tableName));
+            sendToServer(new MessageCreateTable(mySelf, User.ADMIN, role, tableName));
         } catch (IOException ioe) {
-            System.out.println("\nIOException in ClientPictionnary.createTable()");
+            System.out.println(ioe.getMessage());            
         }
     }
     
@@ -104,6 +114,27 @@ public class ClientPictionnary extends AbstractClient {
         sendToServer(new MessageProfile(0, name));
     }
 
+    public void askWord() {
+        try {
+            sendToServer(new MessageGetWord(mySelf, User.ADMIN, ""));
+        } catch (IOException ioe) {
+            System.out.println(ioe.getMessage());
+        } 
+    }
+    
+    public String getWord() {
+        return word;
+    }
+    
+    public void quitGame() {
+        try {
+            System.out.println("ClientPictionnary.quitGame()");
+            sendToServer(new MessageQuitGame(mySelf, User.ADMIN, role));
+        } catch (IOException ioe) {
+            System.out.println(ioe.getMessage());            
+        }
+    }
+    
     @Override
     public void addObserver(Observer o) {
         observers.add(o);

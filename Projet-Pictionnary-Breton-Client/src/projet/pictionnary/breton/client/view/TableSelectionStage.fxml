@@ -15,7 +15,7 @@
          </font>
       </Label>
       <Button fx:id="createTableBtn" layoutX="654.0" layoutY="308.0" mnemonicParsing="false" onAction="#createTable" prefHeight="26.0" prefWidth="124.0" text="Create table" />
-      <TableView fx:id="tableView" layoutX="30.0" layoutY="89.0" prefHeight="245.0" prefWidth="600.0">
+      <TableView fx:id="tableView" layoutX="30.0" layoutY="89.0" onMouseClicked="#join" prefHeight="245.0" prefWidth="600.0">
         <columns>
           <TableColumn fx:id="nameCol" prefWidth="120.0" text="Name" />
           <TableColumn fx:id="idCol" editable="false" prefWidth="120.0" text="Id" />
