@@ -11,21 +11,28 @@ public enum Type {
      */
     PROFILE,
     
+    /**
+     * Message to share the data for all the tables.
+     */
     GET_ALL_TABLES,
     
+    /**
+     * Message to share the word to draw.
+     */
     GET_WORD,
     
+    /**
+     * Message to quit the game.
+     */
     QUIT_GAME,
     
+    /**
+     * Message to create the table.
+     */
     CREATE_TABLE,
     
+    /**
+     * Message when a bad request is send to the server.
+     */
     BAD_REQUEST;
-//    /**
-//     * General message send between two connected users.
-//     */
-//    MAIL_TO,
-//    /**
-//     * Message with the list of all connected users.
-//     */
-//    MEMBERS;
 }

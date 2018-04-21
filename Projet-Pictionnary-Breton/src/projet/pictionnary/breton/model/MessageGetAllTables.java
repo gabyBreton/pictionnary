@@ -4,7 +4,8 @@ import java.util.List;
 import projet.pictionnary.breton.server.users.User;
 
 /**
- *
+ * This class is used to send or get all the data of the tables on the server.
+ * 
  * @author Gabriel Breton - 43397
  */
 public class MessageGetAllTables implements Message {
@@ -13,6 +14,13 @@ public class MessageGetAllTables implements Message {
     private final User recipient;
     private final List<DataTable> dataTables;
 
+    /**
+     * Creates a new MessageGetAllTables.
+     * 
+     * @param author the author of the message.
+     * @param recipient the recipient of the message.
+     * @param dataTables the list of all the data of the tables.
+     */
     public MessageGetAllTables(User author, User recipient, List<DataTable> dataTables) {
         this.author = author;
         this.recipient = recipient;

@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import projet.pictionnary.breton.drawing.components.Point;
-import projet.pictionnary.breton.model.EventKind;
+import projet.pictionnary.breton.model.DrawEventKind;
 import projet.pictionnary.breton.util.Observable;
 import projet.pictionnary.breton.util.Observer;
 
@@ -33,7 +33,7 @@ public class DrawingInfos implements Serializable, Observable {
      */
     public void add(Point p) {
         listPositions.add(p);
-        notifyObservers(EventKind.DRAW);
+        notifyObservers(DrawEventKind.DRAW);
     }
     
     /**
@@ -50,7 +50,7 @@ public class DrawingInfos implements Serializable, Observable {
      */
     public void clearList() {
         listPositions = new ArrayList<>();
-        notifyObservers(EventKind.CLEARPANE);
+        notifyObservers(DrawEventKind.CLEARPANE);
     }
 
     

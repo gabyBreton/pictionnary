@@ -4,7 +4,6 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import projet.pictionnary.breton.drawing.components.DrawingTools;
-import projet.pictionnary.breton.model.WordCheck;
 import projet.pictionnary.breton.drawing.DrawerSide;
 import projet.pictionnary.breton.drawing.PartnerSide;
 
@@ -27,7 +26,6 @@ public class ProjetPictionnaryBreton extends Application {
         primaryStage.setTitle("Pictionnary - Drawer");
         
        //DrawingTools root = new DrawingTools();
-        WordCheck wordCheck = new WordCheck();
         
         //DrawerSide rootDrawer = new DrawerSide(wordCheck);
         //setAndDisplayDrawerStage(primaryStage, rootDrawer);

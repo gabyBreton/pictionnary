@@ -1,6 +1,5 @@
 package projet.pictionnary.breton.drawing;
 
-import projet.pictionnary.breton.model.WordCheck;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -8,7 +7,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import projet.pictionnary.breton.drawing.components.DrawingPane;
-import projet.pictionnary.breton.model.EventKind;
+import projet.pictionnary.breton.model.DrawEventKind;
 import projet.pictionnary.breton.util.Observer;
 
 /**
@@ -51,9 +50,9 @@ public class PartnerSide extends Region implements Observer {
     @Override
     public void update(Object arg) {
         // TODO : revoir la méthode d'update via serveur plutot qu'en dedans à la fenetre de dessin
-        EventKind eventKind = (EventKind) arg;
+        DrawEventKind eventKind = (DrawEventKind) arg;
         
-        if (eventKind == EventKind.CLEARPANE){
+        if (eventKind == DrawEventKind.CLEARPANE){
             drawingPane.clearPane();
         } else {
 //            drawingPane.setDrawingInfos(drawer.getDrawingInfos());        
