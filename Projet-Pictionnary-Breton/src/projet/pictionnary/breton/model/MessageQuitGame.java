@@ -6,28 +6,21 @@ import projet.pictionnary.breton.server.users.User;
  *
  * @author Gabriel Breton - 43397
  */
-public class MessageCreateTable implements Message {
-
+public class MessageQuitGame implements Message {
+    
     private final User author;
     private final User recipient;
     private final Role role;
-    private final String nameTable;
 
-    public MessageCreateTable(User author, User recipient, Role role, 
-                                String nameTable) {
+    public MessageQuitGame(User author, User recipient, Role role) {
         this.author = author;
         this.recipient = recipient;
         this.role = role;
-        this.nameTable = nameTable;
     }
     
     @Override
     public Type getType() {
-        return Type.CREATE_TABLE;
-    }
-
-    public String getNameTable() {
-        return nameTable;
+        return Type.QUIT_GAME;
     }
     
     @Override
@@ -43,5 +36,5 @@ public class MessageCreateTable implements Message {
     @Override
     public Object getContent() {
         return role;
-    }    
+    }   
 }

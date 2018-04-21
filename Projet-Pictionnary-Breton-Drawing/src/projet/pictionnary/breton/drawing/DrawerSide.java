@@ -6,23 +6,22 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import projet.pictionnary.breton.drawing.components.DrawingTools;
 import projet.pictionnary.breton.drawing.model.DrawingInfos;
-import projet.pictionnary.breton.drawing.WordCheck;
 
 /**
  * 
  * @author Gabriel Breton - 43397
  */
-public class Drawer extends Region {
+public class DrawerSide extends Region {
     
     private DrawingTools drawingTools;
     
-    public Drawer(WordCheck wordCheck) {
+    public DrawerSide(String toDraw) {
         HBox rootBox = new HBox();
         VBox wordBox = new VBox();
         drawingTools = new DrawingTools();
         
         Label wordLbl = new Label();
-        wordLbl.setText(wordCheck.getToGuess());
+        wordLbl.setText(toDraw);
 
         Label toDrawTitleLbl = new Label();
         toDrawTitleLbl.setText("Word to draw");

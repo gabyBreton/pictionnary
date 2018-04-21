@@ -129,64 +129,110 @@ public class ServerPictionnary extends AbstractServer {
         switch (type) {      
             case PROFILE:
                 members.changeName(author.getName(), memberId);
-                Message messageName = new MessageProfile(memberId, author.getName());
-                sendToClient(messageName, memberId);
+                Message msgName = new MessageProfile(memberId, author.getName());
+                sendToClient(msgName, memberId);
                 
                 // on envoi les tables à ce moment là car le client est en attente de message
                 sendToClient(new MessageGetAllTables(User.ADMIN, author, dataTables), memberId);
                 break;
+            
             case CREATE_TABLE:
-                System.out.println("\nServerPictionnary.handleMessageFromClient()\n case CREATE_TABLE from : " + author.getName());                
-                
-                // on crée la table
-                Table table = new Table(((MessageCreateTable) message).getNameTable(), 
-                                        getNextTableId(), author);
-                
-                // on la rajoute dans la liste de table
-                tables.add(table);
-                System.out.println("\nServerPictionnary.handleMessageFromClient()\n case CREATE_TABLE : tables.size() ==  " + tables.size());
-                // on la renvoi au client
-                Message messageCreateTable = new MessageCreateTable(User.ADMIN, author, 
-                                                        table,  
-                                                        table.getName());
-                sendToClient(messageCreateTable, memberId);
-                
-                // on met à jour les données de tables
-                String namePartner = (table.getPartner() == null) ? "" : table.getPartner().getName();
-                String statusTable = (table.isOpen() == true) ? "Open" : "Closed";
-                
-                // TODO : afficher correctement le statut et nom du drawer
-                dataTables.add(new DataTable(table.getName(), table.getId(), 
-                                             statusTable,
-                                             table.getDrawer().getName(), 
-                                             namePartner));
-                System.out.println("\nServerPictionnary.handleMessageFromClient()\n case CREATE_TABLE : dataTables.size() == " + dataTables.size());
-                // on envoi toutes les données de tables à tout les clients
-                Message messageGetAllTables = new MessageGetAllTables(User.ADMIN, 
-                                                        User.EVERYBODY, dataTables);
-                sendToAllClients(messageGetAllTables);
+                if ((Role) message.getContent() == Role.NOT_IN_GAME) {
+                    createNewTable(message, author, memberId);
+                } else {
+                    Message msgBadRequestCreate = new MessageBadRequest(User.ADMIN, author, "Can't create table. Already in game.");
+                    sendToClient(msgBadRequestCreate, memberId);
+                }
                 break;
+    
             case GET_ALL_TABLES:
-                System.out.println("\nServerPictionnary.handleMessageFromClient()\n case GET_ALL_TABLES from : " + author.getName());
-                Message messageGetTables = new MessageGetAllTables(User.ADMIN, author, dataTables);
-                sendToClient(messageGetTables, author);
+                Message msgGetTables = new MessageGetAllTables(User.ADMIN, author, dataTables);
+                sendToClient(msgGetTables, author);
                 break;
+                
+            case GET_WORD:
+                Message msgGetWord = new MessageGetWord(User.ADMIN, author, 
+                                                            getWord(memberId));
+                sendToClient(msgGetWord, memberId);
+                break;
+            
+            case QUIT_GAME:
+                Table table = findTable(clientId);
+                Role role = (Role) message.getContent();
+                
+                if (table != null && table.getPlayerCount() == 1) {
+                    destroyTable(table);
+                } else if (table != null && table.getPlayerCount() == 2) {
+                    switch (role) {
+                        case DRAWER:
+                            table.removeDrawer();
+                            updateDataTables(memberId, role);
+                            // TODO notifier autre joueur
+                            break;
+                        case PARTNER:
+                            table.removePartner();
+                            updateDataTables(memberId, role);
+                            // TODO notifier autre joueur
+                            break;
+                        case NOT_IN_GAME:
+                            Message msgBadRequestQuit = new MessageBadRequest(User.ADMIN, 
+                                                                              author, 
+                                                                              "Can't quit, not in game.");
+                            sendToClient(msgBadRequestQuit, memberId);
+                            break;
+                        default:
+                            throw new IllegalArgumentException("Role type unknown " + role);
+                    }
+                }
+                sendMessagesAfterQuit(author, memberId);
+                break;
+
             default:
                 throw new IllegalArgumentException("Message type unknown " + type);
         }
-//        setChanged();
-//        notifyObservers(message);    
     } 
+
+    private void sendMessagesAfterQuit(User author, int memberId) {
+        Message msgGetAllTablesRefresh = new MessageGetAllTables(User.ADMIN,
+                User.EVERYBODY, dataTables);
+        sendToAllClients(msgGetAllTablesRefresh);
+        Message messageQuitGame = new MessageQuitGame(User.ADMIN, author, Role.NOT_IN_GAME);
+        sendToClient(messageQuitGame, memberId);
+    }
+
+    private void createNewTable(Message message, User author, int memberId) {
+        Table table = new Table(((MessageCreateTable) message).getNameTable(),
+                getNextTableId(), author, "Stylo");
+        // TODO : aller chercher le mot dans une BD
+        
+        // on la rajoute dans la liste de table
+        tables.add(table);
+        // on la renvoi au client
+        Message messageCreateTable = new MessageCreateTable(User.ADMIN, author,
+                Role.DRAWER,
+                table.getName());
+        sendToClient(messageCreateTable, memberId);
+        
+        // on met à jour les données de tables
+        String namePartner = (table.getPartner() == null) ? "" : table.getPartner().getName();
+        String statusTable = (table.isOpen() == true) ? "Open" : "Closed";
+        
+        dataTables.add(new DataTable(table.getName(), table.getId(),
+                statusTable,
+                table.getDrawer().getName(),
+                namePartner));
+        // on envoi toutes les données de tables à tout les clients
+        Message messageGetAllTables = new MessageGetAllTables(User.ADMIN,
+                User.EVERYBODY, dataTables);
+        sendToAllClients(messageGetAllTables);
+    }
     
     @Override
     protected void clientConnected(ConnectionToClient client) {
         super.clientConnected(client);
         int memberId = members.add(getNextClientId(), client.getName(), client.getInetAddress());
         client.setInfo(ID_MAPINFO, memberId);
-        System.out.println("\nServerPictionnary.clientConnected() " + memberId);
         sendToClient(new MessageGetAllTables(User.ADMIN, null, dataTables), memberId);
-//        setChanged();
-//        notifyObservers();
     }
     
     void sendToClient(Message message, User recipient) {
@@ -194,8 +240,6 @@ public class ServerPictionnary extends AbstractServer {
     }
 
     void sendToClient(Message message, int clientId) {
-        System.out.println("\nServerPictionnary.sendToClient " + clientId);
-                        
         for (Thread clientThreadList : getClientConnections()) {
             int idClientThread = (Integer) ((ConnectionToClient) clientThreadList).getInfo(ID_MAPINFO);
             
@@ -203,11 +247,88 @@ public class ServerPictionnary extends AbstractServer {
                 try {
                     ((ConnectionToClient) clientThreadList).sendToClient(message);
                 } catch (IOException ioe) {
-                    System.out.println("\nServerPictionnary: Connection failed");
+                    System.out.println(ioe.getMessage());
                 }
                 break;
             }
         }
+    }
+    
+//    private boolean isAlone(int clientId) {
+//        for (Table table : tables) {
+//            if (table.getDrawer() != null
+//                    && table.getDrawer().getId() == clientId) {
+//                
+//                return table.getPartner() == null;
+//            } else if (table.getPartner() != null 
+//                    && table.getPartner().getId() == clientId) {
+//                
+//                return table.getDrawer() == null;
+//            }
+//        }
+//        return false;
+//    }
+    
+    private Table findTable(int clientId) {
+        for (Table table : tables) {
+            if ((table.getDrawer() != null && table.getDrawer().getId() == clientId) 
+                    || (table.getPartner() != null && table.getPartner().getId() == clientId)) {
+                    return table;
+            }
+        }
+        return null;
+    }
+    
+    private void destroyTable(Table table) {
+        System.out.println("destroyTable table");
+        for(DataTable data : dataTables) {
+            if (data.getId() == table.getId()) {
+                dataTables.remove(data);
+                break;
+            }
+        }
+        tables.remove(table);
+    }
+
+    private void updateDataTables(int tableId, Role role) {
+        for(DataTable data : dataTables) {
+            if (data.getId() == tableId) {
+                if (role == Role.DRAWER) {
+                    data.setDrawer("");
+                } else if (role == Role.PARTNER) {
+                    data.setPartner("");
+                }
+                break;
+            }
+        }
+    }
+//    private void destroyTable(int clientId) {
+//        for (Table table : tables) {
+//            if ((table.getDrawer() != null && table.getDrawer().getId() == clientId) 
+//                    || (table.getPartner() != null && table.getPartner().getId() == clientId)) {
+//                
+//                for(DataTable data : dataTables) {
+//                    if (data.getId() == table.getId()) {
+//                        dataTables.remove(data);
+//                        break;
+//                    }
+//                }
+//                tables.remove(table);
+//                break;
+//            }
+//        }
+//    }
+    
+    private String getWord(int clientId) {
+        String word = "";
+        
+        for (Table table : tables) {
+            if (table.getDrawer().getId() == clientId) {
+                word = table.getWord();
+                break;
+            }
+        }
+        return word;
     }
     
     @Override

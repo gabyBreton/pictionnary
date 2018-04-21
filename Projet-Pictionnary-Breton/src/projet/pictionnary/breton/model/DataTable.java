@@ -11,8 +11,8 @@ public class DataTable implements Serializable {
     private final String name;
     private final int id;
     private final String status;
-    private final String drawer;
-    private final String partner;
+    private String drawer;
+    private String partner;
 
     public DataTable(String name, int id, String status, String drawer,
                      String partner) {
@@ -41,5 +41,13 @@ public class DataTable implements Serializable {
 
     public String getPartner() {
         return partner;
+    }
+
+    public void setDrawer(String drawer) {
+        this.drawer = drawer;
+    }
+
+    public void setPartner(String partner) {
+        this.partner = partner;
     }
 }

@@ -1,4 +1,4 @@
-package projet.pictionnary.breton.drawing;
+package projet.pictionnary.breton.model;
 
 /**
  *

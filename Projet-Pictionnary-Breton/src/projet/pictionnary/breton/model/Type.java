@@ -13,7 +13,13 @@ public enum Type {
     
     GET_ALL_TABLES,
     
-    CREATE_TABLE;
+    GET_WORD,
+    
+    QUIT_GAME,
+    
+    CREATE_TABLE,
+    
+    BAD_REQUEST;
 //    /**
 //     * General message send between two connected users.
 //     */

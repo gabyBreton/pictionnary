@@ -13,13 +13,18 @@ public class Table implements Serializable {
     private int id;
     private boolean open;
     private User drawer;
-    private User partner;    
+    private User partner;   
+    private final String word;
+    private int playerCount;
     
-    public Table(String name, int id, User drawer) {
+    public Table(String name, int id, User drawer, String word) {
         this.name = name;
         this.id = id;
         open = true;
         this.drawer = drawer;
+        partner = null;
+        this.word = word;
+        playerCount = 1;
     }
     
     public String getName() {
@@ -41,6 +46,27 @@ public class Table implements Serializable {
     public User getPartner() {
         return partner;
     }
+
+    public String getWord() {
+        return word;
+    }
     
+    public void addPartner(User partner) {
+        this.partner = partner;
+        playerCount++;
+    }
     
+    public void removeDrawer() {
+        drawer = null;
+        playerCount--;
+    }
+    
+    public void removePartner() {
+        partner = null;
+        playerCount--;
+    }
+    
+    public int getPlayerCount() {
+        return playerCount;
+    }
 }

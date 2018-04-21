@@ -1,5 +1,6 @@
 package projet.pictionnary.breton.drawing;
 
+import projet.pictionnary.breton.model.WordCheck;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -8,22 +9,19 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import projet.pictionnary.breton.drawing.components.DrawingPane;
 import projet.pictionnary.breton.model.EventKind;
-import projet.pictionnary.breton.drawing.WordCheck;
 import projet.pictionnary.breton.util.Observer;
 
 /**
  *
  * @author Gabriel Breton - 43397
  */
-public class Guesser extends Region implements Observer {
+public class PartnerSide extends Region implements Observer {
         
-    private DrawingPane drawingPane;
-    private Drawer drawer;
+    private final DrawingPane drawingPane;
     
-    public Guesser(WordCheck wordCheck, Drawer drawer) {
+    public PartnerSide() {
         HBox rootBox = new HBox();
         VBox wordBox = new VBox();
-        this.drawer = drawer;
         drawingPane = new DrawingPane();
         drawingPane.setDisableCanvas(true);
         
@@ -52,12 +50,13 @@ public class Guesser extends Region implements Observer {
 
     @Override
     public void update(Object arg) {
+        // TODO : revoir la méthode d'update via serveur plutot qu'en dedans à la fenetre de dessin
         EventKind eventKind = (EventKind) arg;
         
         if (eventKind == EventKind.CLEARPANE){
             drawingPane.clearPane();
         } else {
-            drawingPane.setDrawingInfos(drawer.getDrawingInfos());        
+//            drawingPane.setDrawingInfos(drawer.getDrawingInfos());        
         }
     }
 }
