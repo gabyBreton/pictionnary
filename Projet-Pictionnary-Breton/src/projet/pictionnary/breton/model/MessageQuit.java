@@ -14,11 +14,11 @@ public class MessageQuit implements Message {
     private final Role role;
 
     /**
-     * Constructs a new <code> MessageQuitGame </code>.
+     * Constructs a new <code> MessageQuit </code>.
      * 
      * @param author the author of the message.
      * @param recipient the recipient of the message.
-     * @param role the role of the user.
+     * @param role the role of the user that quit the game.
      */
     public MessageQuit(User author, User recipient, Role role) {
         this.author = author;

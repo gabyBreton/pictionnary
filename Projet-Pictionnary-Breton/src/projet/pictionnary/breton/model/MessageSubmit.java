@@ -52,6 +52,11 @@ public class MessageSubmit implements Message {
         return proposition;
     }    
     
+    /**
+     * Gives the game status for the game from where the word was submited.
+     * 
+     * @return the game status of the game.
+     */
     public GameStatus getGameStatus() {
         return gameStatus;
     }

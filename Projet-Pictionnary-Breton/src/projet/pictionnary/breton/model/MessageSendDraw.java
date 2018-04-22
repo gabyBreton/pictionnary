@@ -17,10 +17,10 @@ public class MessageSendDraw implements Message {
     /**
      * Constructs a <code> MessageSendDraw </code>.
      * 
-     * @param author
-     * @param recipient
-     * @param event
-     * @param drawingInfos 
+     * @param author the author of the message.
+     * @param recipient the recipient of the message.
+     * @param event the draw event for this message, DRAW or CLEARPANE.
+     * @param drawingInfos the drawing infos.
      */
     public MessageSendDraw(User author, User recipient, DrawEvent event, 
                             DrawingInfos drawingInfos) {

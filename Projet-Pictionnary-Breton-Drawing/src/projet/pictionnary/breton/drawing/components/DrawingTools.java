@@ -58,6 +58,11 @@ public class DrawingTools extends Region {
         getChildren().add(rootBox);
     }
 
+    /**
+     * Pass an observer to the drawing pane.
+     * 
+     * @param obs the observer to passs.
+     */
     public void addObserver(Observer obs) {
         drawingPane.addObserver(obs);
     }
@@ -169,6 +174,9 @@ public class DrawingTools extends Region {
         });
     }
     
+    /**
+     * Disable the capacity to draw on the drawing pane.
+     */
     public void disableDraw() {
         drawingPane.setDisableCanvas(true);
     }

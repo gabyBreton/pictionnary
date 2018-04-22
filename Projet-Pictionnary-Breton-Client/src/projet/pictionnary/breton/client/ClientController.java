@@ -6,6 +6,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.Region;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -129,23 +130,13 @@ public class ClientController implements Observer {
             case SEND_DRAW:
                 MessageSendDraw msgSendDraw = (MessageSendDraw) message;
                 DrawEvent eventSendDraw = (DrawEvent) msgSendDraw.getContent();
-                
-                if (eventSendDraw == DrawEvent.DRAW) {
-                    clientPictionnary.draw(msgSendDraw.getDrawingInfos());
-                } else {
-                    clientPictionnary.clearPane();
-                }
+                handleSendDraw(eventSendDraw, msgSendDraw);
                 break;
                 
             case RECEPT_DRAW:
                 MessageReceptDraw msgReceptDraw = (MessageReceptDraw) message;
                 DrawEvent eventReceptDraw = (DrawEvent) msgReceptDraw.getContent();
-                        
-                if (eventReceptDraw == DrawEvent.DRAW) {
-                    partnerWindow.draw(msgReceptDraw.getDrawingInfos());
-                } else {
-                    partnerWindow.clearPane();
-                }
+                handleReceptDraw(eventReceptDraw, msgReceptDraw);
                 break;
                 
             case GAME_STATUS:
@@ -159,20 +150,8 @@ public class ClientController implements Observer {
                 
                 if (msgSubmit.getGameStatus() == GameStatus.WIN) {
                     clientPictionnary.setGameStatus(GameStatus.WIN);
-                    if (drawerWindow != null) {
-                        drawerWindow.setStatus(GameStatus.WIN);
-                        drawerWindow.disableDraw();
-                        Platform.runLater(() -> {
-                            drawerWindow.displayWin();
-                        });
-                    }
-                    if (partnerWindow != null) {
-                        partnerWindow.setStatus(GameStatus.WIN);
-                        partnerWindow.disableSubmit();
-                        Platform.runLater(() -> {
-                            partnerWindow.displayWin();
-                        });
-                    }
+                    handleDrawerWinSubmit();
+                    handlePartnerWinSubmit();
                 }
                 break;
                 
@@ -181,6 +160,67 @@ public class ClientController implements Observer {
         }
     }
 
+    /**
+     * Executes some actions for the partner window when the game is win.
+     */
+    private void handlePartnerWinSubmit() {
+        if (partnerWindow != null) {
+            partnerWindow.setStatus(GameStatus.WIN);
+            partnerWindow.disableSubmit();
+            Platform.runLater(() -> {
+                partnerWindow.displayWin();
+            });
+        }
+    }
+    
+    /**
+     * Executes some actions for the drawer window when the game is win.
+     */
+    private void handleDrawerWinSubmit() {
+        if (drawerWindow != null) {
+            drawerWindow.setStatus(GameStatus.WIN);
+            drawerWindow.disableDraw();
+            Platform.runLater(() -> {
+                drawerWindow.displayWin();
+            });
+        }
+    }
+
+    /**
+     * Handles a <code> MessageReceptDraw </code>.
+     * 
+     * @param eventReceptDraw the draw event.
+     * @param msgReceptDraw the messsage.
+     */
+    private void handleReceptDraw(DrawEvent eventReceptDraw, 
+                                    MessageReceptDraw msgReceptDraw) {
+        if (eventReceptDraw == DrawEvent.DRAW) {
+            partnerWindow.draw(msgReceptDraw.getDrawingInfos());
+        } else {
+            partnerWindow.clearPane();
+        }
+    }
+
+    /**
+     * Handles a <code> MessageSendDraw </code>.
+     * 
+     * @param eventSendDraw the draw event.
+     * @param msgSendDraw the messsage.
+     */    
+    private void handleSendDraw(DrawEvent eventSendDraw, 
+                                    MessageSendDraw msgSendDraw) {
+        if (eventSendDraw == DrawEvent.DRAW) {
+            clientPictionnary.draw(msgSendDraw.getDrawingInfos());
+        } else {
+            clientPictionnary.clearPane();
+        }
+    }
+
+    /**
+     * Updates the game views after the submit of a word.
+     * 
+     * @param proposition the word that has been proposed.
+     */
     public void updateViewsAfterSubmit(String proposition) {
         if (drawerWindow != null) {
             drawerWindow.addWordHistory(proposition);

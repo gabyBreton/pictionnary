@@ -118,6 +118,11 @@ public class ServerPictionnary extends AbstractServer {
         return clientId;
     }
     
+    /**
+     * Gives the nex table id.
+     * 
+     * @return the next table id.
+     */
     final synchronized int getNextTableId() {
         tableId++;
         return tableId;
@@ -156,15 +161,7 @@ public class ServerPictionnary extends AbstractServer {
                 break;
                 
             case GET_WORD:
-                if (author.getRole() == Role.PARTNER) {
-                    Message msgBadRequestGetWord = new MessageBadRequest(User.ADMIN, 
-                               author, "Can't give the word, you are partner.");
-                    sendToClient(msgBadRequestGetWord, memberId);
-                } else {
-                    Message msgGetWord = new MessageGetWord(User.ADMIN, author, 
-                                                            getWord(memberId));
-                    sendToClient(msgGetWord, memberId);                    
-                }
+                handleGetWordRequest(author, memberId);
                 break;
             
             case QUIT:
@@ -184,15 +181,8 @@ public class ServerPictionnary extends AbstractServer {
                 Table tableDrawer = findTable(memberId);
                 User partner = tableDrawer.getPartner();
                 DrawEvent event = (DrawEvent) msgSendDraw.getContent();
-                Message msgReceptDraw;
                 
-                if (event == DrawEvent.DRAW) {
-                    msgReceptDraw = new MessageReceptDraw(User.ADMIN, partner, 
-                                          event, msgSendDraw.getDrawingInfos());
-                } else {
-                    msgReceptDraw = new MessageReceptDraw(User.ADMIN, partner, 
-                                                            event, null);
-                }
+                Message msgReceptDraw = handleSendDrawRequest(event, partner, msgSendDraw);
                 sendToClient(msgReceptDraw, partner.getId());
                 break;
                 
@@ -205,30 +195,7 @@ public class ServerPictionnary extends AbstractServer {
                 System.out.println("MSG SUBMIT !");
                 String proposition = (String) message.getContent();
                 Table tableSubmit = findTable(message.getAuthor().getId());
-                GameStatus gameStatus;
-                
-                if (tableSubmit != null) {
-
-                    if (proposition.toLowerCase().equals(tableSubmit
-                                                            .getWord()
-                                                            .toLowerCase())) {
-                        tableSubmit.setGameStatus(GameStatus.WIN);
-                        updateDataTables(tableSubmit.getId(), 
-                                            author.getRole(), 
-                                            author.getName() , 
-                                            "Closed", 
-                                            GameStatus.WIN.toString());
-                        
-                        gameStatus = GameStatus.WIN;
-                    } else {
-                        gameStatus = GameStatus.IN_GAME;
-                    }
-
-                    sendSubmitResponse(tableSubmit.getDrawer(), 
-                                        proposition.toLowerCase(), gameStatus);
-                    sendSubmitResponse(tableSubmit.getPartner(), 
-                                        proposition.toLowerCase(), gameStatus);
-                }
+                handleSubmitRequest(tableSubmit, proposition, author);
                 break;
                 
             default:
@@ -236,6 +203,87 @@ public class ServerPictionnary extends AbstractServer {
         }
     } 
 
+    /**
+     * Handles a submit request.
+     * 
+     * @param tableSubmit the table from where the submit comes.
+     * @param proposition the word submited.
+     * @param author the author of the request.
+     */
+    private void handleSubmitRequest(Table tableSubmit, String proposition, 
+                                        User author) {
+        GameStatus gameStatus;
+        if (tableSubmit != null) {
+            
+            if (proposition.toLowerCase().equals(tableSubmit
+                    .getWord()
+                    .toLowerCase())) {
+                tableSubmit.setGameStatus(GameStatus.WIN);
+                updateDataTables(tableSubmit.getId(),
+                        author.getRole(),
+                        author.getName() ,
+                        "Closed",
+                        GameStatus.WIN.toString());
+                
+                gameStatus = GameStatus.WIN;
+            } else {
+                gameStatus = GameStatus.IN_GAME;
+            }
+            
+            sendSubmitResponse(tableSubmit.getDrawer(),
+                    proposition.toLowerCase(), gameStatus);
+            sendSubmitResponse(tableSubmit.getPartner(),
+                    proposition.toLowerCase(), gameStatus);
+        }
+    }
+
+    /**
+     * Handles a request to send the draw.
+     * 
+     * @param event the draw event, DRAW or CLEARPANE.
+     * @param partner the partner to send to the draw.
+     * @param msgSendDraw the send message.
+     * @return a message to send to the partner.
+     */
+    private Message handleSendDrawRequest(DrawEvent event, User partner, 
+                                            MessageSendDraw msgSendDraw) {
+        Message msgReceptDraw;
+        if (event == DrawEvent.DRAW) {
+            msgReceptDraw = new MessageReceptDraw(User.ADMIN, partner,
+                    event, msgSendDraw.getDrawingInfos());
+        } else {
+            msgReceptDraw = new MessageReceptDraw(User.ADMIN, partner,
+                    event, null);
+        }
+        return msgReceptDraw;
+    }
+
+    /**
+     * Handles a request to get the word to draw.
+     * 
+     * @param author the author of the request.
+     * @param memberId the id of the author. // TODO don't need it
+     */
+    private void handleGetWordRequest(User author, int memberId) {
+        if (author.getRole() == Role.PARTNER) {
+            Message msgBadRequestGetWord = new MessageBadRequest(User.ADMIN,
+                    author, "Can't give the word, you are partner.");
+            sendToClient(msgBadRequestGetWord, memberId);
+        } else {
+            Message msgGetWord = new MessageGetWord(User.ADMIN, author,
+                    getWord(memberId));
+            sendToClient(msgGetWord, memberId);
+        }
+    }
+
+    /**
+     * Send a response to a submit request.
+     * 
+     * @param player the player to send the response.
+     * @param proposition the word that has been proposed.
+     * @param gameStatus the game status to send, WIN or IN_GAME, depending if
+     *                   the word is correct.
+     */
     private void sendSubmitResponse(User player, String proposition, 
                                     GameStatus gameStatus) {
         MessageSubmit msgSubmit;
@@ -265,6 +313,7 @@ public class ServerPictionnary extends AbstractServer {
         // update datatables.
         String namePartner = (table.getPartner() == null) ? "" : table.getPartner().getName();
         String statusTable = (table.isOpen() == true) ? "Open" : "Closed";        
+        
         dataTables.add(new DataTable(table.getName(), 
                                      table.getId(),
                                      statusTable,
@@ -278,7 +327,7 @@ public class ServerPictionnary extends AbstractServer {
     }    
     
     /**
-     * Handle and apply a quit request.
+     * Handles and applys a quit request.
      * 
      * @param tableQuit the table to quit.
      * @param roleQuit the role of the player that want to quit.

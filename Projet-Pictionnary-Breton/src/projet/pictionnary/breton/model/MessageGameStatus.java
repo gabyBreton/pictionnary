@@ -15,7 +15,7 @@ public class MessageGameStatus implements Message{
     private final GameStatus gameStatus;
     
     /**
-     * Constructs a new <code> MessageJoin </code>.
+     * Constructs a new <code> MessageGameStatus </code>.
      * 
      * @param author the author of the message.
      * @param recipient the recipient of the message. 

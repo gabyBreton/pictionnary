@@ -255,6 +255,11 @@ public class ClientPictionnary extends AbstractClient {
         }
     }
     
+    /**
+     * Sends to the server the word that has been submited in a game.
+     * 
+     * @param propostion the word proposed.
+     */
     public void submit(String propostion) {
         try {
             sendToServer(new MessageSubmit(mySelf, User.ADMIN, propostion, 

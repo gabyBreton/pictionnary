@@ -25,6 +25,7 @@ public class DataTable implements Serializable {
      * @param status the status of the table.
      * @param drawer the name of the drawer.
      * @param partner the name of the partner.
+     * @param gameStatus the game status of the table.
      */
     public DataTable(String name, int id, String status, String drawer,
                      String partner, String gameStatus) {
@@ -101,14 +102,29 @@ public class DataTable implements Serializable {
         this.partner = partner;
     }
 
+    /**
+     * Set the status of the table.
+     * 
+     * @param status the status as String, Open or Closed.
+     */
     public void setStatus(String status) {
         this.status = status;
     }
 
+    /**
+     * Gives the game status of the table.
+     * 
+     * @return the game status of the table.
+     */
     public String getGameStatus() {
         return gameStatus;
     }
 
+    /**
+     * Sets the game status of the table.
+     * 
+     * @param gameStatus the game status of the table.
+     */
     public void setGameStatus(String gameStatus) {
         this.gameStatus = gameStatus;
     }

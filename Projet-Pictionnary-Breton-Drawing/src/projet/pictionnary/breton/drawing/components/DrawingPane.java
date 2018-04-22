@@ -240,6 +240,11 @@ public class DrawingPane extends Region implements IDrawing {
         drawSavedDrawingInfos();
     }
     
+    /**
+     * Set the canvas where to draw as disabled or not.
+     * 
+     * @param disable true to disable the canvas, or else false.
+     */
     public void setDisableCanvas(boolean disable) {
         canvas.setDisable(disable);
     }
