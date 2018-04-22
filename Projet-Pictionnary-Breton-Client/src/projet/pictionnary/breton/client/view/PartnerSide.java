@@ -1,4 +1,4 @@
-package projet.pictionnary.breton.drawing;
+package projet.pictionnary.breton.client.view;
 
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -7,6 +7,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
+import projet.pictionnary.breton.client.ClientController;
 import projet.pictionnary.breton.drawing.components.DrawingPane;
 import projet.pictionnary.breton.model.DrawingInfos;
 import projet.pictionnary.breton.model.GameStatus;
@@ -17,6 +18,7 @@ import projet.pictionnary.breton.model.GameStatus;
  */
 public class PartnerSide extends Region {
         
+    private ClientController clientController;    
     private final DrawingPane drawingPane;
     private Label gameStatusLbl;
     private TextArea propositionHist;
@@ -43,8 +45,22 @@ public class PartnerSide extends Region {
         propositionHist = new TextArea();
         propositionHist.setEditable(false);
         
-        Button quitBtn = new Button("Quit");
+        Button quitBtn = createsButtonQuit();
         
+        addElementsGridPane(infosPane, gameStatusTitleLbl, toGuessLbl, proposalTfd, 
+                            submitBtn, historyLbl, quitBtn);
+
+        infosPane.setStyle("-fx-background-color: #e6e6e6;");          
+        
+        rootBox.getChildren().addAll(drawingPane, infosPane);
+        
+        getChildren().add(rootBox);
+    }
+
+    private void addElementsGridPane(GridPane infosPane, Label gameStatusTitleLbl, 
+                                        Label toGuessLbl, TextField proposalTfd, 
+                                        Button submitBtn, Label historyLbl, 
+                                        Button quitBtn) {
         infosPane.add(gameStatusTitleLbl, 0, 0);
         infosPane.add(gameStatusLbl, 0, 1);
         infosPane.add(toGuessLbl, 0, 5);
@@ -53,12 +69,14 @@ public class PartnerSide extends Region {
         infosPane.add(historyLbl, 0, 11);
         infosPane.add(propositionHist, 0, 12);
         infosPane.add(quitBtn, 0, 20);
+    }
 
-        infosPane.setStyle("-fx-background-color: #e6e6e6;");          
-        
-        rootBox.getChildren().addAll(drawingPane, infosPane);
-        
-        getChildren().add(rootBox);
+    private Button createsButtonQuit() {
+        Button quitBtn = new Button("Quit");
+        quitBtn.setOnAction((event) -> {
+            clientController.quitGame();
+        });
+        return quitBtn;
     }
 
     public void draw(DrawingInfos drawingInfos) {
@@ -72,11 +90,15 @@ public class PartnerSide extends Region {
     public void setStatus(GameStatus gameStatus) {
         this.gameStatusLbl.setText(gameStatus.toString());
     }
-
-    public void setPropositionHist(TextArea propositionHist) {
-        this.propositionHist = propositionHist;
+    
+    public void setController(ClientController controller) {
+        clientController = controller;
     }
     
+    public void addWordHistory(String word) {
+        propositionHist.setText(propositionHist.getText() + "\n" + word);
+    }    
+
     private Label createToGuessLbl() {
         Label toGuessTitleLbl = new Label();
         toGuessTitleLbl.setText("Proposition");

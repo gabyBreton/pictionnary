@@ -13,8 +13,8 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import projet.pictionnary.breton.client.view.ConnexionStageController;
 import projet.pictionnary.breton.client.view.TableSelectionStageController;
-import projet.pictionnary.breton.drawing.DrawerSide;
-import projet.pictionnary.breton.drawing.PartnerSide;
+import projet.pictionnary.breton.client.view.DrawerSide;
+import projet.pictionnary.breton.client.view.PartnerSide;
 import projet.pictionnary.breton.model.DataTable;
 import projet.pictionnary.breton.model.DrawEvent;
 import projet.pictionnary.breton.model.GameStatus;
@@ -41,6 +41,8 @@ public class ClientController implements Observer {
     private List<DataTable> dataTables;
     private DrawerSide drawerWindow;
     private PartnerSide partnerWindow;
+    private Stage drawerStage;
+    private Stage partnerStage;
     
     /**
      * Loads the connexion stage.
@@ -153,32 +155,41 @@ public class ClientController implements Observer {
                 
             case GAME_STATUS:
                 GameStatus gameStatus = (GameStatus) message.getContent();
-                System.out.println("GET MSG GAME STATUS : " + gameStatus.name());
-                switch (gameStatus) {
-                    case WAITING:
-                        clientPictionnary.askWord();
-                        break;
-                    
-                    case IN_GAME:
-                        displayPartnerWindow();      
-                        break;
-                    
-                    case OVER:
-                        if (drawerWindow != null) {
-                            Platform.runLater(() -> {
-                                drawerWindow.setStatus(clientPictionnary.getGameStatus());                            
-                            });
-                        } else if (partnerWindow != null) {
-                            Platform.runLater(() -> {
-                                partnerWindow.setStatus(clientPictionnary.getGameStatus());                            
-                            });                        
-                        }
-                        break;
-                }
+                handleGameStatusUpdate(gameStatus);
                 break;
                 
             default:
                 throw new IllegalArgumentException("\nMessage type unknown " + type);
+        }
+    }
+
+    /**
+     * Handles a <code> GameStatus </code> message and executes some actions
+     * depending on the GameStatus value.
+     * 
+     * @param gameStatus the game status.
+     */
+    private void handleGameStatusUpdate(GameStatus gameStatus) {
+        switch (gameStatus) {
+            case WAITING:
+                clientPictionnary.askWord();
+                break;
+                
+            case IN_GAME:
+                displayPartnerWindow();
+                break;
+                
+            case OVER:
+                if (drawerWindow != null) {
+                    Platform.runLater(() -> {
+                        drawerWindow.setStatus(clientPictionnary.getGameStatus());
+                    });
+                } else if (partnerWindow != null) {
+                    Platform.runLater(() -> {
+                        partnerWindow.setStatus(clientPictionnary.getGameStatus());
+                    });
+                }
+                break;
         }
     }
     
@@ -206,17 +217,19 @@ public class ClientController implements Observer {
      */
     private void displayPartnerWindow() {
         partnerWindow = new PartnerSide();
+        partnerWindow.setController(this);
         partnerWindow.setStatus(clientPictionnary.getGameStatus());
+        
         Scene scenePartner = new Scene(partnerWindow, 1200, 800);
         
         Platform.runLater(() -> {
-            Stage stage = new Stage();
-            stage.setScene(scenePartner);
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setOnCloseRequest((WindowEvent event) -> {
+            partnerStage = new Stage();
+            partnerStage.setScene(scenePartner);
+            partnerStage.initModality(Modality.APPLICATION_MODAL);
+            partnerStage.setOnCloseRequest((WindowEvent event) -> {
                 Platform.runLater(clientPictionnary::quitGame);
             });
-            stage.show();
+            partnerStage.show();
         });
     }
     
@@ -225,19 +238,32 @@ public class ClientController implements Observer {
      */
     private void displayDrawerWindow() {
         drawerWindow = new DrawerSide(clientPictionnary.getWord());
+        drawerWindow.setController(this);
         drawerWindow.setStatus(clientPictionnary.getGameStatus());
         drawerWindow.addObserver(this);
         
         Scene sceneDrawer = new Scene(drawerWindow, 1200, 800);
 
         Platform.runLater(() -> {
-            Stage stage = new Stage();
-            stage.setScene(sceneDrawer);
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setOnCloseRequest((WindowEvent event) -> {
+            drawerStage = new Stage();
+            drawerStage.setScene(sceneDrawer);
+            drawerStage.initModality(Modality.APPLICATION_MODAL);
+            drawerStage.setOnCloseRequest((WindowEvent event) -> {
                 Platform.runLater(clientPictionnary::quitGame);
             });
-            stage.show();
+            drawerStage.show();
         });
-    }  
+    }
+    
+    /**
+     * Notify the client that the user quit the game.
+     */
+    public void quitGame() {
+        if (drawerWindow != null ) {
+            drawerStage.close();
+        } else if (partnerWindow != null) {
+            partnerStage.close();
+        }
+        clientPictionnary.quitGame();
+    }
 }

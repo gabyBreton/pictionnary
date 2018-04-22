@@ -304,7 +304,6 @@ public class ServerPictionnary extends AbstractServer {
         Message msgGetAllTablesRefresh = new MessageGetTables(User.ADMIN,
                                                     User.EVERYBODY, dataTables);
         sendToAllClients(msgGetAllTablesRefresh);
-        System.out.println("SEND MSG AFTER QUIT");        
         sendMessageGameStatus(tableQuit);
         Message msgQuitGame = new MessageQuit(User.ADMIN, author, Role.NOT_IN_GAME);
         sendToClient(msgQuitGame, author.getId());
