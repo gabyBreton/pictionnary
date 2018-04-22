@@ -162,12 +162,16 @@ public class ClientController implements Observer {
                     if (drawerWindow != null) {
                         drawerWindow.setStatus(GameStatus.WIN);
                         drawerWindow.disableDraw();
-                        drawerWindow.displayWin();
+                        Platform.runLater(() -> {
+                            drawerWindow.displayWin();
+                        });
                     }
                     if (partnerWindow != null) {
                         partnerWindow.setStatus(GameStatus.WIN);
                         partnerWindow.disableSubmit();
-                        partnerWindow.displayWin();
+                        Platform.runLater(() -> {
+                            partnerWindow.displayWin();
+                        });
                     }
                 }
                 break;
