@@ -6,41 +6,27 @@ import java.util.List;
 
 import java.util.Optional;
 import java.util.ResourceBundle;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Scene;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
-import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
-import projet.pictionnary.breton.client.ClientPictionnary;
-import projet.pictionnary.breton.drawing.DrawerSide;
-import projet.pictionnary.breton.drawing.PartnerSide;
+import projet.pictionnary.breton.client.ClientController;
 import projet.pictionnary.breton.model.DataTable;
-import projet.pictionnary.breton.model.DrawEvent;
-import projet.pictionnary.breton.model.Message;
-import projet.pictionnary.breton.model.MessageReceptDraw;
-import projet.pictionnary.breton.model.MessageSendDraw;
-import projet.pictionnary.breton.model.Type;
-import projet.pictionnary.breton.util.Observer;
 
 /**
  * This class is used as the FXML controller to manage the selection of the 
- * tables, load game windows and interact with the server.
+ * tables, to join or create one.
  *
  * @author Gabriel Breton - 43397
  */
-public class TableSelectionStageController implements Initializable, Observer {
+public class TableSelectionStageController implements Initializable {
 
-    private ClientPictionnary clientPictionnary;
     private List<DataTable> dataTables;
-    private DrawerSide drawerWindow;
-    private PartnerSide partnerWindow;
+    private ClientController clientController;
 
     @FXML
     private TableView<DataTable> tableView;
@@ -95,7 +81,7 @@ public class TableSelectionStageController implements Initializable, Observer {
         tableNameDialog.initModality(Modality.APPLICATION_MODAL);
 
         Optional<String> result = tableNameDialog.showAndWait();
-        result.ifPresent(tableName -> clientPictionnary.createTable(tableName));
+        result.ifPresent(tableName -> clientController.createTable(tableName));
     }
 
     /**
@@ -103,115 +89,27 @@ public class TableSelectionStageController implements Initializable, Observer {
      */
     @FXML
     public void join() {
-        clientPictionnary.join(tableView.getSelectionModel().getSelectedItem().getId());
+        clientController.joinTable(tableView.getSelectionModel()
+                                            .getSelectedItem()
+                                            .getId());
     }
 
     /**
-     * Links the client to this controller.
+     * Sets the main client controller.
      * 
-     * @param clientPictionnary the client to link.
+     * @param clientController the client controller.
      */
-    void setClient(ClientPictionnary clientPictionnary) {
-        this.clientPictionnary = clientPictionnary;
-        this.clientPictionnary.addObserver(this);
-    }
-
-    @Override
-    public void update(Object arg) {
-        Message message = (Message) arg;
-        Type type = (Type) message.getType();
-
-        switch (type) {
-            case GET_TABLES:
-                dataTables = (List<DataTable>) message.getContent();
-                refreshTableView();
-                break;
-
-            case CREATE:
-                clientPictionnary.askWord();
-                break;
-
-            case JOIN:
-                System.out.println("Controller : join : update");
-                displayPartnerWindow();
-                break;
-
-            case GET_WORD:
-                displayDrawerWindow();                
-                break;
-                
-            case SEND_DRAW:
-                MessageSendDraw msgSendDraw = (MessageSendDraw) message;
-                DrawEvent eventSendDraw = (DrawEvent) msgSendDraw.getContent();
-                
-                if (eventSendDraw == DrawEvent.DRAW) {
-                    clientPictionnary.draw(msgSendDraw.getDrawingInfos());
-                } else {
-                    clientPictionnary.clearPane();
-                }
-                break;
-                
-            case RECEPT_DRAW:
-                System.out.println("Controller : Recept_Draw");
-                MessageReceptDraw msgReceptDraw = (MessageReceptDraw) message;
-                DrawEvent eventReceptDraw = (DrawEvent) msgReceptDraw.getContent();
-                        
-                if (eventReceptDraw == DrawEvent.DRAW) {
-                    partnerWindow.draw(msgReceptDraw.getDrawingInfos());
-                } else {
-                    partnerWindow.clearPane();
-                }
-                break;
-                
-            default:
-                throw new IllegalArgumentException("\nMessage type unknown " + type);
-        }
-    }
-    
-    /**
-     * Creates and shows the <code> PartnerSide </code> window.
-     */
-    private void displayPartnerWindow() {
-        partnerWindow = new PartnerSide();
-        Scene scenePartner = new Scene(partnerWindow, 1200, 800);
-        
-        Platform.runLater(() -> {
-            Stage stage = new Stage();
-            stage.setScene(scenePartner);
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setOnCloseRequest((WindowEvent event) -> {
-                Platform.runLater(clientPictionnary::quitGame);
-            });
-            stage.show();
-        });
-    }
-    
-    /**
-     * Creates and shows the <code> Drawer </code> window.
-     */
-    private void displayDrawerWindow() {
-        drawerWindow = new DrawerSide(clientPictionnary.getWord());
-        drawerWindow.addObserver(this);
-        
-        Scene sceneDrawer = new Scene(drawerWindow, 1200, 800);
-
-        Platform.runLater(() -> {
-            Stage stage = new Stage();
-            stage.setScene(sceneDrawer);
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setOnCloseRequest((WindowEvent event) -> {
-                Platform.runLater(clientPictionnary::quitGame);
-            });
-            stage.show();
-        });
-    }    
+    public void setClientController(ClientController clientController) {
+        this.clientController = clientController;
+    }       
     
     /**
      * Refresh the table view that contains all the informations for the tables
      * selection.
      */
-    private void refreshTableView() {
-        System.out.println("TableSelectionStageController.refreshTableView()");
+    public void refreshTableView(List<DataTable> dataTables) {
+        this.dataTables = dataTables;
+        
         tableView.getItems().clear();
         dataTables.forEach((dataTable) -> {
             tableView.getItems().add(dataTable);
