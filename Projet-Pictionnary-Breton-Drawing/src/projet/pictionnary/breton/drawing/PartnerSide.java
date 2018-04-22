@@ -7,9 +7,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
 import projet.pictionnary.breton.drawing.components.DrawingPane;
 import projet.pictionnary.breton.model.DrawingInfos;
+import projet.pictionnary.breton.model.GameStatus;
 
 /**
  *
@@ -18,7 +18,7 @@ import projet.pictionnary.breton.model.DrawingInfos;
 public class PartnerSide extends Region {
         
     private final DrawingPane drawingPane;
-    private Label status;
+    private Label gameStatusLbl;
     private TextArea propositionHist;
 
     
@@ -28,9 +28,9 @@ public class PartnerSide extends Region {
         drawingPane = new DrawingPane();
         drawingPane.setDisableCanvas(true);
 
-        Label gameStatusLbl = new Label("Game status");
-        gameStatusLbl.setUnderline(true);        
-        status = new Label();
+        Label gameStatusTitleLbl = new Label("Game status");
+        gameStatusTitleLbl.setUnderline(true);        
+        gameStatusLbl = new Label();
         
         Label toGuessLbl = createToGuessLbl();        
         TextField proposalTfd = new TextField();
@@ -45,8 +45,8 @@ public class PartnerSide extends Region {
         
         Button quitBtn = new Button("Quit");
         
-        infosPane.add(gameStatusLbl, 0, 0);
-        infosPane.add(status, 0, 1);
+        infosPane.add(gameStatusTitleLbl, 0, 0);
+        infosPane.add(gameStatusLbl, 0, 1);
         infosPane.add(toGuessLbl, 0, 5);
         infosPane.add(proposalTfd, 0, 6);
         infosPane.add(submitBtn, 0, 7);
@@ -68,6 +68,14 @@ public class PartnerSide extends Region {
     public void clearPane() {
         drawingPane.clearPane();
     }    
+
+    public void setStatus(GameStatus gameStatus) {
+        this.gameStatusLbl.setText(gameStatus.toString());
+    }
+
+    public void setPropositionHist(TextArea propositionHist) {
+        this.propositionHist = propositionHist;
+    }
     
     private Label createToGuessLbl() {
         Label toGuessTitleLbl = new Label();

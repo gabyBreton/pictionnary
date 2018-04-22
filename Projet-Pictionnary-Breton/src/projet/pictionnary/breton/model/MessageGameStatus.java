@@ -3,32 +3,34 @@ package projet.pictionnary.breton.model;
 import projet.pictionnary.breton.server.users.User;
 
 /**
- * This class is used to transfer a join request.
+ * This class is used to update <code> GameStatus </code> for the players of a 
+ * game.
  * 
  * @author Gabriel Breton - 43397
  */
-public class MessageJoin implements Message {
-    
+public class MessageGameStatus implements Message{
+        
     private final User author;
     private final User recipient;
-    private final int tableId;
+    private final GameStatus gameStatus;
     
     /**
      * Constructs a new <code> MessageJoin </code>.
      * 
      * @param author the author of the message.
      * @param recipient the recipient of the message. 
-     * @param tableId the id of the table to join.
+     * @param gameStatus the status of the game.
      */
-    public MessageJoin(User author, User recipient, int tableId) {
+    public MessageGameStatus(User author, User recipient, 
+                                GameStatus gameStatus) {
         this.author = author;
         this.recipient = recipient;
-        this.tableId = tableId;
+        this.gameStatus = gameStatus;
     }
     
     @Override
     public Type getType() {
-        return Type.JOIN;
+        return Type.GAME_STATUS;
     }
     
     @Override
@@ -43,6 +45,6 @@ public class MessageJoin implements Message {
 
     @Override
     public Object getContent() {
-        return tableId;
-    }     
+        return gameStatus;
+    }    
 }

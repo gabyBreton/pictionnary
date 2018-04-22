@@ -6,8 +6,8 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
 import projet.pictionnary.breton.drawing.components.DrawingTools;
+import projet.pictionnary.breton.model.GameStatus;
 import projet.pictionnary.breton.util.Observer;
 
 /**
@@ -17,7 +17,7 @@ import projet.pictionnary.breton.util.Observer;
 public class DrawerSide extends Region {
     
     private final DrawingTools drawingTools;
-    private Label status;
+    private Label gameStatusLbl;
     private TextArea propositionHist;
     
     public DrawerSide(String toDraw) {
@@ -25,9 +25,9 @@ public class DrawerSide extends Region {
         GridPane infosPane = new GridPane();
         drawingTools = new DrawingTools();
 
-        Label gameStatusLbl = new Label("Game status");
-        gameStatusLbl.setUnderline(true);        
-        status = new Label();
+        Label gameStatusTitleLbl = new Label("Game status");
+        gameStatusTitleLbl.setUnderline(true);        
+        gameStatusLbl = new Label();
         
         Label wordLbl = new Label();
         wordLbl.setText(toDraw);
@@ -40,16 +40,14 @@ public class DrawerSide extends Region {
         
         Button quitBtn = new Button("Quit");
         
-        infosPane.add(gameStatusLbl, 0, 0);
-        infosPane.add(status, 0, 1);
+        infosPane.add(gameStatusTitleLbl, 0, 0);
+        infosPane.add(gameStatusLbl, 0, 1);
         infosPane.add(toDrawLbl, 0, 5);
         infosPane.add(wordLbl, 0, 6);
         infosPane.add(historyLbl, 0, 10);
         infosPane.add(propositionHist, 0, 11);
         infosPane.add(quitBtn, 0, 20);
-        
-//        wordBox.getChildren().addAll(gameStatusLbl, status, toDrawLbl, 
-//                                        wordLbl, historyLbl, propositionHist);
+
         infosPane.setStyle("-fx-background-color: #e6e6e6;");        
         infosPane.setHgap(200);
         
@@ -62,8 +60,8 @@ public class DrawerSide extends Region {
         drawingTools.addObserver(obs);
     }
 
-    public void setStatus(Label status) {
-        this.status = status;
+    public void setStatus(GameStatus gameStatus) {
+        this.gameStatusLbl.setText(gameStatus.toString());
     }
     
     public void addWordHistory(String word) {

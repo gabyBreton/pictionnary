@@ -15,6 +15,7 @@ public class DataTable implements Serializable {
     private String status;
     private String drawer;
     private String partner;
+    private String gameStatus;
 
     /**
      * Constructs a new <code> DataTable </code>.
@@ -26,12 +27,13 @@ public class DataTable implements Serializable {
      * @param partner the name of the partner.
      */
     public DataTable(String name, int id, String status, String drawer,
-                     String partner) {
+                     String partner, String gameStatus) {
         this.name = name;
         this.id = id;
         this.status = status;
         this.drawer = drawer;
         this.partner = partner;
+        this.gameStatus = gameStatus;
     }
 
     /**
@@ -101,5 +103,13 @@ public class DataTable implements Serializable {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getGameStatus() {
+        return gameStatus;
+    }
+
+    public void setGameStatus(String gameStatus) {
+        this.gameStatus = gameStatus;
     }
 }

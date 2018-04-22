@@ -17,10 +17,14 @@ import projet.pictionnary.breton.drawing.DrawerSide;
 import projet.pictionnary.breton.drawing.PartnerSide;
 import projet.pictionnary.breton.model.DataTable;
 import projet.pictionnary.breton.model.DrawEvent;
+import projet.pictionnary.breton.model.GameStatus;
 import projet.pictionnary.breton.model.Message;
+import projet.pictionnary.breton.model.MessageGameStatus;
+import projet.pictionnary.breton.model.MessageGetWord;
 import projet.pictionnary.breton.model.MessageReceptDraw;
 import projet.pictionnary.breton.model.MessageSendDraw;
 import projet.pictionnary.breton.model.Type;
+import projet.pictionnary.breton.server.users.User;
 import projet.pictionnary.breton.util.Observer;
 
 /**
@@ -113,11 +117,11 @@ public class ClientController implements Observer {
                 break;
 
             case CREATE:
-                clientPictionnary.askWord();
+                clientPictionnary.askGameStatus();
                 break;
 
             case JOIN:
-                displayPartnerWindow();
+                clientPictionnary.askGameStatus();
                 break;
 
             case GET_WORD:
@@ -144,6 +148,32 @@ public class ClientController implements Observer {
                     partnerWindow.draw(msgReceptDraw.getDrawingInfos());
                 } else {
                     partnerWindow.clearPane();
+                }
+                break;
+                
+            case GAME_STATUS:
+                GameStatus gameStatus = (GameStatus) message.getContent();
+                System.out.println("GET MSG GAME STATUS : " + gameStatus.name());
+                switch (gameStatus) {
+                    case WAITING:
+                        clientPictionnary.askWord();
+                        break;
+                    
+                    case IN_GAME:
+                        displayPartnerWindow();      
+                        break;
+                    
+                    case OVER:
+                        if (drawerWindow != null) {
+                            Platform.runLater(() -> {
+                                drawerWindow.setStatus(clientPictionnary.getGameStatus());                            
+                            });
+                        } else if (partnerWindow != null) {
+                            Platform.runLater(() -> {
+                                partnerWindow.setStatus(clientPictionnary.getGameStatus());                            
+                            });                        
+                        }
+                        break;
                 }
                 break;
                 
@@ -176,6 +206,7 @@ public class ClientController implements Observer {
      */
     private void displayPartnerWindow() {
         partnerWindow = new PartnerSide();
+        partnerWindow.setStatus(clientPictionnary.getGameStatus());
         Scene scenePartner = new Scene(partnerWindow, 1200, 800);
         
         Platform.runLater(() -> {
@@ -194,6 +225,7 @@ public class ClientController implements Observer {
      */
     private void displayDrawerWindow() {
         drawerWindow = new DrawerSide(clientPictionnary.getWord());
+        drawerWindow.setStatus(clientPictionnary.getGameStatus());
         drawerWindow.addObserver(this);
         
         Scene sceneDrawer = new Scene(drawerWindow, 1200, 800);

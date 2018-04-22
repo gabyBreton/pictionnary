@@ -6,14 +6,15 @@ import java.util.List;
 import projet.pictionnary.breton.model.DataTable;
 import projet.pictionnary.breton.model.DrawEvent;
 import projet.pictionnary.breton.model.DrawingInfos;
+import projet.pictionnary.breton.model.GameStatus;
 import projet.pictionnary.breton.model.Message;
 import projet.pictionnary.breton.model.MessageProfile;
 import projet.pictionnary.breton.model.MessageCreate;
+import projet.pictionnary.breton.model.MessageGameStatus;
 import projet.pictionnary.breton.model.MessageSendDraw;
 import projet.pictionnary.breton.model.MessageGetWord;
 import projet.pictionnary.breton.model.MessageJoin;
 import projet.pictionnary.breton.model.MessageQuit;
-import projet.pictionnary.breton.model.Role;
 import projet.pictionnary.breton.model.Type;
 import projet.pictionnary.breton.server.users.User;
 import projet.pictionnary.breton.util.Observer;
@@ -29,6 +30,7 @@ public class ClientPictionnary extends AbstractClient {
     private List<DataTable> dataTables;
     private final List<Observer> observers;
     private String word; // TODO : retirer le mot lors de la destruction de la table.
+    private GameStatus gameStatus;
     
     /**
      * Constructs the client. Opens the connection with the server. Sends the
@@ -59,7 +61,6 @@ public class ClientPictionnary extends AbstractClient {
                 
             case CREATE:
                 setMySelf(message.getRecipient());                
-                System.out.println("After create : mySelf.getRole = " + mySelf.getRole().toString());
                 notifyObservers(message);
                 break;
                 
@@ -75,7 +76,6 @@ public class ClientPictionnary extends AbstractClient {
                 
             case QUIT:
                 setMySelf(message.getRecipient());                
-                System.out.println("After quit : mySelf.getRole = " + mySelf.getRole().toString());
                 break;
                 
             case BAD_REQUEST:
@@ -84,13 +84,17 @@ public class ClientPictionnary extends AbstractClient {
                 
             case JOIN:
                 setMySelf(message.getRecipient());                
-                System.out.println("ClientP : msg Join");                
                 MessageJoin msgJoin = (MessageJoin) message;
-                System.out.println("After join : mySelf.getRole = " + mySelf.getRole().toString());
                 notifyObservers(msgJoin);
                 break;
             
-            case SEND_DRAW: case RECEPT_DRAW:
+            case SEND_DRAW: 
+            case RECEPT_DRAW:
+                notifyObservers(message);
+                break;
+            
+            case GAME_STATUS:
+                gameStatus = (GameStatus) message.getContent();
                 notifyObservers(message);
                 break;
                 
@@ -203,7 +207,7 @@ public class ClientPictionnary extends AbstractClient {
      */
     public void join(int tableId) {
         try {
-            sendToServer(new MessageJoin(mySelf, User.ADMIN, mySelf.getRole(), tableId));
+            sendToServer(new MessageJoin(mySelf, User.ADMIN, tableId));
         } catch (IOException ioe) {
             System.out.println(ioe.getMessage());            
         }
@@ -235,6 +239,26 @@ public class ClientPictionnary extends AbstractClient {
         } catch (IOException ioe) {
             System.out.println(ioe.getMessage());            
         }
+    }
+
+    /**
+     * Asks to the server the status of the current game.
+     */
+    public void askGameStatus() {
+        try {
+            sendToServer(new MessageGameStatus(mySelf, User.ADMIN, null));
+        } catch (IOException ioe) {
+            System.out.println(ioe.getMessage());
+        }
+    }
+    
+    /**
+     * Gives the value of gameStatus.
+     * 
+     * @return the value of gameStatus.
+     */
+    public GameStatus getGameStatus() {
+        return gameStatus;
     }
     
     @Override

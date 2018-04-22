@@ -169,8 +169,8 @@ public class ServerPictionnary extends AbstractServer {
             
             case QUIT:
                 Table tableQuit = findTable(memberId);
-                handleQuitRequest(tableQuit, author);
-                sendMessagesAfterQuit(author);
+                handleQuitRequest(author, tableQuit);
+                sendMessagesAfterQuit(author, tableQuit);
                 break;
 
             case JOIN:
@@ -196,6 +196,10 @@ public class ServerPictionnary extends AbstractServer {
                 sendToClient(msgReceptDraw, partner.getId());
                 break;
                 
+            case GAME_STATUS:
+                Table tableGameStatus = findTable(memberId);
+                sendMessageGameStatus(tableGameStatus);
+                
             default:
                 throw new IllegalArgumentException("Message type unknown " + type);
         }
@@ -209,10 +213,11 @@ public class ServerPictionnary extends AbstractServer {
      */
     private void handleCreateTableRequest(Message message, int memberId) {
         Table table = new Table((String) message.getContent(),getNextTableId(), 
-                                message.getAuthor(), "Stylo");
+                                 message.getAuthor(), "Stylo");
         
         tables.add(table);
         message.getAuthor().setRole(Role.DRAWER);
+        members.changeRole(message.getAuthor().getRole(), message.getAuthor().getId());
         Message messageCreateTable = new MessageCreate(User.ADMIN, message.getAuthor(),
                                                         table.getName());
         sendToClient(messageCreateTable, memberId);
@@ -220,10 +225,12 @@ public class ServerPictionnary extends AbstractServer {
         // update datatables.
         String namePartner = (table.getPartner() == null) ? "" : table.getPartner().getName();
         String statusTable = (table.isOpen() == true) ? "Open" : "Closed";        
-        dataTables.add(new DataTable(table.getName(), table.getId(),
-                                        statusTable,
-                                        table.getDrawer().getName(),
-                                        namePartner));
+        dataTables.add(new DataTable(table.getName(), 
+                                     table.getId(),
+                                     statusTable,
+                                     table.getDrawer().getName(),
+                                     namePartner, 
+                                     table.getGameStatus().toString()));
 
         Message messageGetAllTables = new MessageGetTables(User.ADMIN,
                                                     User.EVERYBODY, dataTables);
@@ -239,24 +246,23 @@ public class ServerPictionnary extends AbstractServer {
      * @param author the author of the request.
      * @throws IllegalArgumentException in case of an unknown role type.
      */
-    private void handleQuitRequest(Table tableQuit, User author) throws IllegalArgumentException {
+    private void handleQuitRequest(User author, Table tableQuit) throws IllegalArgumentException {
         
         if (tableQuit != null && tableQuit.getPlayerCount() == 1) {
             destroyTable(tableQuit);
             author.setRole(Role.NOT_IN_GAME);
+            members.changeRole(author.getRole(), author.getId());
         } else if (tableQuit != null && tableQuit.getPlayerCount() == 2) {
             switch (author.getRole()) {
                 case DRAWER:
                     tableQuit.removeDrawer();
-                    author.setRole(Role.NOT_IN_GAME);        
-                    updateDataTables(tableQuit.getId(), author.getRole(), "", "Closed");
+                    quitActions(author, tableQuit);
                     // TODO notifier autre joueur
                     break;
         
                 case PARTNER:
                     tableQuit.removePartner();
-                    author.setRole(Role.NOT_IN_GAME);
-                    updateDataTables(tableQuit.getId(), author.getRole(), "", "Closed");
+                    quitActions(author, tableQuit);
                     // TODO notifier autre joueur
                     break;
                 
@@ -273,16 +279,33 @@ public class ServerPictionnary extends AbstractServer {
     }
 
     /**
+     * Executes some actions of updates and changes after a player quit the 
+     * game.
+     * 
+     * @param tableQuit the table that is quit.
+     * @param author the user that quit the game.
+     */
+    private void quitActions(User author, Table tableQuit) {
+        tableQuit.setGameStatus(GameStatus.OVER);
+        author.setRole(Role.NOT_IN_GAME);
+        members.changeRole(author.getRole(), author.getId());
+        updateDataTables(tableQuit.getId(), author.getRole(), "", "Closed", 
+                            GameStatus.OVER.toString());
+    }
+
+    /**
      * Send several messages after a quit request, such as an update of the 
      * tables and a confirmation for the client that have emitted this request.
      * 
      * @param author the author of the message.
      * @param memberId the id of the author of the message.
      */
-    private void sendMessagesAfterQuit(User author) {
+    private void sendMessagesAfterQuit(User author, Table tableQuit) {
         Message msgGetAllTablesRefresh = new MessageGetTables(User.ADMIN,
                                                     User.EVERYBODY, dataTables);
         sendToAllClients(msgGetAllTablesRefresh);
+        System.out.println("SEND MSG AFTER QUIT");        
+        sendMessageGameStatus(tableQuit);
         Message msgQuitGame = new MessageQuit(User.ADMIN, author, Role.NOT_IN_GAME);
         sendToClient(msgQuitGame, author.getId());
     }    
@@ -308,10 +331,7 @@ public class ServerPictionnary extends AbstractServer {
                 sendToClient(msgBadRequestInGame, author.getId());
                 
             } else if (tableJoin.getPlayerCount() == 1) {
-                tableJoin.addPartner(author);
-                author.setRole(Role.PARTNER);
-                updateDataTables(tableJoin.getId(), Role.PARTNER, author.getName(), 
-                                    "Closed");
+                joinActions(author, tableJoin);
                 sendMessagesAfterJoin(author, tableJoin);
             }
         } else {
@@ -319,6 +339,22 @@ public class ServerPictionnary extends AbstractServer {
                                                     author, "Can't find table");
             sendToClient(msgBadRequestNoTable, author.getId());
         }
+    }
+
+    /**
+     * Executes some actions of updates and changes after a player join the 
+     * game.
+     * 
+     * @param tableJoin the table that is joined.
+     * @param author the user that join the game.
+     */
+    private void joinActions(User author, Table tableJoin) {
+        tableJoin.addPartner(author);
+        tableJoin.setGameStatus(GameStatus.IN_GAME);
+        author.setRole(Role.PARTNER);
+        members.changeRole(author.getRole(), author.getId());
+        updateDataTables(tableJoin.getId(), Role.PARTNER, author.getName(),
+                "Closed", tableJoin.getGameStatus().toString());
     }
 
     /**
@@ -333,8 +369,34 @@ public class ServerPictionnary extends AbstractServer {
         Message msgGetAllTablesRefresh = new MessageGetTables(User.ADMIN,
                                                     User.EVERYBODY, dataTables);
         sendToAllClients(msgGetAllTablesRefresh);
-        Message msgJoin = new MessageJoin(User.ADMIN, author, Role.PARTNER, tableJoin.getId());
+        Message msgJoin = new MessageJoin(User.ADMIN, author, tableJoin.getId());
         sendToClient(msgJoin, author.getId());
+    }
+
+    /**
+     * Sends a message with the status of a table to update clients informations
+     * for the players of the game.
+     * 
+     * @param table the table to get the status.
+     */
+    private void sendMessageGameStatus(Table table) {
+        System.out.println("SEND MSG GAME STATUS");
+        Message msgGameStatus;
+        if (table != null) {
+            if (table.getDrawer() != null) {
+                msgGameStatus = new MessageGameStatus(User.ADMIN, 
+                                                        table.getDrawer(),
+                                                        table.getGameStatus());
+                sendToClient(msgGameStatus, table.getDrawer().getId());
+            }
+
+            if (table.getPartner() != null) {
+                msgGameStatus = new MessageGameStatus(User.ADMIN, 
+                                                        table.getPartner(),
+                                                        table.getGameStatus());
+                sendToClient(msgGameStatus, table.getPartner().getId());
+            }
+        }
     }
     
     /**
@@ -435,7 +497,7 @@ public class ServerPictionnary extends AbstractServer {
      * @param status the status that change.
      */
     private void updateDataTables(int tableId, Role role, String name, 
-                                    String status) {
+                                    String status, String gameStatus) {
         for(DataTable data : dataTables) {
             if (data.getId() == tableId) {
                 if (role == Role.DRAWER) {
@@ -444,6 +506,7 @@ public class ServerPictionnary extends AbstractServer {
                     data.setPartner(name);
                 }
                 data.setStatus(status);
+                data.setGameStatus(gameStatus);
                 break;
             }
         }

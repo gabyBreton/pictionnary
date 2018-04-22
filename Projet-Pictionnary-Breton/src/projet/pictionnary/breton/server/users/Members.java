@@ -98,6 +98,19 @@ public class Members implements Iterable<User>, Serializable {
     }
 
     /**
+     * Update the role of a user.
+     *
+     * @param role new value of the role.
+     * @param id userId of the user to update.
+     */
+    public void changeRole(Role role, int id) {
+        User user = getUser(id);
+        if (user != null) {
+            user.setRole(role);
+        }
+    }
+    
+    /**
      * Return the user of the given id.
      *
      * @param id userdId of the user to return.

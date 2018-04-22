@@ -16,6 +16,7 @@ public class Table implements Serializable {
     private User partner;   
     private final String word;
     private int playerCount;
+    private GameStatus gameStatus;
     
     /**
      * Constructs a new <code> Table </code>. A table is used by one or two 
@@ -33,6 +34,7 @@ public class Table implements Serializable {
         partner = null;
         this.word = word;
         playerCount = 1;
+        gameStatus = GameStatus.WAITING;
     }
     
     /**
@@ -123,4 +125,22 @@ public class Table implements Serializable {
     public int getPlayerCount() {
         return playerCount;
     }
-}
+
+    /**
+     * Sets the status of the game.
+     * 
+     * @param gameStatus new game status value.
+     */
+    public void setGameStatus(GameStatus gameStatus) {
+        this.gameStatus = gameStatus;
+    }
+
+    /**
+     * Gives the status of the game.
+     * 
+     * @return the value of the game status.
+     */
+    public GameStatus getGameStatus() {
+        return gameStatus;
+    }
+}    

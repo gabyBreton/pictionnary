@@ -8,17 +8,42 @@ package projet.pictionnary.breton.model;
 public enum GameStatus {
     
     /**
+     * When the drawer wait for a partner.
+     */
+    WAITING {
+        @Override
+        public String toString() {
+            return "Waiting for partner";
+        }
+    },
+    
+    /**
      * When the game is going on.
      */
-    IN_GAME,
+    IN_GAME {
+        @Override
+        public String toString() {
+            return "In game";
+        }
+    },
     
     /**
      * When the game is over and winned.
      */
-    WIN,
+    WIN {
+        @Override
+        public String toString() {
+            return "Win";
+        }
+    },
     
     /**
-     * When the game is over and loosed.
+     * When the game is over but not win.
      */
-    LOOSE;
+    OVER {
+        @Override
+        public String toString() {
+            return "Game over";
+        }
+    };
 }

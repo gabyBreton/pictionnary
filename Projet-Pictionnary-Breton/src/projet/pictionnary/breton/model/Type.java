@@ -49,5 +49,10 @@ public enum Type {
     /**
      * When the partner recept the draw.
      */
-    RECEPT_DRAW;
+    RECEPT_DRAW,
+    
+    /**
+     * To get the status of the game after a create, a join or a quit request.
+     */
+    GAME_STATUS;
 }
