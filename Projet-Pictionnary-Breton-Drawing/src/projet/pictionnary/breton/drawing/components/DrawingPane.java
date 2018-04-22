@@ -160,7 +160,6 @@ public class DrawingPane extends Region implements IDrawing {
     @Override
     public void clearPane() {
         graphicContxt.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-       // drawingInfos.clearList();
     }
     
     @Override

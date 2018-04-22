@@ -158,7 +158,15 @@ public class ClientController implements Observer {
                 updateViewsAfterSubmit((String) msgSubmit.getContent());
                 
                 if (msgSubmit.getGameStatus() == GameStatus.WIN) {
-                    System.out.println("WIN !!");
+                    clientPictionnary.setGameStatus(GameStatus.WIN);
+                    if (drawerWindow != null) {
+                        drawerWindow.disableDraw();
+                        drawerWindow.displayWin();
+                    }
+                    if (partnerWindow != null) {
+                        partnerWindow.disableSubmit();
+                        partnerWindow.displayWin();
+                    }
                 }
                 break;
                 
@@ -169,11 +177,11 @@ public class ClientController implements Observer {
 
     public void updateViewsAfterSubmit(String proposition) {
         if (drawerWindow != null) {
-            drawerWindow.addWordHistory(proposition + "\n");
+            drawerWindow.addWordHistory(proposition);
         }
 
         if (partnerWindow != null) {
-            partnerWindow.addWordHistory(proposition + "\n");
+            partnerWindow.addWordHistory(proposition);
         }
     }
     

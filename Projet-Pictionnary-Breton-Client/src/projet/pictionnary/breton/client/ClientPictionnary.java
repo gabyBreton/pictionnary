@@ -263,6 +263,15 @@ public class ClientPictionnary extends AbstractClient {
             System.out.println(ioe.getMessage());
         }
     }
+
+    /**
+     * Sets the status of the game.
+     * 
+     * @param gameStatus the game status to set.
+     */
+    public void setGameStatus(GameStatus gameStatus) {
+        this.gameStatus = gameStatus;
+    }
     
     /**
      * Gives the value of gameStatus.

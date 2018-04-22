@@ -1,5 +1,6 @@
 package projet.pictionnary.breton.client.view;
 
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
@@ -84,6 +85,17 @@ public class DrawerSide extends Region {
     }
     
     public void addWordHistory(String word) {
-        propositionHist.setText(propositionHist.getText() + word);
+        propositionHist.setText(propositionHist.getText() + "\n" + word);
     }
+    
+    public void disableDraw() {
+        drawingTools.disableDraw();
+    }
+    
+    public void displayWin() {
+        Alert dialogWin = new Alert(Alert.AlertType.INFORMATION);
+        dialogWin.setTitle("You win !");        
+        dialogWin.setHeaderText("Congratulations, you win this game !");
+        dialogWin.showAndWait();
+    }    
 }

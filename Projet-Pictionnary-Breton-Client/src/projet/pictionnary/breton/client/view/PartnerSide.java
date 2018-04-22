@@ -1,5 +1,6 @@
 package projet.pictionnary.breton.client.view;
 
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
@@ -23,7 +24,7 @@ public class PartnerSide extends Region {
     private Label gameStatusLbl;
     private TextArea propositionHist;
     private TextField proposalTfd;
-
+    private Button submitBtn;
     
     public PartnerSide() {
         HBox rootBox = new HBox();
@@ -39,7 +40,7 @@ public class PartnerSide extends Region {
         proposalTfd = new TextField();
         proposalTfd.setPromptText("Enter a word...");
         
-        Button submitBtn = createsButtonSubmit();
+        createsButtonSubmit();
         
         Label historyLbl = new Label("Propositions history");
         propositionHist = new TextArea();
@@ -57,14 +58,24 @@ public class PartnerSide extends Region {
         getChildren().add(rootBox);
     }
 
-    private Button createsButtonSubmit() {
-        Button submitBtn = new Button("Submit");
+    private void createsButtonSubmit() {
+        submitBtn = new Button("Submit");
         submitBtn.setOnAction((event) -> {
             clientController.submit(proposalTfd.getText());
         });
-        return submitBtn;
     }
 
+    public void disableSubmit() {
+        submitBtn.setDisable(true);
+    }
+    
+    public void displayWin() {
+        Alert dialogWin = new Alert(Alert.AlertType.INFORMATION);
+        dialogWin.setTitle("You win !");        
+        dialogWin.setHeaderText("Congratulations, you win this game !");
+        dialogWin.showAndWait();
+    }
+    
     private void addElementsGridPane(GridPane infosPane, Label gameStatusTitleLbl, 
                                         Label toGuessLbl, TextField proposalTfd, 
                                         Button submitBtn, Label historyLbl, 

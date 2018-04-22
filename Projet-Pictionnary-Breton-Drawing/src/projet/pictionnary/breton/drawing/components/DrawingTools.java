@@ -168,4 +168,8 @@ public class DrawingTools extends Region {
             drawingPane.setThickness(newValue);
         });
     }
+    
+    public void disableDraw() {
+        drawingPane.setDisableCanvas(true);
+    }
 }
