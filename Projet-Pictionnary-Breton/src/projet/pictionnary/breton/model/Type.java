@@ -54,5 +54,10 @@ public enum Type {
     /**
      * To get the status of the game after a create, a join or a quit request.
      */
-    GAME_STATUS;
+    GAME_STATUS,
+    
+    /**
+     * When the partner submit a word.
+     */
+    SUBMIT;
 }

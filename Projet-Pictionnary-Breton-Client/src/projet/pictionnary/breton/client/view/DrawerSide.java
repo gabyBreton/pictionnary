@@ -19,8 +19,8 @@ public class DrawerSide extends Region {
     
     private final DrawingTools drawingTools;
     private ClientController clientController;
-    private Label gameStatusLbl;
-    private TextArea propositionHist;
+    private final Label gameStatusLbl;
+    private final TextArea propositionHist;
     
     public DrawerSide(String toDraw) {
         HBox rootBox = new HBox();
@@ -84,6 +84,6 @@ public class DrawerSide extends Region {
     }
     
     public void addWordHistory(String word) {
-        propositionHist.setText(propositionHist.getText() + "\n" + word);
+        propositionHist.setText(propositionHist.getText() + word);
     }
 }

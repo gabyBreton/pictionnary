@@ -15,6 +15,7 @@ import projet.pictionnary.breton.model.MessageSendDraw;
 import projet.pictionnary.breton.model.MessageGetWord;
 import projet.pictionnary.breton.model.MessageJoin;
 import projet.pictionnary.breton.model.MessageQuit;
+import projet.pictionnary.breton.model.MessageSubmit;
 import projet.pictionnary.breton.model.Type;
 import projet.pictionnary.breton.server.users.User;
 import projet.pictionnary.breton.util.Observer;
@@ -90,6 +91,7 @@ public class ClientPictionnary extends AbstractClient {
             
             case SEND_DRAW: 
             case RECEPT_DRAW:
+            case SUBMIT:
                 notifyObservers(message);
                 break;
             
@@ -98,6 +100,7 @@ public class ClientPictionnary extends AbstractClient {
                 notifyObservers(message);
                 break;
                 
+            
             default:
                 throw new IllegalArgumentException("\nMessage type unknown " 
                                                     + type);
@@ -247,6 +250,15 @@ public class ClientPictionnary extends AbstractClient {
     public void askGameStatus() {
         try {
             sendToServer(new MessageGameStatus(mySelf, User.ADMIN, null));
+        } catch (IOException ioe) {
+            System.out.println(ioe.getMessage());
+        }
+    }
+    
+    public void submit(String propostion) {
+        try {
+            sendToServer(new MessageSubmit(mySelf, User.ADMIN, propostion, 
+                                            gameStatus));
         } catch (IOException ioe) {
             System.out.println(ioe.getMessage());
         }

@@ -199,11 +199,51 @@ public class ServerPictionnary extends AbstractServer {
             case GAME_STATUS:
                 Table tableGameStatus = findTable(memberId);
                 sendMessageGameStatus(tableGameStatus);
+                break;
+            
+            case SUBMIT:
+                System.out.println("MSG SUBMIT !");
+                String proposition = (String) message.getContent();
+                Table tableSubmit = findTable(message.getAuthor().getId());
+                GameStatus gameStatus;
+                
+                if (tableSubmit != null) {
+
+                    if (proposition.toLowerCase().equals(tableSubmit
+                                                            .getWord()
+                                                            .toLowerCase())) {
+                        tableSubmit.setGameStatus(GameStatus.WIN);
+                        updateDataTables(tableSubmit.getId(), 
+                                            author.getRole(), 
+                                            author.getName() , 
+                                            "Closed", 
+                                            GameStatus.WIN.toString());
+                        
+                        gameStatus = GameStatus.WIN;
+                    } else {
+                        gameStatus = GameStatus.IN_GAME;
+                    }
+
+                    sendSubmitResponse(tableSubmit.getDrawer(), 
+                                        proposition.toLowerCase(), gameStatus);
+                    sendSubmitResponse(tableSubmit.getPartner(), 
+                                        proposition.toLowerCase(), gameStatus);
+                }
+                break;
                 
             default:
                 throw new IllegalArgumentException("Message type unknown " + type);
         }
     } 
+
+    private void sendSubmitResponse(User player, String proposition, 
+                                    GameStatus gameStatus) {
+        MessageSubmit msgSubmit;
+        if (player != null) {
+            msgSubmit = new MessageSubmit(User.ADMIN, player, proposition, gameStatus);
+            sendToClient(msgSubmit, player.getId());
+        }
+    }
     
     /**
      * Handles and applys a create table request.
@@ -379,7 +419,6 @@ public class ServerPictionnary extends AbstractServer {
      * @param table the table to get the status.
      */
     private void sendMessageGameStatus(Table table) {
-        System.out.println("SEND MSG GAME STATUS");
         Message msgGameStatus;
         if (table != null) {
             if (table.getDrawer() != null) {

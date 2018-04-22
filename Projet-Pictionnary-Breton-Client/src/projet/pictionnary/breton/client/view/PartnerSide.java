@@ -22,6 +22,7 @@ public class PartnerSide extends Region {
     private final DrawingPane drawingPane;
     private Label gameStatusLbl;
     private TextArea propositionHist;
+    private TextField proposalTfd;
 
     
     public PartnerSide() {
@@ -35,11 +36,10 @@ public class PartnerSide extends Region {
         gameStatusLbl = new Label();
         
         Label toGuessLbl = createToGuessLbl();        
-        TextField proposalTfd = new TextField();
+        proposalTfd = new TextField();
         proposalTfd.setPromptText("Enter a word...");
         
-        Button submitBtn = new Button();
-        submitBtn.setText("Submit");
+        Button submitBtn = createsButtonSubmit();
         
         Label historyLbl = new Label("Propositions history");
         propositionHist = new TextArea();
@@ -55,6 +55,14 @@ public class PartnerSide extends Region {
         rootBox.getChildren().addAll(drawingPane, infosPane);
         
         getChildren().add(rootBox);
+    }
+
+    private Button createsButtonSubmit() {
+        Button submitBtn = new Button("Submit");
+        submitBtn.setOnAction((event) -> {
+            clientController.submit(proposalTfd.getText());
+        });
+        return submitBtn;
     }
 
     private void addElementsGridPane(GridPane infosPane, Label gameStatusTitleLbl, 

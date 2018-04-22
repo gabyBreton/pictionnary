@@ -2,8 +2,6 @@ package projet.pictionnary.breton.client;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -19,12 +17,10 @@ import projet.pictionnary.breton.model.DataTable;
 import projet.pictionnary.breton.model.DrawEvent;
 import projet.pictionnary.breton.model.GameStatus;
 import projet.pictionnary.breton.model.Message;
-import projet.pictionnary.breton.model.MessageGameStatus;
-import projet.pictionnary.breton.model.MessageGetWord;
 import projet.pictionnary.breton.model.MessageReceptDraw;
 import projet.pictionnary.breton.model.MessageSendDraw;
+import projet.pictionnary.breton.model.MessageSubmit;
 import projet.pictionnary.breton.model.Type;
-import projet.pictionnary.breton.server.users.User;
 import projet.pictionnary.breton.util.Observer;
 
 /**
@@ -142,7 +138,6 @@ public class ClientController implements Observer {
                 break;
                 
             case RECEPT_DRAW:
-                System.out.println("Controller : Recept_Draw");
                 MessageReceptDraw msgReceptDraw = (MessageReceptDraw) message;
                 DrawEvent eventReceptDraw = (DrawEvent) msgReceptDraw.getContent();
                         
@@ -157,12 +152,31 @@ public class ClientController implements Observer {
                 GameStatus gameStatus = (GameStatus) message.getContent();
                 handleGameStatusUpdate(gameStatus);
                 break;
+            
+            case SUBMIT:
+                MessageSubmit msgSubmit = (MessageSubmit) message;
+                updateViewsAfterSubmit((String) msgSubmit.getContent());
+                
+                if (msgSubmit.getGameStatus() == GameStatus.WIN) {
+                    System.out.println("WIN !!");
+                }
+                break;
                 
             default:
                 throw new IllegalArgumentException("\nMessage type unknown " + type);
         }
     }
 
+    public void updateViewsAfterSubmit(String proposition) {
+        if (drawerWindow != null) {
+            drawerWindow.addWordHistory(proposition + "\n");
+        }
+
+        if (partnerWindow != null) {
+            partnerWindow.addWordHistory(proposition + "\n");
+        }
+    }
+    
     /**
      * Handles a <code> GameStatus </code> message and executes some actions
      * depending on the GameStatus value.
@@ -265,5 +279,18 @@ public class ClientController implements Observer {
             partnerStage.close();
         }
         clientPictionnary.quitGame();
+    }
+    
+    /**
+     * Submits a word proposition to the server.
+     * 
+     * @param proposition the word proposition.
+     */
+    public void submit(String proposition) {
+        if ("".equals(proposition)) {
+            // do nothing
+        } else {
+            clientPictionnary.submit(proposition);        
+        }
     }
 }
