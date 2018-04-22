@@ -1,6 +1,5 @@
 package projet.pictionnary.breton.drawer;
 
-import projet.pictionnary.breton.model.DrawingInfos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -31,14 +30,14 @@ import projet.pictionnary.breton.util.Observer;
  */
 public class DrawingTools extends Region {
     
-    private DrawingPane drawingPane;
+    private final DrawingPane drawingPane;
     private final VBox toolsBox;
     private final HBox rootBox;
     private Spinner<Integer> spinner;
     private ColorPicker colorPicker;
     
     /**
-     * Creates a new DrawingTools component.
+     * Constructs a <code> DrawingTools </code> component.
      * 
      */
     public DrawingTools() {
