@@ -5,6 +5,7 @@ import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import projet.pictionnary.breton.model.Role;
 
 /**
  * The <code> Members </code> represents a list of all connected users.
@@ -29,8 +30,8 @@ public class Members implements Iterable<User>, Serializable {
      * @param address IP address of the new user.
      * @return the userID of the new user.
      */
-    public int add(int id, String name, InetAddress address) {
-        User user = new User(id, name, address);
+    public int add(int id, String name, InetAddress address, Role role) {
+        User user = new User(id, name, address, role);
         add(user);
         return user.getId();
     }

@@ -86,7 +86,8 @@ public class ClientController implements Observer {
     private void launchTableSelectionStage(FXMLLoader loader) {
         // pass the client instance to the new stage
         tableSelectionCtrl = loader.getController();
-
+        tableSelectionCtrl.setClientController(this);
+        
         Parent root = loader.getRoot();
         Stage tableSelectionStage = new Stage();
         tableSelectionStage.setScene(new Scene(root));
@@ -157,6 +158,7 @@ public class ClientController implements Observer {
      * @param tableName the name of the table.
      */
     public void createTable(String tableName) {
+        System.out.println("Controller client create table");
         clientPictionnary.createTable(tableName);
     }
     

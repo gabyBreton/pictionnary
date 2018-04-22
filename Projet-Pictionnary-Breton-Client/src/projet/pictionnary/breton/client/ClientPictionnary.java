@@ -29,7 +29,6 @@ public class ClientPictionnary extends AbstractClient {
     private List<DataTable> dataTables;
     private final List<Observer> observers;
     private String word; // TODO : retirer le mot lors de la destruction de la table.
-    private Role role; // TODO : changer le role lorsqu'on quitte/rentre dans une table.
     
     /**
      * Constructs the client. Opens the connection with the server. Sends the
@@ -45,8 +44,6 @@ public class ClientPictionnary extends AbstractClient {
         super(host, port);
         observers = new ArrayList<>();
         dataTables = new ArrayList<>();
-        role = Role.NOT_IN_GAME;
-        System.out.println("Role : " + role.toString());
         openConnection();
         updateName(name);
     }
@@ -61,7 +58,8 @@ public class ClientPictionnary extends AbstractClient {
                 break;
                 
             case CREATE:
-                role = (Role) message.getContent();
+                setMySelf(message.getRecipient());                
+                System.out.println("After create : mySelf.getRole = " + mySelf.getRole().toString());
                 notifyObservers(message);
                 break;
                 
@@ -76,7 +74,8 @@ public class ClientPictionnary extends AbstractClient {
                 break;
                 
             case QUIT:
-                role = (Role) message.getContent();
+                setMySelf(message.getRecipient());                
+                System.out.println("After quit : mySelf.getRole = " + mySelf.getRole().toString());
                 break;
                 
             case BAD_REQUEST:
@@ -84,9 +83,10 @@ public class ClientPictionnary extends AbstractClient {
                 break;
                 
             case JOIN:
+                setMySelf(message.getRecipient());                
                 System.out.println("ClientP : msg Join");                
                 MessageJoin msgJoin = (MessageJoin) message;
-                role = msgJoin.getRole();
+                System.out.println("After join : mySelf.getRole = " + mySelf.getRole().toString());
                 notifyObservers(msgJoin);
                 break;
             
@@ -147,7 +147,7 @@ public class ClientPictionnary extends AbstractClient {
      */
     public void createTable(String tableName) {
         try {
-            sendToServer(new MessageCreate(mySelf, User.ADMIN, role, tableName));
+            sendToServer(new MessageCreate(mySelf, User.ADMIN, tableName));
         } catch (IOException ioe) {
             System.out.println(ioe.getMessage());            
         }
@@ -189,7 +189,7 @@ public class ClientPictionnary extends AbstractClient {
      */
     public void quitGame() {
         try {
-            sendToServer(new MessageQuit(mySelf, User.ADMIN, role));
+            sendToServer(new MessageQuit(mySelf, User.ADMIN, mySelf.getRole()));
         } catch (IOException ioe) {
             System.out.println(ioe.getMessage());            
         }
@@ -203,8 +203,7 @@ public class ClientPictionnary extends AbstractClient {
      */
     public void join(int tableId) {
         try {
-            System.out.println("Role : " +  role.toString());
-            sendToServer(new MessageJoin(mySelf, User.ADMIN, role, tableId));
+            sendToServer(new MessageJoin(mySelf, User.ADMIN, mySelf.getRole(), tableId));
         } catch (IOException ioe) {
             System.out.println(ioe.getMessage());            
         }

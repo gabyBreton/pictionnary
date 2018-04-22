@@ -11,7 +11,6 @@ public class MessageCreate implements Message {
 
     private final User author;
     private final User recipient;
-    private final Role role;
     private final String nameTable;
 
     /**
@@ -19,29 +18,17 @@ public class MessageCreate implements Message {
      * 
      * @param author the author of the message.
      * @param recipient the recipient of the message.
-     * @param role the role of the user.
      * @param nameTable the name of the table.
      */
-    public MessageCreate(User author, User recipient, Role role, 
-                            String nameTable) {
+    public MessageCreate(User author, User recipient, String nameTable) {
         this.author = author;
         this.recipient = recipient;
-        this.role = role;
         this.nameTable = nameTable;
     }
     
     @Override
     public Type getType() {
         return Type.CREATE;
-    }
-
-    /**
-     * Gives the name of the table.
-     * 
-     * @return the name of the table.
-     */
-    public String getNameTable() {
-        return nameTable;
     }
     
     @Override
@@ -56,6 +43,6 @@ public class MessageCreate implements Message {
 
     @Override
     public Object getContent() {
-        return role;
+        return nameTable;
     }    
 }
