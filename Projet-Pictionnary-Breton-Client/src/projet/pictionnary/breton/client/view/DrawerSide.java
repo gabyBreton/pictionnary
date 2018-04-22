@@ -1,5 +1,6 @@
 package projet.pictionnary.breton.client.view;
 
+import javafx.geometry.Insets;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -7,6 +8,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 import projet.pictionnary.breton.client.ClientController;
 import projet.pictionnary.breton.drawing.components.DrawingTools;
 import projet.pictionnary.breton.model.GameStatus;
@@ -26,12 +28,16 @@ public class DrawerSide extends Region {
    
     /**
      * Constructs a new <code> DrawerSide </code>.
-     * 
+     * h
      * @param toDraw the word to draw.
      */
     public DrawerSide(String toDraw) {
         HBox rootBox = new HBox();
+        
         GridPane infosPane = new GridPane();
+        infosPane.setStyle("-fx-background-color: #e6e6e6;");        
+        infosPane.setVgap(10);
+        
         drawingTools = new DrawingTools();
 
         Label gameStatusTitleLbl = new Label("Game status");
@@ -52,8 +58,7 @@ public class DrawerSide extends Region {
         addElementsGridPane(infosPane, gameStatusTitleLbl, toDrawLbl, wordLbl, 
                             historyLbl, quitBtn);
 
-        infosPane.setStyle("-fx-background-color: #e6e6e6;");        
-        infosPane.setHgap(200);
+
         
         rootBox.getChildren().addAll(drawingTools, infosPane);
         

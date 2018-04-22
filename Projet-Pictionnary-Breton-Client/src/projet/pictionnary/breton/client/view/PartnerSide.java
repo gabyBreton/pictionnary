@@ -32,7 +32,11 @@ public class PartnerSide extends Region {
      */    
     public PartnerSide() {
         HBox rootBox = new HBox();
+
         GridPane infosPane = new GridPane();
+        infosPane.setStyle("-fx-background-color: #e6e6e6;");        
+        infosPane.setVgap(10);
+        
         drawingPane = new DrawingPane();
         drawingPane.setDisableCanvas(true);
 
@@ -54,8 +58,6 @@ public class PartnerSide extends Region {
         
         addElementsGridPane(infosPane, gameStatusTitleLbl, toGuessLbl, proposalTfd, 
                             submitBtn, historyLbl, quitBtn);
-
-        infosPane.setStyle("-fx-background-color: #e6e6e6;");          
         
         rootBox.getChildren().addAll(drawingPane, infosPane);
         
