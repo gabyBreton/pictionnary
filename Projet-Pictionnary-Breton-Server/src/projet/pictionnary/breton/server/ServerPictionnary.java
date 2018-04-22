@@ -426,8 +426,7 @@ public class ServerPictionnary extends AbstractServer {
                                                         table.getDrawer(),
                                                         table.getGameStatus());
                 sendToClient(msgGameStatus, table.getDrawer().getId());
-            }
-
+            } 
             if (table.getPartner() != null) {
                 msgGameStatus = new MessageGameStatus(User.ADMIN, 
                                                         table.getPartner(),

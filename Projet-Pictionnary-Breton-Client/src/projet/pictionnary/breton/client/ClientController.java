@@ -160,10 +160,12 @@ public class ClientController implements Observer {
                 if (msgSubmit.getGameStatus() == GameStatus.WIN) {
                     clientPictionnary.setGameStatus(GameStatus.WIN);
                     if (drawerWindow != null) {
+                        drawerWindow.setStatus(GameStatus.WIN);
                         drawerWindow.disableDraw();
                         drawerWindow.displayWin();
                     }
                     if (partnerWindow != null) {
+                        partnerWindow.setStatus(GameStatus.WIN);
                         partnerWindow.disableSubmit();
                         partnerWindow.displayWin();
                     }
@@ -187,7 +189,8 @@ public class ClientController implements Observer {
     
     /**
      * Handles a <code> GameStatus </code> message and executes some actions
-     * depending on the GameStatus value.
+     * depending on the GameStatus value. Does not handle GameStatus.WIN,
+     * that is handled by Type.SUBMIT requests.
      * 
      * @param gameStatus the game status.
      */
@@ -198,7 +201,9 @@ public class ClientController implements Observer {
                 break;
                 
             case IN_GAME:
-                displayPartnerWindow();
+                if(partnerWindow == null && drawerWindow == null) {
+                    displayPartnerWindow();
+                }
                 break;
                 
             case OVER:
@@ -246,6 +251,7 @@ public class ClientController implements Observer {
         
         Platform.runLater(() -> {
             partnerStage = new Stage();
+            partnerStage.setTitle("Pictionnary - Partner");
             partnerStage.setScene(scenePartner);
             partnerStage.initModality(Modality.APPLICATION_MODAL);
             partnerStage.setOnCloseRequest((WindowEvent event) -> {
@@ -268,6 +274,7 @@ public class ClientController implements Observer {
 
         Platform.runLater(() -> {
             drawerStage = new Stage();
+            drawerStage.setTitle("Pictionnary - Drawer");
             drawerStage.setScene(sceneDrawer);
             drawerStage.initModality(Modality.APPLICATION_MODAL);
             drawerStage.setOnCloseRequest((WindowEvent event) -> {
