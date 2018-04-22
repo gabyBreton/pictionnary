@@ -1,7 +1,7 @@
 package projet.pictionnary.breton.model;
 
 /**
- * This enum provides the differents role for a client.
+ * This enum provides the differents roles for a client.
  * 
  * @author Gabriel Breton - 43397
  */

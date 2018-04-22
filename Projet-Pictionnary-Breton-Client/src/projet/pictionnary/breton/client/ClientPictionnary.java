@@ -19,14 +19,15 @@ import projet.pictionnary.breton.server.users.User;
 import projet.pictionnary.breton.util.Observer;
 
 /**
- *
+ * This class is used to create and manage a client for the Pictionnary.
+ * 
  * @author Gabriel Breton - 43397
  */
 public class ClientPictionnary extends AbstractClient {
 
     private User mySelf;
     private List<DataTable> dataTables;
-    private List<Observer> observers;
+    private final List<Observer> observers;
     private String word; // TODO : retirer le mot lors de la destruction de la table.
     private Role role; // TODO : changer le role lorsqu'on quitte/rentre dans une table.
     
@@ -94,9 +95,15 @@ public class ClientPictionnary extends AbstractClient {
                 break;
                 
             default:
-                throw new IllegalArgumentException("\nMessage type unknown " + type);
+                throw new IllegalArgumentException("\nMessage type unknown " 
+                                                    + type);
         }    }
     
+    /**
+     * Sets the <code> User </code> for the client.
+     * 
+     * @param user 
+     */
     void setMySelf(User user) {
         this.mySelf = user;
     }
@@ -106,10 +113,20 @@ public class ClientPictionnary extends AbstractClient {
         System.out.println(exception.getMessage());
     }
       
+    /**
+     * Sets the <code> DataTables </code> list.
+     * 
+     * @param dataTables the data to set.
+     */
     void setTables(List <DataTable> dataTables) {
         this.dataTables = dataTables;
     }
     
+    /**
+     * Gives the list of <code> DataTables </code>.
+     * 
+     * @return the list of data.
+     */
     public List<DataTable> getTables() {
         return dataTables;
     }
@@ -123,6 +140,11 @@ public class ClientPictionnary extends AbstractClient {
         closeConnection();
     }
     
+    /**
+     * Send a request to the server to create a <code> Table </code>.
+     * 
+     * @param tableName the name of the table to create.
+     */
     public void createTable(String tableName) {
         try {
             sendToServer(new MessageCreate(mySelf, User.ADMIN, role, tableName));
@@ -131,10 +153,20 @@ public class ClientPictionnary extends AbstractClient {
         }
     }
     
+    /**
+     * Updates and send the name of the client to the server.
+     * 
+     * @param name the name of the client.
+     * @throws IOException if an error occurs when sending the name to the 
+     * server.
+     */
     private void updateName(String name) throws IOException {
         sendToServer(new MessageProfile(0, name));
     }
 
+    /**
+     * Asks the word to draw to the server.
+     */
     public void askWord() {
         try {
             sendToServer(new MessageGetWord(mySelf, User.ADMIN, ""));
@@ -143,10 +175,18 @@ public class ClientPictionnary extends AbstractClient {
         } 
     }
     
+    /**
+     * Gives the word to draw.
+     * 
+     * @return the word to draw.
+     */
     public String getWord() {
         return word;
     }
     
+    /**
+     * Asks to the server to quit the game.
+     */
     public void quitGame() {
         try {
             sendToServer(new MessageQuit(mySelf, User.ADMIN, role));
@@ -156,8 +196,8 @@ public class ClientPictionnary extends AbstractClient {
     }
     
     /**
-     * Sends a message to the server to join the table specified by the id given
-     * in parameters.
+     * Sends a <code> Message </code> to the server to join the 
+     * <code> Table </code> specified by the id given in parameters.
      * 
      * @param tableId the id of the table to join.
      */
@@ -170,19 +210,29 @@ public class ClientPictionnary extends AbstractClient {
         }
     }
     
+    /**
+     * Sends a <code> Message </code> to the server to pass the draw to the 
+     * partner.
+     * 
+     * @param drawingInfos the drawing infos of the draw.
+     */
     public void draw(DrawingInfos drawingInfos) {
         try {
-            System.out.println("ClientP.draw()");
-            sendToServer(new MessageSendDraw(mySelf, User.ADMIN, DrawEvent.DRAW, drawingInfos));
+            sendToServer(new MessageSendDraw(mySelf, User.ADMIN, DrawEvent.DRAW, 
+                                                drawingInfos));
         } catch (IOException ioe) {
             System.out.println(ioe.getMessage());            
         }        
     }
-    
+
+    /**
+     * Sends a <code> Message </code> to the server to clear the pane of the 
+     * partner.
+     */
     public void clearPane() {
         try {
-            System.out.println("ClientP.clearPane");
-            sendToServer(new MessageSendDraw(mySelf, User.ADMIN, DrawEvent.CLEARPANE, null));
+            sendToServer(new MessageSendDraw(mySelf, User.ADMIN, 
+                                                DrawEvent.CLEARPANE, null));
         } catch (IOException ioe) {
             System.out.println(ioe.getMessage());            
         }

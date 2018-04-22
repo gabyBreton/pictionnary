@@ -14,7 +14,7 @@ public class MessageGetWord implements Message {
     private final String word;
 
     /**
-     * Creates a new MessageGetWord.
+     * Constructs a new <code> MessageGetWord </code>.
      * 
      * @param author the author of the message.
      * @param recipient the recipient of the message.

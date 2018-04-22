@@ -31,6 +31,9 @@ public enum Type {
      */
     CREATE,
     
+    /**
+     * Message to join a table.
+     */
     JOIN,
     
     /**

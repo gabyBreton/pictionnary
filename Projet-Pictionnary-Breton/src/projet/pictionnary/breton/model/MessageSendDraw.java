@@ -3,6 +3,7 @@ package projet.pictionnary.breton.model;
 import projet.pictionnary.breton.server.users.User;
 
 /**
+ * This class is used from a drawer to send a draw.
  *
  * @author Gabriel Breton - 43397
  */
@@ -13,8 +14,16 @@ public class MessageSendDraw implements Message {
     private final DrawEvent event;
     private final DrawingInfos drawingInfos;
     
+    /**
+     * Constructs a <code> MessageSendDraw </code>.
+     * 
+     * @param author
+     * @param recipient
+     * @param event
+     * @param drawingInfos 
+     */
     public MessageSendDraw(User author, User recipient, DrawEvent event, 
-                      DrawingInfos drawingInfos) {
+                            DrawingInfos drawingInfos) {
         
         this.author = author;
         this.recipient = recipient;
@@ -42,6 +51,11 @@ public class MessageSendDraw implements Message {
         return event;
     }
     
+    /**
+     * Gives the drawing infos to send the draw.
+     * 
+     * @return the drawing infos.
+     */
     public DrawingInfos getDrawingInfos() {
         return drawingInfos;
     }

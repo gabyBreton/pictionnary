@@ -14,7 +14,7 @@ public class MessageBadRequest implements Message {
     private final String what;
     
     /**
-     * Creates a new MessageBadRequest.
+     * Constructs a new <code> MessageBadRequest </code>.
      * 
      * @param author the author of the message.
      * @param recipient the recipient of the message.

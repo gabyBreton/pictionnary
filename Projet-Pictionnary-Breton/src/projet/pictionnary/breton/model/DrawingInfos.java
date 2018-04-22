@@ -18,7 +18,7 @@ public class DrawingInfos implements Serializable, Observable {
     private ArrayList<Point> listPositions;
     
     /**
-     * Creates a new DrawingInfos.
+     * Constructs a new <code> DrawingInfos </code>.
      */
     public DrawingInfos() {
         listPositions = new ArrayList<>();
@@ -32,7 +32,8 @@ public class DrawingInfos implements Serializable, Observable {
      */
     public void add(Point p) {
         listPositions.add(p);
-        notifyObservers(new MessageSendDraw(null, User.ADMIN, DrawEvent.DRAW, this));
+        notifyObservers(new MessageSendDraw(null, User.ADMIN, DrawEvent.DRAW, 
+                                            this));
     }
     
     /**
@@ -49,10 +50,10 @@ public class DrawingInfos implements Serializable, Observable {
      */
     public void clearList() {
         listPositions = new ArrayList<>();
-        notifyObservers(new MessageSendDraw(null, User.ADMIN, DrawEvent.CLEARPANE, null));
+        notifyObservers(new MessageSendDraw(null, User.ADMIN, 
+                                            DrawEvent.CLEARPANE, null));
     }
 
-    
     /**
      * Add an observer in the list of observers.
      *

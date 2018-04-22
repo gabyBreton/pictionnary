@@ -8,7 +8,9 @@ import projet.pictionnary.breton.server.users.User;
 import projet.pictionnary.breton.util.Observer;
 
 /**
- *
+ * This class is used as a console to manage and get informations from the 
+ * server running.
+ * 
  * @author Gabriel Breton - 43397
  */
 public class PictionnaryServerConsole implements Observer {
@@ -41,12 +43,16 @@ public class PictionnaryServerConsole implements Observer {
     public void update(Object arg) {
         updateUser();
         if (arg != null) {
+           // TODO : afficher nouvelles informations lors de changements importants.
            // Message message = (Message) arg;
-            //updateMessage(message);
+           //updateMessage(message);
         }
 
     }
 
+    /**
+     * Prints the list of the connected users.
+     */
     private void updateUser() {
         System.out.println("");
         StringBuilder builder = new StringBuilder();

@@ -10,16 +10,16 @@ import projet.pictionnary.breton.server.users.User;
  */
 public class Table implements Serializable {
     
-    private String name;
-    private int id;
+    private final String name;
+    private final int id;
     private User drawer;
     private User partner;   
     private final String word;
     private int playerCount;
     
     /**
-     * Constructs a new Table. A table is used by one or two players and 
-     * contains the word to draw.
+     * Constructs a new <code> Table </code>. A table is used by one or two 
+     * players and contains the word to draw.
      * 
      * @param name the name of the table.
      * @param id the id the table.

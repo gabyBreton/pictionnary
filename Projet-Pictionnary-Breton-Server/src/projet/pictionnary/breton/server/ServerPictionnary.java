@@ -17,20 +17,23 @@ import projet.pictionnary.breton.server.users.User;
 import projet.pictionnary.breton.util.Observer;
 
 /**
- *
+ * This class is used to manage and control the Pictionnary server.
+ * 
  * @author Gabriel Breton - 43397
  */
 public class ServerPictionnary extends AbstractServer {
 
+    // TODO : gerer clientDisconnected
+    
     private static final int PORT = 12_345;
     static final String ID_MAPINFO = "ID";
     
-    private List<Observer> observers;    
+    private final List<Observer> observers;    
+    private final List<Table> tables;
+    private final List<DataTable> dataTables;
     private int clientId;
     private int tableId;
     private final Members members;
-    private List<Table> tables;
-    private List<DataTable> dataTables;
     
     private static InetAddress getLocalAddress() {
         try {
@@ -98,7 +101,7 @@ public class ServerPictionnary extends AbstractServer {
     /**
      * Quits the server and closes all aspects of the connection to clients.
      *
-     * @throws IOException
+     * @throws IOException in case of error while closing the connection.
      */
     public void quit() throws IOException {
         this.stopListening();
@@ -126,27 +129,29 @@ public class ServerPictionnary extends AbstractServer {
         Type type = message.getType();
         int memberId = (int) client.getInfo(ID_MAPINFO);
         User author = message.getAuthor();
+        
         switch (type) {      
             case PROFILE:
                 members.changeName(author.getName(), memberId);
                 Message msgName = new MessageProfile(memberId, author.getName());
                 sendToClient(msgName, memberId);
-                
-                // on envoi les tables à ce moment là car le client est en attente de message
                 sendToClient(new MessageGetTables(User.ADMIN, author, dataTables), memberId);
+                notifyObservers(msg);
                 break;
             
             case CREATE:
                 if ((Role) message.getContent() == Role.NOT_IN_GAME) {
-                    createNewTable(message, author, memberId);
+                    handleCreateTableRequest(message, memberId);
                 } else {
-                    Message msgBadRequestCreate = new MessageBadRequest(User.ADMIN, author, "Can't create table. Already in game.");
+                    Message msgBadRequestCreate = new MessageBadRequest(User.ADMIN, 
+                                author, "Can't create table. Already in game.");
                     sendToClient(msgBadRequestCreate, memberId);
                 }
                 break;
     
             case GET_TABLES:
-                Message msgGetTables = new MessageGetTables(User.ADMIN, author, dataTables);
+                Message msgGetTables = new MessageGetTables(User.ADMIN, author, 
+                                                                dataTables);
                 sendToClient(msgGetTables, author);
                 break;
                 
@@ -167,7 +172,6 @@ public class ServerPictionnary extends AbstractServer {
                 MessageJoin msgJoin = (MessageJoin) message;
                 Table tableJoin = findTableFromId((Integer) msgJoin.getContent());
                 Role roleJoin = msgJoin.getRole();       
-                System.out.println("ServerP.handleFromCli : join request !");
                 handleJoinRequest(tableJoin, author, memberId, roleJoin);
                 break;
                 
@@ -180,9 +184,10 @@ public class ServerPictionnary extends AbstractServer {
                 
                 if (event == DrawEvent.DRAW) {
                     msgReceptDraw = new MessageReceptDraw(User.ADMIN, partner, 
-                                              event, msgSendDraw.getDrawingInfos());
+                                          event, msgSendDraw.getDrawingInfos());
                 } else {
-                    msgReceptDraw = new MessageReceptDraw(User.ADMIN, partner, event, null);
+                    msgReceptDraw = new MessageReceptDraw(User.ADMIN, partner, 
+                                                            event, null);
                 }
                 sendToClient(msgReceptDraw, partner.getId());
                 break;
@@ -192,7 +197,46 @@ public class ServerPictionnary extends AbstractServer {
         }
     } 
     
-    private void handleQuitRequest(Table tableQuit, Role roleQuit, int memberId, User author) throws IllegalArgumentException {
+    /**
+     * Handles and applys a create table request.
+     * 
+     * @param message the create table request.
+     * @param memberId the id of the author of the request.
+     */
+    private void handleCreateTableRequest(Message message, int memberId) {
+        Table table = new Table(((MessageCreate) message).getNameTable(),
+                                    getNextTableId(), message.getAuthor(), "Stylo");
+        
+        tables.add(table);
+        Message messageCreateTable = new MessageCreate(User.ADMIN, message.getAuthor(),
+                                                   Role.DRAWER,table.getName());
+        sendToClient(messageCreateTable, memberId);
+
+        // update datatables.
+        String namePartner = (table.getPartner() == null) ? "" : table.getPartner().getName();
+        String statusTable = (table.isOpen() == true) ? "Open" : "Closed";        
+        dataTables.add(new DataTable(table.getName(), table.getId(),
+                statusTable,
+                table.getDrawer().getName(),
+                namePartner));
+
+        Message messageGetAllTables = new MessageGetTables(User.ADMIN,
+                User.EVERYBODY, dataTables);
+        sendToAllClients(messageGetAllTables);
+    }    
+    
+    /**
+     * Handle and apply a quit request.
+     * 
+     * @param tableQuit the table to quit.
+     * @param roleQuit the role of the player that want to quit.
+     * @param memberId the id of the member that want to quit.
+     * @param author the author of the request.
+     * @throws IllegalArgumentException in case of an unknown role type.
+     */
+    private void handleQuitRequest(Table tableQuit, Role roleQuit, int memberId, 
+                                    User author) throws IllegalArgumentException {
+        
         if (tableQuit != null && tableQuit.getPlayerCount() == 1) {
             destroyTable(tableQuit);
         } else if (tableQuit != null && tableQuit.getPlayerCount() == 2) {
@@ -202,74 +246,97 @@ public class ServerPictionnary extends AbstractServer {
                     updateDataTables(tableQuit.getId(), roleQuit, "", "Closed");
                     // TODO notifier autre joueur
                     break;
+        
                 case PARTNER:
                     tableQuit.removePartner();
                     updateDataTables(tableQuit.getId(), roleQuit, "", "Closed");
                     // TODO notifier autre joueur
                     break;
+                
                 case NOT_IN_GAME:
                     Message msgBadRequestQuit = new MessageBadRequest(User.ADMIN,
                             author, "Can't quit, not in game.");
                     sendToClient(msgBadRequestQuit, memberId);
                     break;
+                
                 default:
-                    throw new IllegalArgumentException("Role type unknown " + roleQuit);
+                    throw new IllegalArgumentException("Unknown role : " + roleQuit);
             }
         }
     }
 
-    private void handleJoinRequest(Table tableJoin, User author, int memberId, Role roleJoin) {
-        if (tableJoin != null) {
-            if (!tableJoin.isOpen()) {
-                
-                System.out.println("ServerP.handleJoin : not open !");                
-                
-                Message msgBadRequestClosed = new MessageBadRequest(User.ADMIN,
-                        author, "Can't join, table closed.");
-                sendToClient(msgBadRequestClosed, memberId);
-                
-            } else if (roleJoin != Role.NOT_IN_GAME) {
-
-                System.out.println("ServerP.handleJoin : not in game !");                                
-                
-                Message msgBadRequestInGame = new MessageBadRequest(User.ADMIN,
-                        author, "Can't join, you are already in game.");
-                sendToClient(msgBadRequestInGame, memberId);
-                
-            } else if (tableJoin.getPlayerCount() == 1) {
-                
-                System.out.println("ServerP.handleJoin : playerCount == 1");                
-                
-                tableJoin.addPartner(author);
-                updateDataTables(tableJoin.getId(), Role.PARTNER, author.getName(), "Closed");
-                sendMessagesAfterJoin(author, tableJoin, memberId);
-            }
-        } else {
-            Message msgBadRequestNoTable = new MessageBadRequest(User.ADMIN,
-                    author, "Can't find table");
-            sendToClient(msgBadRequestNoTable, memberId);
-        }
-    }
-
-    private void sendMessagesAfterJoin(User author, Table tableJoin, int memberId) {
-        Message msgGetAllTablesRefresh = new MessageGetTables(User.ADMIN,
-                User.EVERYBODY, dataTables);
-        sendToAllClients(msgGetAllTablesRefresh);
-        Message msgJoin = new MessageJoin(User.ADMIN, author, Role.PARTNER, tableJoin.getId());
-        sendToClient(msgJoin, memberId);
-        
-        System.out.println("ServerP.sendMsgAfterJoin !");                
-        
-    }
-
+    /**
+     * Send several messages after a quit request, such as an update of the 
+     * tables and a confirmation for the client that have emitted this request.
+     * 
+     * @param author the author of the message.
+     * @param memberId the id of the author of the message.
+     */
     private void sendMessagesAfterQuit(User author, int memberId) {
         Message msgGetAllTablesRefresh = new MessageGetTables(User.ADMIN,
                                                     User.EVERYBODY, dataTables);
         sendToAllClients(msgGetAllTablesRefresh);
         Message msgQuitGame = new MessageQuit(User.ADMIN, author, Role.NOT_IN_GAME);
         sendToClient(msgQuitGame, memberId);
+    }    
+    
+    /**
+     * Handle and apply a join request.
+     * 
+     * @param tableJoin the table to join.
+     * @param author the author that want to join the table.
+     * @param memberId the id of the user.
+     * @param roleJoin the role of the user.
+     */
+    private void handleJoinRequest(Table tableJoin, User author, int memberId, 
+                                    Role roleJoin) {
+        if (tableJoin != null) {
+            if (!tableJoin.isOpen()) {
+                Message msgBadRequestClosed = new MessageBadRequest(User.ADMIN,
+                                           author, "Can't join, table closed.");
+                sendToClient(msgBadRequestClosed, memberId);
+                
+            } else if (roleJoin != Role.NOT_IN_GAME) {
+                Message msgBadRequestInGame = new MessageBadRequest(User.ADMIN,
+                                author, "Can't join, you are already in game.");
+                sendToClient(msgBadRequestInGame, memberId);
+                
+            } else if (tableJoin.getPlayerCount() == 1) {
+                tableJoin.addPartner(author);
+                updateDataTables(tableJoin.getId(), Role.PARTNER, author.getName(), 
+                                    "Closed");
+                sendMessagesAfterJoin(author, tableJoin, memberId);
+            }
+        } else {
+            Message msgBadRequestNoTable = new MessageBadRequest(User.ADMIN,
+                                                    author, "Can't find table");
+            sendToClient(msgBadRequestNoTable, memberId);
+        }
+    }
+
+    /**
+     * Send several messages after a join request, such as an update of the 
+     * tables and a confirmation for the client that have emitted this request.
+     * 
+     * @param author the author of the request.
+     * @param tableJoin the table to join.
+     * @param memberId the id of the author of the request.
+     */
+    private void sendMessagesAfterJoin(User author, Table tableJoin, int memberId) {
+        Message msgGetAllTablesRefresh = new MessageGetTables(User.ADMIN,
+                User.EVERYBODY, dataTables);
+        sendToAllClients(msgGetAllTablesRefresh);
+        Message msgJoin = new MessageJoin(User.ADMIN, author, Role.PARTNER, tableJoin.getId());
+        sendToClient(msgJoin, memberId);
     }
     
+    /**
+     * Finds a table based on its id.
+     * 
+     * @param tableId the id of the table.
+     * @return the table corresponding to the id or null is the table is not 
+     * find.
+     */
     private Table findTableFromId(int tableId) {
         for (Table table : tables) {
             if (table.getId() == tableId) {
@@ -278,33 +345,23 @@ public class ServerPictionnary extends AbstractServer {
         }
         return null;
     }
-    
-    // TODO : gerer clientDisconnected
-    
-    private void createNewTable(Message message, User author, int memberId) {
-        Table table = new Table(((MessageCreate) message).getNameTable(),
-                getNextTableId(), author, "Stylo");
-        
-        // on la rajoute dans la liste de table
-        tables.add(table);
-        // on la renvoi au client
-        Message messageCreateTable = new MessageCreate(User.ADMIN, author,
-                                                   Role.DRAWER,table.getName());
-        sendToClient(messageCreateTable, memberId);
-        
-        // on met à jour les données de tables
-        String namePartner = (table.getPartner() == null) ? "" : table.getPartner().getName();
-        String statusTable = (table.isOpen() == true) ? "Open" : "Closed";
-        
-        dataTables.add(new DataTable(table.getName(), table.getId(),
-                statusTable,
-                table.getDrawer().getName(),
-                namePartner));
-        // on envoi toutes les données de tables à tout les clients
-        Message messageGetAllTables = new MessageGetTables(User.ADMIN,
-                User.EVERYBODY, dataTables);
-        sendToAllClients(messageGetAllTables);
-    }
+
+    /**
+     * Finds a table that contains the given client.
+     * 
+     * @param clientId the id of the client.
+     * @return the table that contains the client or null if no table contains 
+     * this client.
+     */
+    private Table findTable(int clientId) {
+        for (Table table : tables) {
+            if ((table.getDrawer() != null && table.getDrawer().getId() == clientId) 
+                    || (table.getPartner() != null && table.getPartner().getId() == clientId)) {
+                return table;
+            }
+        }
+        return null;
+    }    
     
     @Override
     protected void clientConnected(ConnectionToClient client) {
@@ -314,10 +371,22 @@ public class ServerPictionnary extends AbstractServer {
         sendToClient(new MessageGetTables(User.ADMIN, null, dataTables), memberId);
     }
     
+    /**
+     * Sends a message to a client.
+     * 
+     * @param message the message to send.
+     * @param recipient the recipient of the message.
+     */
     void sendToClient(Message message, User recipient) {
         sendToClient(message, recipient.getId());
     }
 
+    /**
+     * Sends a message to a client, based on the client id.
+     * 
+     * @param message the message to send.
+     * @param clientId the id of the recipient client.
+     */
     void sendToClient(Message message, int clientId) {
         for (Thread clientThreadList : getClientConnections()) {
             int idClientThread = (Integer) ((ConnectionToClient) clientThreadList).getInfo(ID_MAPINFO);
@@ -333,16 +402,11 @@ public class ServerPictionnary extends AbstractServer {
         }
     }
     
-    private Table findTable(int clientId) {
-        for (Table table : tables) {
-            if ((table.getDrawer() != null && table.getDrawer().getId() == clientId) 
-                    || (table.getPartner() != null && table.getPartner().getId() == clientId)) {
-                    return table;
-            }
-        }
-        return null;
-    }
-    
+    /**
+     * Destroys a table and update datatables.
+     * 
+     * @param table the table to destroy.
+     */
     private void destroyTable(Table table) {
         System.out.println("destroyTable table");
         for(DataTable data : dataTables) {
@@ -354,7 +418,17 @@ public class ServerPictionnary extends AbstractServer {
         tables.remove(table);
     }
 
-    private void updateDataTables(int tableId, Role role, String name, String status) {
+    /**
+     * Update the list of table informations when a role or the table status 
+     * change.
+     * 
+     * @param tableId the id of the table that change.
+     * @param role the role of that change.
+     * @param name the name of the drawer or the partner.
+     * @param status the status that change.
+     */
+    private void updateDataTables(int tableId, Role role, String name, 
+                                    String status) {
         for(DataTable data : dataTables) {
             if (data.getId() == tableId) {
                 if (role == Role.DRAWER) {
@@ -368,6 +442,12 @@ public class ServerPictionnary extends AbstractServer {
         }
     }
     
+    /**
+     * Gives the word to draw attributed to a table.
+     * 
+     * @param clientId the id of the client that needs the word to draw.
+     * @return the word to draw.
+     */
     private String getWord(int clientId) {
         String word = "";
         

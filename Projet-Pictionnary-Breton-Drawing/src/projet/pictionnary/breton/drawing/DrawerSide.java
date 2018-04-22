@@ -13,7 +13,7 @@ import projet.pictionnary.breton.util.Observer;
  */
 public class DrawerSide extends Region {
     
-    private DrawingTools drawingTools;
+    private final DrawingTools drawingTools;
     
     public DrawerSide(String toDraw) {
         HBox rootBox = new HBox();

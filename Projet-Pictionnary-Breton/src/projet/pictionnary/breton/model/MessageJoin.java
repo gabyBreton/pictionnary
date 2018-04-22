@@ -3,7 +3,8 @@ package projet.pictionnary.breton.model;
 import projet.pictionnary.breton.server.users.User;
 
 /**
- *
+ * This class is used to transfer a join request.
+ * 
  * @author Gabriel Breton - 43397
  */
 public class MessageJoin implements Message {
@@ -14,7 +15,7 @@ public class MessageJoin implements Message {
     private final int tableId;
 
     /**
-     * Creates a new MessageJoin.
+     * Constructs a new <code> MessageJoin </code>.
      * 
      * @param author the author of the message.
      * @param recipient the recipient of the message.
@@ -48,6 +49,12 @@ public class MessageJoin implements Message {
         return tableId;
     }     
     
+    /**
+     * Gives the role of the user that have send this request or that will join
+     * the table.
+     * 
+     * @return the role of the user.
+     */
     public Role getRole() {
         return role;
     }

@@ -30,14 +30,13 @@ import projet.pictionnary.breton.model.Type;
 import projet.pictionnary.breton.util.Observer;
 
 /**
- * FXML Controller class
+ * This class is used as the FXML controller to manage the selection of the 
+ * tables, load game windows and interact with the server.
  *
  * @author Gabriel Breton - 43397
  */
 public class TableSelectionStageController implements Initializable, Observer {
 
-    // TODO : ne peux dessiner tant que l'autre n'est pas connecté.
-    
     private ClientPictionnary clientPictionnary;
     private List<DataTable> dataTables;
     private DrawerSide drawerWindow;
@@ -75,11 +74,19 @@ public class TableSelectionStageController implements Initializable, Observer {
         partnerCol.setCellValueFactory(new PropertyValueFactory<>("partner"));
     }
 
+    /**
+     * Displays a dialog box to set the name of the table.
+     * 
+     * @param event the action event.
+     */
     @FXML
     public void createTable(ActionEvent event) {
         displayTableNameDialog();
     }
 
+    /**
+     * Creates and shows the dialog box for the name of the table to create.
+     */
     private void displayTableNameDialog() {
         TextInputDialog tableNameDialog = new TextInputDialog();
         tableNameDialog.setTitle("Create table");
@@ -91,12 +98,19 @@ public class TableSelectionStageController implements Initializable, Observer {
         result.ifPresent(tableName -> clientPictionnary.createTable(tableName));
     }
 
+    /**
+     * Used to request to the client to join a table.
+     */
     @FXML
     public void join() {
-        System.out.println("Controller : join");
         clientPictionnary.join(tableView.getSelectionModel().getSelectedItem().getId());
     }
 
+    /**
+     * Links the client to this controller.
+     * 
+     * @param clientPictionnary the client to link.
+     */
     void setClient(ClientPictionnary clientPictionnary) {
         this.clientPictionnary = clientPictionnary;
         this.clientPictionnary.addObserver(this);
@@ -150,11 +164,13 @@ public class TableSelectionStageController implements Initializable, Observer {
                 break;
                 
             default:
-                System.out.println("TableSelectionStageController.update: default");
-                break;
+                throw new IllegalArgumentException("\nMessage type unknown " + type);
         }
     }
-
+    
+    /**
+     * Creates and shows the <code> PartnerSide </code> window.
+     */
     private void displayPartnerWindow() {
         partnerWindow = new PartnerSide();
         Scene scenePartner = new Scene(partnerWindow, 1200, 800);
@@ -170,6 +186,9 @@ public class TableSelectionStageController implements Initializable, Observer {
         });
     }
     
+    /**
+     * Creates and shows the <code> Drawer </code> window.
+     */
     private void displayDrawerWindow() {
         drawerWindow = new DrawerSide(clientPictionnary.getWord());
         drawerWindow.addObserver(this);
@@ -187,6 +206,10 @@ public class TableSelectionStageController implements Initializable, Observer {
         });
     }    
     
+    /**
+     * Refresh the table view that contains all the informations for the tables
+     * selection.
+     */
     private void refreshTableView() {
         System.out.println("TableSelectionStageController.refreshTableView()");
         tableView.getItems().clear();

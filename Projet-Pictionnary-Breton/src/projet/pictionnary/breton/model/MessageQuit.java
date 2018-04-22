@@ -4,6 +4,7 @@ import projet.pictionnary.breton.server.users.User;
 
 /**
  * This class is used to send message for manage the quit action.
+ * 
  * @author Gabriel Breton - 43397
  */
 public class MessageQuit implements Message {
@@ -13,7 +14,7 @@ public class MessageQuit implements Message {
     private final Role role;
 
     /**
-     * Creates a new MessageQuitGame.
+     * Constructs a new <code> MessageQuitGame </code>.
      * 
      * @param author the author of the message.
      * @param recipient the recipient of the message.

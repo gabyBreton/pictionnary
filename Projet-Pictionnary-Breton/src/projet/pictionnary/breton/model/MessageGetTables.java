@@ -15,13 +15,14 @@ public class MessageGetTables implements Message {
     private final List<DataTable> dataTables;
 
     /**
-     * Creates a new MessageGetAllTables.
+     * Construcs a new <code> MessageGetAllTables </code>.
      * 
      * @param author the author of the message.
      * @param recipient the recipient of the message.
      * @param dataTables the list of all the data of the tables.
      */
-    public MessageGetTables(User author, User recipient, List<DataTable> dataTables) {
+    public MessageGetTables(User author, User recipient,
+                            List<DataTable> dataTables) {
         this.author = author;
         this.recipient = recipient;
         this.dataTables = dataTables;

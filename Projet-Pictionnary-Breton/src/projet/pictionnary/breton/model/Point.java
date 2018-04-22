@@ -4,7 +4,7 @@ import java.io.Serializable;
 import javafx.scene.paint.Color;
 
 /**
- * This class is used to represent a point of the draw.
+ * This class is used to represent a <code> Point </code> of the draw.
  * 
  * @author Gabriel Breton - 43397
  */
@@ -21,7 +21,7 @@ public class Point implements Serializable {
     private final LinePosition linePos;
 
     /**
-     * Creates a new point.
+     * Constructs a new <code> Point </code>.
      * 
      * @param x the position on the x axis.
      * @param y the position on the y axis.

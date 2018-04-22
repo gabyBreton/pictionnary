@@ -31,13 +31,18 @@ public class DrawingPane extends Region implements IDrawing {
     private DrawingInfos drawingInfos;
     
     /**
-     * Creates and initialize the attributes to draw.
+     * Constructs a <code> DrawingPane </code> and initialize it.
      * 
      */
     public DrawingPane() {
         initialize();
     }
 
+    /**
+     * Adds an observer to the DrawingInfos class.
+     * 
+     * @param obs the observer to add.
+     */
     public void addObserver(Observer obs) {
         drawingInfos.addObserver(obs);
     }

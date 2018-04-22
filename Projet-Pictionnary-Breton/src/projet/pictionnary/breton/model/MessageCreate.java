@@ -15,7 +15,7 @@ public class MessageCreate implements Message {
     private final String nameTable;
 
     /**
-     * Creates a new MessageCreateTable.
+     * Constructs a new <code> MessageCreateTable </code>.
      * 
      * @param author the author of the message.
      * @param recipient the recipient of the message.
@@ -23,7 +23,7 @@ public class MessageCreate implements Message {
      * @param nameTable the name of the table.
      */
     public MessageCreate(User author, User recipient, Role role, 
-                                String nameTable) {
+                            String nameTable) {
         this.author = author;
         this.recipient = recipient;
         this.role = role;
@@ -35,6 +35,11 @@ public class MessageCreate implements Message {
         return Type.CREATE;
     }
 
+    /**
+     * Gives the name of the table.
+     * 
+     * @return the name of the table.
+     */
     public String getNameTable() {
         return nameTable;
     }

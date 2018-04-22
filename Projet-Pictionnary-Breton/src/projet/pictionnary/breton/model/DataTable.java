@@ -17,7 +17,7 @@ public class DataTable implements Serializable {
     private String partner;
 
     /**
-     * Creates a new DataTable.
+     * Constructs a new <code> DataTable </code>.
      * 
      * @param name the name of the table.
      * @param id the id of the table.

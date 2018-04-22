@@ -1,7 +1,7 @@
 package projet.pictionnary.breton.util;
 
 /**
- * Interface to implement the observer/observable pattern.
+ * Interface to implement the Observer pattern.
  * 
  * @author Gabriel Breton - 43397
  */

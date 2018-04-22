@@ -8,7 +8,8 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 /**
- *
+ * This class is used as the main class to launch the Pictionnary client.
+ * 
  * @author Gabriel Breton - 43397
  */
 public class ClientMain extends Application {
