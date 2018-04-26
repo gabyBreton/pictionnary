@@ -9,6 +9,7 @@ import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import projet.pictionnary.breton.server.users.Members;
@@ -142,9 +143,6 @@ public class ServerPictionnary extends AbstractServer {
         
         switch (type) {      
             case PROFILE:
-                for (WordDto word : words) {
-                    System.out.println("" + word.getWord());
-                }
                 members.changeName(author.getName(), memberId);
                 Message msgName = new MessageProfile(memberId, author.getName());
                 sendToClient(msgName, memberId);
@@ -279,7 +277,7 @@ public class ServerPictionnary extends AbstractServer {
             sendToClient(msgBadRequestGetWord, memberId);
         } else {
             Message msgGetWord = new MessageGetWord(User.ADMIN, author,
-                    getWord(memberId));
+                    getWordFromTable(memberId));
             sendToClient(msgGetWord, memberId);
         }
     }
@@ -309,7 +307,7 @@ public class ServerPictionnary extends AbstractServer {
      */
     private void handleCreateTableRequest(Message message, int memberId) {
         Table table = new Table((String) message.getContent(),getNextTableId(), 
-                                 message.getAuthor(), "Stylo");
+                                 message.getAuthor(), getRandomWord());
         
         tables.add(table);
         message.getAuthor().setRole(Role.DRAWER);
@@ -612,7 +610,7 @@ public class ServerPictionnary extends AbstractServer {
      * @param clientId the id of the client that needs the word to draw.
      * @return the word to draw.
      */
-    private String getWord(int clientId) {
+    private String getWordFromTable(int clientId) {
         String word = "";
         
         for (Table table : tables) {
@@ -622,6 +620,16 @@ public class ServerPictionnary extends AbstractServer {
             }
         }
         return word;
+    }
+    
+    /**
+     * Gives a random word of the list of words.
+     * 
+     * @return a words from the list of words.
+     */
+    private String getRandomWord() {
+        int randomValue = ThreadLocalRandom.current().nextInt(0, 43 + 1);
+        return words.get(randomValue).getWord();
     }
     
     @Override
