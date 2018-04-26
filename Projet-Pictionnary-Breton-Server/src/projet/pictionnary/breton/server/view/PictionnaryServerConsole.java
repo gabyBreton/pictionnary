@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import projet.pictionnary.breton.server.ServerPictionnary;
+import projet.pictionnary.breton.server.exception.PictionnaryBusinessException;
 import projet.pictionnary.breton.server.users.User;
 import projet.pictionnary.breton.util.Observer;
 
@@ -25,6 +26,8 @@ public class PictionnaryServerConsole implements Observer {
         } catch (IOException ex) {
             Logger.getLogger(PictionnaryServerConsole.class.getName()).log(Level.SEVERE, null, ex);
             System.exit(0);
+        } catch (PictionnaryBusinessException pdb) {
+            System.out.println(pdb.getMessage());
         }
     }
     

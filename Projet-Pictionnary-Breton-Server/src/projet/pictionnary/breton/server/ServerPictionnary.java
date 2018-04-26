@@ -13,6 +13,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import projet.pictionnary.breton.server.users.Members;
 import projet.pictionnary.breton.model.*;
+import projet.pictionnary.breton.server.business.AdminFacade;
+import projet.pictionnary.breton.server.dto.WordDto;
+import projet.pictionnary.breton.server.exception.PictionnaryBusinessException;
 import projet.pictionnary.breton.server.users.User;
 import projet.pictionnary.breton.util.Observer;
 
@@ -34,6 +37,7 @@ public class ServerPictionnary extends AbstractServer {
     private int clientId;
     private int tableId;
     private final Members members;
+    private final List<WordDto> words;
     
     private static InetAddress getLocalAddress() {
         try {
@@ -57,7 +61,7 @@ public class ServerPictionnary extends AbstractServer {
      * @throws IOException if an I/O error occurs when creating the server
      * socket.
      */
-    public ServerPictionnary() throws IOException {
+    public ServerPictionnary() throws IOException, PictionnaryBusinessException {
         super(PORT);
         members = new Members();
         clientId = 0;
@@ -65,6 +69,7 @@ public class ServerPictionnary extends AbstractServer {
         tables = new ArrayList<>();
         dataTables = new ArrayList<>();
         observers = new ArrayList<>();
+        words = AdminFacade.getAllWords();
         this.listen();
     }
         
@@ -137,6 +142,9 @@ public class ServerPictionnary extends AbstractServer {
         
         switch (type) {      
             case PROFILE:
+                for (WordDto word : words) {
+                    System.out.println("" + word.getWord());
+                }
                 members.changeName(author.getName(), memberId);
                 Message msgName = new MessageProfile(memberId, author.getName());
                 sendToClient(msgName, memberId);
