@@ -145,19 +145,6 @@ public class ServerPictionnary extends AbstractServer {
         switch (type) {      
             case PROFILE:
                 members.changeName(author.getName(), memberId);
-        
-            try {
-                AdminFacade.addPlayer(new PlayerDto(author.getName()));
-            } catch (PictionnaryBusinessException ex) {
-                Logger.getLogger(ServerPictionnary.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        
-            try {
-                System.out.println(AdminFacade.getPlayerByLogin("aaa").getLogin());
-            } catch (PictionnaryBusinessException ex) {
-                Logger.getLogger(ServerPictionnary.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        
                 Message msgName = new MessageProfile(memberId, author.getName());
                 sendToClient(msgName, memberId);
                 sendToClient(new MessageGetTables(User.ADMIN, author, dataTables), memberId);

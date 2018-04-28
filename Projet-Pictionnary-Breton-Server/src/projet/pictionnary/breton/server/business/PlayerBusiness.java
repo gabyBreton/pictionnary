@@ -13,10 +13,6 @@ import projet.pictionnary.breton.server.seldto.PlayerSel;
  */
 public class PlayerBusiness {
 
-//    public static int getPlayerId(String pseudo) throws PictionnaryDbException {
-//        return PlayerDB.getPlayerId(pseudo);
-//        // Category.getCollection() version player 
-//    }
     static PlayerDto getPlayerByLogin(String login) throws PictionnaryDbException {
         PlayerSel sel = new PlayerSel(0, login);
         Collection<PlayerDto> col = PlayerDB.getCollection(sel);
