@@ -14,6 +14,8 @@ import projet.pictionnary.breton.drawing.components.DrawingTools;
 import projet.pictionnary.breton.common.model.GameStatus;
 import projet.pictionnary.breton.common.util.Observer;
 
+// TODO classe pareille à PARTNER, faire un truc générique
+
 /**
  * This class is used as UI to represents the drawer side of the game.
  * 

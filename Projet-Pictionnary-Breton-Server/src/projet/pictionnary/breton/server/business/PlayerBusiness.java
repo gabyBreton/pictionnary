@@ -30,8 +30,8 @@ public class PlayerBusiness {
             } else {
                 throw new PictionnaryBusinessException("Player: on ne peut rendre persistant un objet déjà persistant!");
             }
-        } catch (PictionnaryDbException eDB) {
-            throw new PictionnaryBusinessException(eDB.getMessage());
+        } catch (PictionnaryDbException pDB) {
+            throw new PictionnaryBusinessException(pDB.getMessage());
         }
     }
     

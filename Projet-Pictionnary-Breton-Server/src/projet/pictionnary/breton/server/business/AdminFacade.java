@@ -2,6 +2,7 @@ package projet.pictionnary.breton.server.business;
 
 import java.util.List;
 import projet.pictionnary.breton.server.db.DBManager;
+import projet.pictionnary.breton.server.dto.GameDto;
 import projet.pictionnary.breton.server.dto.PlayerDto;
 import projet.pictionnary.breton.server.dto.WordDto;
 import projet.pictionnary.breton.server.exception.PictionnaryBusinessException;
@@ -55,14 +56,32 @@ public class AdminFacade {
             int i = PlayerBusiness.add(player);
             DBManager.validateTransaction();
             return i;
-        } catch (PictionnaryDbException eDB) {
-            String msg = eDB.getMessage();
+        } catch (PictionnaryDbException pDB) {
+            String msg = pDB.getMessage();
             try {
                 DBManager.cancelTransaction();
             } catch (PictionnaryDbException ex) {
                 msg = ex.getMessage() + "\n" + msg;
             } finally {
                 throw new PictionnaryBusinessException("Not possible to add the player \n" + msg);
+            }
+        }
+    }
+    
+    public static int addGame(GameDto game) throws PictionnaryBusinessException {
+        try {
+            DBManager.startTransaction();
+            int i = GameBusiness.add(game);
+            DBManager.validateTransaction();
+            return i;
+        } catch (PictionnaryDbException pDB) {
+            String msg = pDB.getMessage();
+            try {
+                DBManager.cancelTransaction();
+            } catch (PictionnaryDbException ex) {
+                msg = ex.getMessage() + "\n" + msg;
+            } finally {
+                throw new PictionnaryBusinessException("Not possible to add the game \n" + msg);
             }
         }
     }

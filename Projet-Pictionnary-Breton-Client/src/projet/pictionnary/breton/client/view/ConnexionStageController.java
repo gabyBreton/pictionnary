@@ -19,7 +19,7 @@ public class ConnexionStageController implements Initializable {
     private ClientController clientController;
     
     @FXML
-    private TextField pseudoTfd; // TODO : make unique on server
+    private TextField pseudoTfd; 
 
     @FXML
     private TextField serverIpTfd;

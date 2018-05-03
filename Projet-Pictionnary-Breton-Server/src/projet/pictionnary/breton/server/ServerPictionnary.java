@@ -25,6 +25,7 @@ import java.net.InetAddress;
 import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -39,6 +40,7 @@ import projet.pictionnary.breton.server.exception.PictionnaryBusinessException;
 import projet.pictionnary.breton.server.exception.PictionnaryDbException;
 import projet.pictionnary.breton.common.users.User;
 import projet.pictionnary.breton.common.util.Observer;
+import projet.pictionnary.breton.server.dto.GameDto;
 
 /**
  * This class is used to manage and control the Pictionnary server.
@@ -494,6 +496,15 @@ public class ServerPictionnary extends AbstractServer {
             } else if (tableJoin.getPlayerCount() == 1) {
                 joinActions(author, tableJoin);
                 sendMessagesAfterJoin(author, tableJoin);
+                try {
+                    AdminFacade.addGame(new GameDto(tableJoin.getDrawer().getId(),
+                                                    tableJoin.getPartner().getId(),
+                                                    new Timestamp(System.currentTimeMillis()),
+                                                    null,
+                                                    -1));
+                } catch (PictionnaryBusinessException ex) {
+                    Logger.getLogger(ServerPictionnary.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         } else {
             Message msgBadRequestNoTable = new MessageBadRequest(User.ADMIN,

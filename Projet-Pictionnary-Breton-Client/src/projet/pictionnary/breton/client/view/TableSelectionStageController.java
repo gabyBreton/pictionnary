@@ -111,8 +111,9 @@ public class TableSelectionStageController implements Initializable {
         this.dataTables = dataTables;
         
         tableView.getItems().clear();
-        dataTables.forEach((dataTable) -> {
-            tableView.getItems().add(dataTable);
-        });
+        
+        for (DataTable data : dataTables) {
+            tableView.getItems().add(data);
+        }
     }
 }

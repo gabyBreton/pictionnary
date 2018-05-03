@@ -19,10 +19,11 @@
         <group>
             <file>file:/home/sirius/NetBeansProjects/jline/Projet-Pictionnary-Breton/Projet-Pictionnary-Breton/src/projet/pictionnary/breton/common/model/MessageProfile.java</file>
             <file>file:/home/sirius/NetBeansProjects/jline/Projet-Pictionnary-Breton/Projet-Pictionnary-Breton/src/projet/pictionnary/breton/common/users/Members.java</file>
+            <file>file:/home/sirius/NetBeansProjects/jline/Projet-Pictionnary-Breton/Projet-Pictionnary-Breton/src/projet/pictionnary/breton/common/model/MessageBadRequest.java</file>
             <file>file:/home/sirius/NetBeansProjects/jline/Projet-Pictionnary-Breton/Projet-Pictionnary-Breton/src/projet/pictionnary/breton/common/users/User.java</file>
             <file>file:/home/sirius/NetBeansProjects/jline/Projet-Pictionnary-Breton/Projet-Pictionnary-Breton/src/projet/pictionnary/breton/common/model/Type.java</file>
             <file>file:/home/sirius/NetBeansProjects/jline/Projet-Pictionnary-Breton/Projet-Pictionnary-Breton/src/projet/pictionnary/breton/common/model/MessageJoin.java</file>
-            <file>file:/home/sirius/NetBeansProjects/jline/Projet-Pictionnary-Breton/Projet-Pictionnary-Breton/src/projet/pictionnary/breton/common/model/MessageInvalidLogin.java</file>
+            <file>file:/home/sirius/NetBeansProjects/jline/Projet-Pictionnary-Breton/Projet-Pictionnary-Breton/src/projet/pictionnary/breton/common/model/Message.java</file>
             <file>file:/home/sirius/NetBeansProjects/jline/Projet-Pictionnary-Breton/Projet-Pictionnary-Breton/src/projet/pictionnary/breton/common/model/MessageConnected.java</file>
         </group>
     </open-files>
