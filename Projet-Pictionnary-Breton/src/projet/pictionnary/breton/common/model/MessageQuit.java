@@ -1,34 +1,34 @@
-package projet.pictionnary.breton.model;
+package projet.pictionnary.breton.common.model;
 
-import projet.pictionnary.breton.server.users.User;
+import projet.pictionnary.breton.common.users.User;
 
 /**
- * This class is used to send message about a table creation.
+ * This class is used to send message for manage the quit action.
  * 
  * @author Gabriel Breton - 43397
  */
-public class MessageCreate implements Message {
-
+public class MessageQuit implements Message {
+    
     private final User author;
     private final User recipient;
-    private final String nameTable;
+    private final Role role;
 
     /**
-     * Constructs a new <code> MessageCreateTable </code>.
+     * Constructs a new <code> MessageQuit </code>.
      * 
      * @param author the author of the message.
      * @param recipient the recipient of the message.
-     * @param nameTable the name of the table.
+     * @param role the role of the user that quit the game.
      */
-    public MessageCreate(User author, User recipient, String nameTable) {
+    public MessageQuit(User author, User recipient, Role role) {
         this.author = author;
         this.recipient = recipient;
-        this.nameTable = nameTable;
+        this.role = role;
     }
     
     @Override
     public Type getType() {
-        return Type.CREATE;
+        return Type.QUIT;
     }
     
     @Override
@@ -43,6 +43,6 @@ public class MessageCreate implements Message {
 
     @Override
     public Object getContent() {
-        return nameTable;
-    }    
+        return role;
+    }   
 }

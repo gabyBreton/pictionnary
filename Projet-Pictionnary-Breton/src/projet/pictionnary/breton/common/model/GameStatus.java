@@ -1,4 +1,4 @@
-package projet.pictionnary.breton.model;
+package projet.pictionnary.breton.common.model;
 
 /**
  * This class provides several game status.

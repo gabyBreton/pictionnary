@@ -34,4 +34,8 @@ public class PlayerBusiness {
             throw new PictionnaryBusinessException(eDB.getMessage());
         }
     }
+    
+    static int getNextPlayerId() throws PictionnaryDbException {
+        return PlayerDB.getNextPlayerId();
+    }
 }

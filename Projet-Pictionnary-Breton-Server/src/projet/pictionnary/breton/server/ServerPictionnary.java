@@ -1,6 +1,25 @@
 package projet.pictionnary.breton.server;
 
-import projet.pictionnary.breton.model.Table;
+import projet.pictionnary.breton.common.model.MessageBadRequest;
+import projet.pictionnary.breton.common.model.MessageGameStatus;
+import projet.pictionnary.breton.common.model.MessageCreate;
+import projet.pictionnary.breton.common.model.MessageProfile;
+import projet.pictionnary.breton.common.model.Type;
+import projet.pictionnary.breton.common.model.MessageGetWord;
+import projet.pictionnary.breton.common.model.MessageInvalidLogin;
+import projet.pictionnary.breton.common.model.Message;
+import projet.pictionnary.breton.common.model.GameStatus;
+import projet.pictionnary.breton.common.model.MessageReceptDraw;
+import projet.pictionnary.breton.common.model.MessageSendDraw;
+import projet.pictionnary.breton.common.model.MessageQuit;
+import projet.pictionnary.breton.common.model.MessageSubmit;
+import projet.pictionnary.breton.common.model.DrawEvent;
+import projet.pictionnary.breton.common.model.Role;
+import projet.pictionnary.breton.common.model.MessageConnected;
+import projet.pictionnary.breton.common.model.MessageJoin;
+import projet.pictionnary.breton.common.model.DataTable;
+import projet.pictionnary.breton.common.model.MessageGetTables;
+import projet.pictionnary.breton.common.model.Table;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InterfaceAddress;
@@ -12,14 +31,14 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import projet.pictionnary.breton.server.users.Members;
-import projet.pictionnary.breton.model.*;
+import projet.pictionnary.breton.common.users.Members;
 import projet.pictionnary.breton.server.business.AdminFacade;
 import projet.pictionnary.breton.server.dto.PlayerDto;
 import projet.pictionnary.breton.server.dto.WordDto;
 import projet.pictionnary.breton.server.exception.PictionnaryBusinessException;
-import projet.pictionnary.breton.server.users.User;
-import projet.pictionnary.breton.util.Observer;
+import projet.pictionnary.breton.server.exception.PictionnaryDbException;
+import projet.pictionnary.breton.common.users.User;
+import projet.pictionnary.breton.common.util.Observer;
 
 /**
  * This class is used to manage and control the Pictionnary server.
@@ -38,6 +57,7 @@ public class ServerPictionnary extends AbstractServer {
     private final List<DataTable> dataTables;
     private int clientId;
     private int tableId;
+    private int loginWaitId;
     private final Members members;
     private final List<WordDto> words;
     
@@ -135,6 +155,11 @@ public class ServerPictionnary extends AbstractServer {
         return tableId;
     }
     
+    final synchronized int getNextLoginWaitId() {
+        loginWaitId--;
+        return loginWaitId;
+    }
+    
     @Override
     protected void handleMessageFromClient(Object msg, ConnectionToClient client) {
         Message message = (Message) msg;
@@ -142,13 +167,9 @@ public class ServerPictionnary extends AbstractServer {
         int memberId = (int) client.getInfo(ID_MAPINFO);
         User author = message.getAuthor();
         
-        switch (type) {      
+        switch (type) {
             case PROFILE:
-                members.changeName(author.getName(), memberId);
-                Message msgName = new MessageProfile(memberId, author.getName());
-                sendToClient(msgName, memberId);
-                sendToClient(new MessageGetTables(User.ADMIN, author, dataTables), memberId);
-                notifyObservers(msg);
+                handleProfileRequest(author, memberId, msg);
                 break;
             
             case CREATE:
@@ -201,7 +222,6 @@ public class ServerPictionnary extends AbstractServer {
                 break;
             
             case SUBMIT:
-                System.out.println("MSG SUBMIT !");
                 String proposition = (String) message.getContent();
                 Table tableSubmit = findTable(message.getAuthor().getId());
                 handleSubmitRequest(tableSubmit, proposition, author);
@@ -211,6 +231,50 @@ public class ServerPictionnary extends AbstractServer {
                 throw new IllegalArgumentException("Message type unknown " + type);
         }
     } 
+
+    private void handleProfileRequest(User author, int memberId, Object msg) {
+        try {
+            PlayerDto registredPlayer = AdminFacade.getPlayerByLogin(author.getName());
+            if (registredPlayer != null) {
+                
+                if (members.getUser(registredPlayer.getId()) != null) {
+                    sendToClient(new MessageInvalidLogin(User.ADMIN, author, author.getName()), memberId);
+                    
+                } else {
+                    members.changeId(memberId, registredPlayer.getId());
+                    members.changeName(author.getName(), registredPlayer.getId());
+                    author.setId(registredPlayer.getId());
+                    changeClientConnectionId(memberId, registredPlayer.getId());
+                    loginWaitId++;
+                    
+                    sendMessagesAfterProfile(author);
+                    notifyObservers(msg);
+                }
+                
+            } else {
+                int idPlayer = AdminFacade.addPlayer(new PlayerDto(author.getName()));
+                members.changeId(memberId, idPlayer);
+                members.changeName(author.getName(), idPlayer);
+                author.setId(idPlayer);
+                changeClientConnectionId(memberId, idPlayer);
+                loginWaitId++;
+                
+                sendMessagesAfterProfile(author);
+                notifyObservers(msg);
+                // TODO @FIX_ME : ce notify lance un exception dans le
+                // foreach. OK pour l'autre au dessus.
+            }
+        } catch (PictionnaryBusinessException ex) {
+            Logger.getLogger(ServerPictionnary.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void sendMessagesAfterProfile(User author) {
+        sendToClient(new MessageProfile(author.getId(), author.getName()),
+                        author.getId());
+        sendToClient(new MessageGetTables(User.ADMIN, author, dataTables),
+                        author.getId());
+    }
 
     /**
      * Handles a submit request.
@@ -530,9 +594,16 @@ public class ServerPictionnary extends AbstractServer {
     @Override
     protected void clientConnected(ConnectionToClient client) {
         super.clientConnected(client);
-        int memberId = members.add(getNextClientId(), client.getName(), client.getInetAddress(), Role.NOT_IN_GAME);
+        int memberId;
+        memberId = members.add(getNextLoginWaitId(),
+                                    client.getName(), 
+                                    client.getInetAddress(), 
+                                    Role.NOT_IN_GAME);
         client.setInfo(ID_MAPINFO, memberId);
-        sendToClient(new MessageGetTables(User.ADMIN, null, dataTables), memberId);
+        sendToClient(new MessageConnected(User.ADMIN, members.getUser(memberId), true), 
+                            memberId);
+       // TODO : lui envoyer datatables lorsqu'il est connecté avec un nom
+       // sendToClient(new MessageGetTables(User.ADMIN, null, dataTables), memberId);
     }
     
     /**

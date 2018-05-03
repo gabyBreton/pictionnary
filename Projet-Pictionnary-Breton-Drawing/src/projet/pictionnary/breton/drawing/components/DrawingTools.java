@@ -12,7 +12,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import projet.pictionnary.breton.util.Observer;
+import projet.pictionnary.breton.common.util.Observer;
 
 /*
  CREDITS ICONS:

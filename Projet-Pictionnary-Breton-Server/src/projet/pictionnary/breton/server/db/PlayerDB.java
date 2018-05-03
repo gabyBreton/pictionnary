@@ -75,4 +75,8 @@ public class PlayerDB {
             throw new PictionnaryDbException("Player: ajout impossible\r" + ex.getMessage());
         }
     }
+    
+    public static int getNextPlayerId() throws PictionnaryDbException {
+        return SequenceDB.getNextNum(SequenceDB.PLAYER);
+    }
 }

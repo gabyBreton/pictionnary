@@ -226,6 +226,7 @@ public class ConnectionToClient extends Thread {
                     }
                 } catch (ClassNotFoundException | RuntimeException ex) { // when an unknown class is received
                     // or thrown by handleMessageFromClient or receiveMessageFromClient
+                    System.out.println(ex.getMessage());
                     server.clientException(this, ex);
                 }
             }

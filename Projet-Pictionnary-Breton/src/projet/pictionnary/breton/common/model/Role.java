@@ -1,4 +1,4 @@
-package projet.pictionnary.breton.model;
+package projet.pictionnary.breton.common.model;
 
 /**
  * This enum provides the differents roles for a client.

@@ -2,11 +2,12 @@ package projet.pictionnary.breton.client;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.Region;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -14,15 +15,15 @@ import projet.pictionnary.breton.client.view.ConnexionStageController;
 import projet.pictionnary.breton.client.view.TableSelectionStageController;
 import projet.pictionnary.breton.client.view.DrawerSide;
 import projet.pictionnary.breton.client.view.PartnerSide;
-import projet.pictionnary.breton.model.DataTable;
-import projet.pictionnary.breton.model.DrawEvent;
-import projet.pictionnary.breton.model.GameStatus;
-import projet.pictionnary.breton.model.Message;
-import projet.pictionnary.breton.model.MessageReceptDraw;
-import projet.pictionnary.breton.model.MessageSendDraw;
-import projet.pictionnary.breton.model.MessageSubmit;
-import projet.pictionnary.breton.model.Type;
-import projet.pictionnary.breton.util.Observer;
+import projet.pictionnary.breton.common.model.DataTable;
+import projet.pictionnary.breton.common.model.DrawEvent;
+import projet.pictionnary.breton.common.model.GameStatus;
+import projet.pictionnary.breton.common.model.Message;
+import projet.pictionnary.breton.common.model.MessageReceptDraw;
+import projet.pictionnary.breton.common.model.MessageSendDraw;
+import projet.pictionnary.breton.common.model.MessageSubmit;
+import projet.pictionnary.breton.common.model.Type;
+import projet.pictionnary.breton.common.util.Observer;
 
 /**
  * This class is used as the main client controller. It manages the interactions 
@@ -60,6 +61,13 @@ public class ClientController implements Observer {
         stage.show();
     }
     
+    public void connectToServer() throws IOException {
+        clientPictionnary = new ClientPictionnary(connexionStageCtrl.getServerIp(),
+                           Integer.parseInt(connexionStageCtrl.getPortNumber()),
+                           connexionStageCtrl.getPseudo());
+        clientPictionnary.addObserver(this);
+    }
+    
     /**
      * Loads the table selection stage.
      * 
@@ -71,10 +79,6 @@ public class ClientController implements Observer {
         loader.setLocation(getClass().getResource("view/TableSelectionStage.fxml"));
 
         // TODO : Afficher erreur proprement si mauvais port
-        clientPictionnary = new ClientPictionnary(connexionStageCtrl.getServerIp(),
-                           Integer.parseInt(connexionStageCtrl.getPortNumber()),
-                           connexionStageCtrl.getPseudo());
-        clientPictionnary.addObserver(this);
 
         loader.load();
         launchTableSelectionStage(loader);
@@ -119,6 +123,21 @@ public class ClientController implements Observer {
                 clientPictionnary.askGameStatus();
                 break;
 
+            case PROFILE:
+                Platform.runLater(() -> {
+                    try {
+                        loadTableSelectionStage();
+                    } catch (IOException ex) {
+                        Logger.getLogger(ClientController.class.getName())
+                                            .log(Level.SEVERE, null, ex);
+                    }
+                });
+                break;
+                
+            case INVALID_LOGIN:
+                connexionStageCtrl.invalidLogin();
+                break;
+                
             case JOIN:
                 clientPictionnary.askGameStatus();
                 break;

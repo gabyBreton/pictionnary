@@ -1,11 +1,11 @@
-package projet.pictionnary.breton.model;
+package projet.pictionnary.breton.common.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import projet.pictionnary.breton.server.users.User;
-import projet.pictionnary.breton.util.Observable;
-import projet.pictionnary.breton.util.Observer;
+import projet.pictionnary.breton.common.users.User;
+import projet.pictionnary.breton.common.util.Observable;
+import projet.pictionnary.breton.common.util.Observer;
 
 /**
  * This class is used to transfer a draw.

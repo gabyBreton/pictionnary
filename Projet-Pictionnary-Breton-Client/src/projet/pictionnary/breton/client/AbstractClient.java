@@ -5,7 +5,7 @@ package projet.pictionnary.breton.client;
 
 import java.io.*;
 import java.net.*;
-import projet.pictionnary.breton.util.Observable;
+import projet.pictionnary.breton.common.util.Observable;
 //import java.util.Observable;
 
 /**

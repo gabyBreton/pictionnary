@@ -10,8 +10,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import projet.pictionnary.breton.client.ClientController;
 import projet.pictionnary.breton.drawing.components.DrawingPane;
-import projet.pictionnary.breton.model.DrawingInfos;
-import projet.pictionnary.breton.model.GameStatus;
+import projet.pictionnary.breton.common.model.DrawingInfos;
+import projet.pictionnary.breton.common.model.GameStatus;
 
 /**
  * This class is used as UI to represents the partner side of the game.

@@ -1,4 +1,4 @@
-package projet.pictionnary.breton.util;
+package projet.pictionnary.breton.common.util;
 
 
 /**

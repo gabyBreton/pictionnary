@@ -1,7 +1,7 @@
-package projet.pictionnary.breton.model;
+package projet.pictionnary.breton.common.model;
 
 import java.io.Serializable;
-import projet.pictionnary.breton.server.users.User;
+import projet.pictionnary.breton.common.users.User;
 
 /**
  * This class is used to represent a game and its users of Pictionnary.

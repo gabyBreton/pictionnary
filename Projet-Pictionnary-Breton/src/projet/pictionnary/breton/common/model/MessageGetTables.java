@@ -1,7 +1,7 @@
-package projet.pictionnary.breton.model;
+package projet.pictionnary.breton.common.model;
 
 import java.util.List;
-import projet.pictionnary.breton.server.users.User;
+import projet.pictionnary.breton.common.users.User;
 
 /**
  * This class is used to send or get all the data of the tables on the server.

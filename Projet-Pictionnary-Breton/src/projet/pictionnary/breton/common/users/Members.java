@@ -1,11 +1,11 @@
-package projet.pictionnary.breton.server.users;
+package projet.pictionnary.breton.common.users;
 
 import java.io.Serializable;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import projet.pictionnary.breton.model.Role;
+import projet.pictionnary.breton.common.model.Role;
 
 /**
  * The <code> Members </code> represents a list of all connected users.
@@ -107,6 +107,13 @@ public class Members implements Iterable<User>, Serializable {
         User user = getUser(id);
         if (user != null) {
             user.setRole(role);
+        }
+    }
+    
+    public void changeId(int oldId, int newId) {
+        User user = getUser(oldId);
+        if (user != null) {
+            user.setId(newId);
         }
     }
     

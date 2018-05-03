@@ -5,8 +5,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import projet.pictionnary.breton.server.ServerPictionnary;
 import projet.pictionnary.breton.server.exception.PictionnaryBusinessException;
-import projet.pictionnary.breton.server.users.User;
-import projet.pictionnary.breton.util.Observer;
+import projet.pictionnary.breton.common.users.User;
+import projet.pictionnary.breton.common.util.Observer;
 
 /**
  * This class is used as a console to manage and get informations from the 

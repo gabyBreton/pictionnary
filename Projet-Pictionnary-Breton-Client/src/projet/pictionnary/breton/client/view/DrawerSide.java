@@ -11,8 +11,8 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import projet.pictionnary.breton.client.ClientController;
 import projet.pictionnary.breton.drawing.components.DrawingTools;
-import projet.pictionnary.breton.model.GameStatus;
-import projet.pictionnary.breton.util.Observer;
+import projet.pictionnary.breton.common.model.GameStatus;
+import projet.pictionnary.breton.common.util.Observer;
 
 /**
  * This class is used as UI to represents the drawer side of the game.

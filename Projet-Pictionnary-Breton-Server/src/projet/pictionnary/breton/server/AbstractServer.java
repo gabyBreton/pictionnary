@@ -8,7 +8,8 @@ import java.net.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import projet.pictionnary.breton.util.Observable;
+import projet.pictionnary.breton.common.util.Observable;
+import static projet.pictionnary.breton.server.ServerPictionnary.ID_MAPINFO;
 
 /**
  * The <code> AbstractServer </code> class maintains a thread that waits for
@@ -261,6 +262,7 @@ public abstract class AbstractServer implements Observable, Runnable {
     synchronized protected void clientDisconnected(
             ConnectionToClient client) {
     }
+    // TODO : when a player quit (ferme la fenetre par exemple)
 
     /**
      * Hook method called each time an exception is thrown in a
@@ -403,4 +405,16 @@ public abstract class AbstractServer implements Observable, Runnable {
         }
     }
 
+    public void changeClientConnectionId(int oldId, int newId) {
+        for (Thread clientThread : threads) {
+            int idClientThread = (Integer) 
+                        ((ConnectionToClient) clientThread).getInfo(ID_MAPINFO);
+
+            if (oldId == idClientThread) {
+                ConnectionToClient connection = (ConnectionToClient) clientThread;
+                connection.setInfo(ID_MAPINFO, newId);
+                break;
+            }
+        }
+    } 
 }

@@ -1,4 +1,4 @@
-package projet.pictionnary.breton.model;
+package projet.pictionnary.breton.common.model;
 
 /**
  * The <code> Type </code> represents the type of a message send between a user
@@ -6,6 +6,11 @@ package projet.pictionnary.breton.model;
  */
 public enum Type {
 
+    
+    CONNECTED, 
+    
+    INVALID_LOGIN,
+    
     /**
      * Message with the profile of a specific user.
      */

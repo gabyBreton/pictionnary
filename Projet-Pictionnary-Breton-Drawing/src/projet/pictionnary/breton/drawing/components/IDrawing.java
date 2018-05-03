@@ -1,6 +1,6 @@
 package projet.pictionnary.breton.drawing.components;
 
-import projet.pictionnary.breton.model.DrawingInfos;
+import projet.pictionnary.breton.common.model.DrawingInfos;
 import javafx.beans.property.ObjectProperty;
 import javafx.scene.paint.Color;
 

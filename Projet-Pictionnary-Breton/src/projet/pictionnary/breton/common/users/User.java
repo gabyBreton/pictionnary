@@ -1,8 +1,8 @@
-package projet.pictionnary.breton.server.users;
+package projet.pictionnary.breton.common.users;
 
 import java.io.Serializable;
 import java.net.InetAddress;
-import projet.pictionnary.breton.model.Role;
+import projet.pictionnary.breton.common.model.Role;
 
 /**
  * The <code> User </code> represents a connected user.
@@ -19,7 +19,7 @@ public class User implements Serializable {
      */
     public static final User EVERYBODY = new User(0, "EVERYBODY");
 
-    private final int id;
+    private int id;
     private String name;
     private InetAddress address;
     private Role role;
@@ -93,6 +93,10 @@ public class User implements Serializable {
         return id;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+    
     /**
      * Sets the role of the User.
      * 

@@ -1,6 +1,6 @@
-package projet.pictionnary.breton.model;
+package projet.pictionnary.breton.common.model;
 
-import projet.pictionnary.breton.server.users.User;
+import projet.pictionnary.breton.common.users.User;
 
 /**
  * The <code> Message </code> represents a message with the profile of a specific

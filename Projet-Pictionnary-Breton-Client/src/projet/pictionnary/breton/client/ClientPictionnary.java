@@ -3,22 +3,24 @@ package projet.pictionnary.breton.client;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import projet.pictionnary.breton.model.DataTable;
-import projet.pictionnary.breton.model.DrawEvent;
-import projet.pictionnary.breton.model.DrawingInfos;
-import projet.pictionnary.breton.model.GameStatus;
-import projet.pictionnary.breton.model.Message;
-import projet.pictionnary.breton.model.MessageProfile;
-import projet.pictionnary.breton.model.MessageCreate;
-import projet.pictionnary.breton.model.MessageGameStatus;
-import projet.pictionnary.breton.model.MessageSendDraw;
-import projet.pictionnary.breton.model.MessageGetWord;
-import projet.pictionnary.breton.model.MessageJoin;
-import projet.pictionnary.breton.model.MessageQuit;
-import projet.pictionnary.breton.model.MessageSubmit;
-import projet.pictionnary.breton.model.Type;
-import projet.pictionnary.breton.server.users.User;
-import projet.pictionnary.breton.util.Observer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import projet.pictionnary.breton.common.model.DataTable;
+import projet.pictionnary.breton.common.model.DrawEvent;
+import projet.pictionnary.breton.common.model.DrawingInfos;
+import projet.pictionnary.breton.common.model.GameStatus;
+import projet.pictionnary.breton.common.model.Message;
+import projet.pictionnary.breton.common.model.MessageProfile;
+import projet.pictionnary.breton.common.model.MessageCreate;
+import projet.pictionnary.breton.common.model.MessageGameStatus;
+import projet.pictionnary.breton.common.model.MessageSendDraw;
+import projet.pictionnary.breton.common.model.MessageGetWord;
+import projet.pictionnary.breton.common.model.MessageJoin;
+import projet.pictionnary.breton.common.model.MessageQuit;
+import projet.pictionnary.breton.common.model.MessageSubmit;
+import projet.pictionnary.breton.common.model.Type;
+import projet.pictionnary.breton.common.users.User;
+import projet.pictionnary.breton.common.util.Observer;
 
 /**
  * This class is used to create and manage a client for the Pictionnary.
@@ -28,6 +30,7 @@ import projet.pictionnary.breton.util.Observer;
 public class ClientPictionnary extends AbstractClient {
 
     private User mySelf;
+    private String name;
     private List<DataTable> dataTables;
     private final List<Observer> observers;
     private String word; // TODO : retirer le mot lors de la destruction de la table.
@@ -48,7 +51,7 @@ public class ClientPictionnary extends AbstractClient {
         observers = new ArrayList<>();
         dataTables = new ArrayList<>();
         openConnection();
-        updateName(name);
+        this.name = name;
     }
     
     @Override
@@ -56,10 +59,28 @@ public class ClientPictionnary extends AbstractClient {
         Message message = (Message) msg;
         Type type = message.getType();
         switch (type) {
-            case PROFILE:
-                setMySelf(message.getAuthor());
+            case CONNECTED:
+                try {
+                    setMySelf(message.getRecipient());  
+                    System.out.println("CONNECTED TO SERVER -> id : " + mySelf.getId());
+                    updateName(name);
+                } catch (IOException ex) {
+                    Logger.getLogger(ClientPictionnary.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 break;
                 
+            case PROFILE:
+                setMySelf(message.getAuthor());
+                System.out.println("PROFILE VALIDATED -> id : " + mySelf.getId());                
+                System.out.println("                  -> login : " + mySelf.getName());
+                System.out.println("                  -> role : " +  mySelf.getRole());
+                notifyObservers(msg);
+                break;
+                
+            case INVALID_LOGIN:
+                notifyObservers(msg);
+                break;
+            
             case CREATE:
                 setMySelf(message.getRecipient());                
                 notifyObservers(message);
@@ -67,6 +88,7 @@ public class ClientPictionnary extends AbstractClient {
                 
             case GET_TABLES:
                 setTables((List <DataTable>) message.getContent());
+                System.out.println("TABLES RECEIVED");
                 notifyObservers(message);
                 break;
                 

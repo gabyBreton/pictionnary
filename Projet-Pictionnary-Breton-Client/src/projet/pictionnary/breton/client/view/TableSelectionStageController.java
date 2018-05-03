@@ -15,7 +15,7 @@ import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import projet.pictionnary.breton.client.ClientController;
-import projet.pictionnary.breton.model.DataTable;
+import projet.pictionnary.breton.common.model.DataTable;
 
 /**
  * This class is used as the FXML controller to manage the selection of the 

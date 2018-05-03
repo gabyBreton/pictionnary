@@ -62,7 +62,7 @@ public class AdminFacade {
             } catch (PictionnaryDbException ex) {
                 msg = ex.getMessage() + "\n" + msg;
             } finally {
-                throw new PictionnaryBusinessException("Ajout de catégorie impossible! \n" + msg);
+                throw new PictionnaryBusinessException("Not possible to add the player \n" + msg);
             }
         }
     }

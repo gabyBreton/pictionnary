@@ -1,4 +1,4 @@
-package projet.pictionnary.breton.model;
+package projet.pictionnary.breton.common.model;
 
 import java.io.Serializable;
 import javafx.scene.paint.Color;
