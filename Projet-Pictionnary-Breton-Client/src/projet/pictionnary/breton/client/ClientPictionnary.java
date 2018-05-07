@@ -30,7 +30,7 @@ import projet.pictionnary.breton.common.util.Observer;
 public class ClientPictionnary extends AbstractClient {
 
     private User mySelf;
-    private String name;
+    private final String name;
     private List<DataTable> dataTables;
     private final List<Observer> observers;
     private String word; // TODO : retirer le mot lors de la destruction de la table.
@@ -126,7 +126,8 @@ public class ClientPictionnary extends AbstractClient {
             default:
                 throw new IllegalArgumentException("\nMessage type unknown " 
                                                     + type);
-        }    }
+        }    
+    }
     
     /**
      * Sets the <code> User </code> for the client.

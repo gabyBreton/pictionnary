@@ -107,6 +107,7 @@ public class Table implements Serializable {
     public void removeDrawer() {
         drawer = null;
         playerCount--;
+        gameStatus = GameStatus.OVER;
     }
     
     /**
@@ -115,6 +116,7 @@ public class Table implements Serializable {
     public void removePartner() {
         partner = null;
         playerCount--;
+        gameStatus = GameStatus.OVER;
     }
     
     /**

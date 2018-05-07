@@ -195,11 +195,9 @@ public class ServerPictionnary extends AbstractServer {
                 break;
             
             case QUIT:
-                Table tableQuit = findTable(memberId);
-                handleQuitRequest(author, tableQuit);
+                handleQuitRequest(author);
                 // TODO lorsqu'un drawer quitte une table que personne n'avait
                 // rejoint en cliquant sur Quit, la table se ferme et réapparait
-                sendMessagesAfterQuit(author, tableQuit);
                 break;
 
             case JOIN:
@@ -410,12 +408,16 @@ public class ServerPictionnary extends AbstractServer {
      * @param author the author of the request.
      * @throws IllegalArgumentException in case of an unknown role type.
      */
-    private void handleQuitRequest(User author, Table tableQuit) throws IllegalArgumentException {
+    private void handleQuitRequest(User author) throws IllegalArgumentException {        
+        boolean tableDestroyed = false;
+        Table tableQuit = findTable(author.getId());
         
         if (tableQuit != null && tableQuit.getPlayerCount() == 1) {
             destroyTable(tableQuit);
             author.setRole(Role.NOT_IN_GAME);
             members.changeRole(author.getRole(), author.getId());
+            tableDestroyed = true;
+            
         } else if (tableQuit != null && tableQuit.getPlayerCount() == 2) {
             switch (author.getRole()) {
                 case DRAWER:
@@ -440,6 +442,8 @@ public class ServerPictionnary extends AbstractServer {
                     throw new IllegalArgumentException("Unknown role : " + author.getRole());
             }
         }
+        
+        sendMessagesAfterQuit(author, tableQuit, tableDestroyed);
     }
 
     /**
@@ -450,7 +454,6 @@ public class ServerPictionnary extends AbstractServer {
      * @param author the user that quit the game.
      */
     private void quitActions(User author, Table tableQuit) {
-        tableQuit.setGameStatus(GameStatus.OVER);
         author.setRole(Role.NOT_IN_GAME);
         members.changeRole(author.getRole(), author.getId());
         updateDataTables(tableQuit.getId(), author.getRole(), "", "Closed", 
@@ -464,11 +467,16 @@ public class ServerPictionnary extends AbstractServer {
      * @param author the author of the message.
      * @param memberId the id of the author of the message.
      */
-    private void sendMessagesAfterQuit(User author, Table tableQuit) {
+    private void sendMessagesAfterQuit(User author, Table tableQuit, 
+                                        boolean tableDestroyed) {
         Message msgGetAllTablesRefresh = new MessageGetTables(User.ADMIN,
                                                     User.EVERYBODY, dataTables);
         sendToAllClients(msgGetAllTablesRefresh);
-        sendMessageGameStatus(tableQuit);
+        
+        if (!tableDestroyed) {
+            sendMessageGameStatus(tableQuit);
+        }
+        
         Message msgQuitGame = new MessageQuit(User.ADMIN, author, Role.NOT_IN_GAME);
         sendToClient(msgQuitGame, author.getId());
     }    
