@@ -1,6 +1,5 @@
 package projet.pictionnary.breton.server.dto;
 
-import com.sun.istack.internal.Nullable;
 import java.sql.Timestamp;
 
 /**
@@ -16,7 +15,7 @@ public class GameDto extends EntityDto<Integer> {
     private int stopPlayer;
 
     public GameDto(int drawer, int partner, Timestamp startTime, 
-                    @Nullable Timestamp endTime, int stopPlayer) {
+                    Timestamp endTime, int stopPlayer) {
         this.drawer = drawer;
         this.partner = partner;
         this.startTime = startTime;
