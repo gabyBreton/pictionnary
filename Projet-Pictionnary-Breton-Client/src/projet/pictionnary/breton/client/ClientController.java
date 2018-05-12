@@ -13,8 +13,10 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import projet.pictionnary.breton.client.view.ConnexionStageController;
 import projet.pictionnary.breton.client.view.TableSelectionStageController;
-import projet.pictionnary.breton.client.view.DrawerSide;
-import projet.pictionnary.breton.client.view.PartnerSide;
+import projet.pictionnary.breton.client.view.DrawerWindow;
+import projet.pictionnary.breton.client.view.GameWindow;
+import projet.pictionnary.breton.client.view.GameWindowFactory;
+import projet.pictionnary.breton.client.view.PartnerWindow;
 import projet.pictionnary.breton.common.model.DataTable;
 import projet.pictionnary.breton.common.model.DrawEvent;
 import projet.pictionnary.breton.common.model.GameStatus;
@@ -22,6 +24,7 @@ import projet.pictionnary.breton.common.model.Message;
 import projet.pictionnary.breton.common.model.MessageReceptDraw;
 import projet.pictionnary.breton.common.model.MessageSendDraw;
 import projet.pictionnary.breton.common.model.MessageSubmit;
+import projet.pictionnary.breton.common.model.Role;
 import projet.pictionnary.breton.common.model.Type;
 import projet.pictionnary.breton.common.util.Observer;
 
@@ -37,8 +40,8 @@ public class ClientController implements Observer {
     private ConnexionStageController connexionStageCtrl;
     private TableSelectionStageController tableSelectionCtrl;
     private List<DataTable> dataTables;
-    private DrawerSide drawerWindow;
-    private PartnerSide partnerWindow;
+    private GameWindow drawerWindow;
+    private GameWindow partnerWindow;
     private Stage drawerStage;
     private Stage partnerStage;
     
@@ -63,8 +66,8 @@ public class ClientController implements Observer {
     
     public void connectToServer() throws IOException {
         clientPictionnary = new ClientPictionnary(connexionStageCtrl.getServerIp(),
-                           Integer.parseInt(connexionStageCtrl.getPortNumber()),
-                           connexionStageCtrl.getPseudo());
+                            Integer.parseInt(connexionStageCtrl.getPortNumber()),
+                            connexionStageCtrl.getPseudo());
         clientPictionnary.addObserver(this);
     }
     
@@ -303,10 +306,10 @@ public class ClientController implements Observer {
     }
     
     /**
-     * Creates and shows the <code> PartnerSide </code> window.
+     * Creates and shows the <code> PartnerWindow </code> window.
      */
     private void displayPartnerWindow() {
-        partnerWindow = new PartnerSide();
+        partnerWindow = GameWindowFactory.createGameWindow(Role.PARTNER);
         partnerWindow.setController(this);
         partnerWindow.setStatus(clientPictionnary.getGameStatus());
         
@@ -328,7 +331,8 @@ public class ClientController implements Observer {
      * Creates and shows the <code> Drawer </code> window.
      */
     private void displayDrawerWindow() {
-        drawerWindow = new DrawerSide(clientPictionnary.getWord());
+        drawerWindow = GameWindowFactory.createGameWindow(Role.DRAWER, 
+                                                          clientPictionnary.getWord());
         drawerWindow.setController(this);
         drawerWindow.setStatus(clientPictionnary.getGameStatus());
         drawerWindow.addObserver(this);
