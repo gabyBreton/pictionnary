@@ -1,4 +1,4 @@
-package projet.pictionnary.breton.server.dto;
+package projet.pictionnary.breton.server.seldto;
 
 import java.sql.Timestamp;
 
@@ -6,35 +6,31 @@ import java.sql.Timestamp;
  *
  * @author Gabriel Breton - 43397
  */
-public class GameDto extends EntityDto<Integer> {
+public class GameSel {
     
+    private int id;
     private final int drawer;
     private final int partner;
     private final Timestamp startTime;
-    private Timestamp endTime;
-    private int stopPlayer;
+    private final Timestamp endTime;
+    private final int stopPlayer;
 
-    public GameDto(int drawer, int partner, Timestamp startTime, 
-                   Timestamp endTime, int stopPlayer) {
+    public GameSel(int id, int drawer, int partner, Timestamp startTime, 
+                    Timestamp endTime, int stopPlayer) {
+        this.id = id;
         this.drawer = drawer;
         this.partner = partner;
         this.startTime = startTime;
         this.endTime = endTime;
         this.stopPlayer = stopPlayer;
     }
-    
-    public GameDto (int id, int drawer, int partner, Timestamp startTime, 
-                   Timestamp endTime, int stopPlayer) {
-        this(drawer, partner, startTime, endTime, stopPlayer);
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
         this.id = id;
-    }
-    
-    public void setEndTime(Timestamp endTime) {
-        this.endTime = endTime;
-    }
-    
-    public void setStopPlayer(int stopPlayer) {
-        this.stopPlayer = stopPlayer;
     }
 
     public int getDrawer() {

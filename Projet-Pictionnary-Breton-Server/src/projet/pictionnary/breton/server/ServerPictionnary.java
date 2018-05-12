@@ -195,9 +195,13 @@ public class ServerPictionnary extends AbstractServer {
                 break;
             
             case QUIT:
-                handleQuitRequest(author);
-                // TODO lorsqu'un drawer quitte une table que personne n'avait
-                // rejoint en cliquant sur Quit, la table se ferme et réapparait
+                try {
+                    handleQuitRequest(author);
+                } catch (IllegalArgumentException ex) {
+                    Logger.getLogger(ServerPictionnary.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (PictionnaryBusinessException ex) {
+                    Logger.getLogger(ServerPictionnary.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 break;
 
             case JOIN:
@@ -224,7 +228,11 @@ public class ServerPictionnary extends AbstractServer {
             case SUBMIT:
                 String proposition = (String) message.getContent();
                 Table tableSubmit = findTable(message.getAuthor().getId());
-                handleSubmitRequest(tableSubmit, proposition, author);
+                try {
+                    handleSubmitRequest(tableSubmit, proposition, author);
+                } catch (PictionnaryBusinessException ex) {
+                    Logger.getLogger(ServerPictionnary.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 break;
                 
             default:
@@ -284,29 +292,35 @@ public class ServerPictionnary extends AbstractServer {
      * @param author the author of the request.
      */
     private void handleSubmitRequest(Table tableSubmit, String proposition, 
-                                        User author) {
+                                        User author) throws PictionnaryBusinessException {
         GameStatus gameStatus;
         if (tableSubmit != null) {
             
             if (proposition.toLowerCase().equals(tableSubmit
-                    .getWord()
-                    .toLowerCase())) {
+                                                    .getWord()
+                                                    .toLowerCase())) {
                 tableSubmit.setGameStatus(GameStatus.WIN);
                 updateDataTables(tableSubmit.getId(),
-                        author.getRole(),
-                        author.getName() ,
-                        "Closed",
-                        GameStatus.WIN.toString());
+                                 author.getRole(),
+                                 author.getName() ,
+                                 "Closed",
+                                GameStatus.WIN.toString());
                 
                 gameStatus = GameStatus.WIN;
+                GameDto gameDto = AdminFacade.getGameByDrawerId(tableSubmit.getDrawer().getId());
+                gameDto.setEndTime(new Timestamp(System.currentTimeMillis()));
+                AdminFacade.updateGame(gameDto);
             } else {
                 gameStatus = GameStatus.IN_GAME;
             }
             
             sendSubmitResponse(tableSubmit.getDrawer(),
-                    proposition.toLowerCase(), gameStatus);
+                               proposition.toLowerCase(), 
+                               gameStatus);
+            
             sendSubmitResponse(tableSubmit.getPartner(),
-                    proposition.toLowerCase(), gameStatus);
+                               proposition.toLowerCase(), 
+                               gameStatus);
         }
     }
 
@@ -408,7 +422,7 @@ public class ServerPictionnary extends AbstractServer {
      * @param author the author of the request.
      * @throws IllegalArgumentException in case of an unknown role type.
      */
-    private void handleQuitRequest(User author) throws IllegalArgumentException {        
+    private void handleQuitRequest(User author) throws IllegalArgumentException, PictionnaryBusinessException {        
         boolean tableDestroyed = false;
         Table tableQuit = findTable(author.getId());
         
@@ -419,16 +433,19 @@ public class ServerPictionnary extends AbstractServer {
             tableDestroyed = true;
             
         } else if (tableQuit != null && tableQuit.getPlayerCount() == 2) {
+            GameDto gameDto = null;
             switch (author.getRole()) {
                 case DRAWER:
                     tableQuit.removeDrawer();
                     quitActions(author, tableQuit);
+                    gameDto = AdminFacade.getGameByDrawerId(author.getId());
                     // TODO notifier autre joueur
                     break;
         
                 case PARTNER:
                     tableQuit.removePartner();
                     quitActions(author, tableQuit);
+                    gameDto = AdminFacade.getGameByPartnerId(author.getId());
                     // TODO notifier autre joueur
                     break;
                 
@@ -440,6 +457,16 @@ public class ServerPictionnary extends AbstractServer {
                 
                 default:
                     throw new IllegalArgumentException("Unknown role : " + author.getRole());
+            }
+            if (gameDto != null) {
+                GameDto gameUpdate = new GameDto(gameDto.getId(), 
+                                                 gameDto.getDrawer(), 
+                                                 gameDto.getPartner(), 
+                                                 gameDto.getStartTime(), 
+                                                 new Timestamp(System.currentTimeMillis()),
+                                                 author.getId());
+                
+                AdminFacade.updateGame(gameUpdate);
             }
         }
         
@@ -509,7 +536,7 @@ public class ServerPictionnary extends AbstractServer {
                                                     tableJoin.getPartner().getId(),
                                                     new Timestamp(System.currentTimeMillis()),
                                                     null,
-                                                    -1));
+                                                    0));
                 } catch (PictionnaryBusinessException ex) {
                     Logger.getLogger(ServerPictionnary.class.getName()).log(Level.SEVERE, null, ex);
                 }

@@ -85,4 +85,57 @@ public class AdminFacade {
             }
         }
     }
+    
+    public static void updateGame(GameDto game) throws PictionnaryBusinessException {
+        try {
+            DBManager.startTransaction();
+            GameBusiness.update(game);
+            DBManager.validateTransaction();
+        } catch (PictionnaryDbException eDB) {
+            String msg = eDB.getMessage();
+            try {
+                DBManager.cancelTransaction();
+            } catch (PictionnaryDbException ex) {
+                msg = ex.getMessage() + "\n" + msg;
+            } finally {
+                throw new PictionnaryBusinessException("Mise à jour de Game impossible! \n" + msg);
+            }
+        }
+    }
+    
+    public static GameDto getGameByDrawerId(int id) throws PictionnaryBusinessException {
+        try {
+            DBManager.startTransaction();
+            GameDto gameDto = GameBusiness.getGameByDrawerId(id);
+            DBManager.validateTransaction();
+            return gameDto;
+        } catch (PictionnaryDbException pdb) {
+            String msg = pdb.getMessage();
+            try {
+                DBManager.cancelTransaction();
+            } catch (PictionnaryDbException ex) {
+                msg = ex.getMessage() + "\n" + msg;
+            } finally {
+                throw new PictionnaryBusinessException("Game unavailable \n" + msg);
+            }
+        }
+    }
+    
+    public static GameDto getGameByPartnerId(int id) throws PictionnaryBusinessException {
+        try {
+            DBManager.startTransaction();
+            GameDto gameDto = GameBusiness.getGameByPartnerId(id);
+            DBManager.validateTransaction();
+            return gameDto;
+        } catch (PictionnaryDbException pdb) {
+            String msg = pdb.getMessage();
+            try {
+                DBManager.cancelTransaction();
+            } catch (PictionnaryDbException ex) {
+                msg = ex.getMessage() + "\n" + msg;
+            } finally {
+                throw new PictionnaryBusinessException("Game unavailable \n" + msg);
+            }
+        }
+    }
 }
