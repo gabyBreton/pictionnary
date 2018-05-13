@@ -57,7 +57,6 @@ public class ServerPictionnary extends AbstractServer {
     private final List<Observer> observers;    
     private final List<Table> tables;
     private final List<DataTable> dataTables;
-    private int clientId; // NOTE : useless since we use SEQUENCE table for id.
     private int tableId;
     private int loginWaitId;
     private final Members members;
@@ -88,7 +87,6 @@ public class ServerPictionnary extends AbstractServer {
     public ServerPictionnary() throws IOException, PictionnaryBusinessException {
         super(PORT);
         members = new Members();
-        clientId = 0;
         tableId = 0;
         tables = new ArrayList<>();
         dataTables = new ArrayList<>();
