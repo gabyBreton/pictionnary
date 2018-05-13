@@ -8,6 +8,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -15,6 +16,7 @@ import projet.pictionnary.breton.client.view.ConnexionStageController;
 import projet.pictionnary.breton.client.view.TableSelectionStageController;
 import projet.pictionnary.breton.client.view.GameWindow;
 import projet.pictionnary.breton.client.view.GameWindowFactory;
+import projet.pictionnary.breton.client.view.StatsWindow;
 import projet.pictionnary.breton.common.model.DataTable;
 import projet.pictionnary.breton.common.model.DrawEvent;
 import projet.pictionnary.breton.common.model.GameStatus;
@@ -43,6 +45,9 @@ public class ClientController implements Observer {
     private Stage drawerStage;
     private Stage partnerStage;
     private int[] stats;
+    private final int indexTotalGame = 0;
+    private final int indexDrawer = 1;
+    private final int indexPartner = 2;
     
     /**
      * Loads the connexion stage.
@@ -123,7 +128,7 @@ public class ClientController implements Observer {
 
         switch (type) {
             case STATS:
-                stats = (int []) message.getContent();
+                handleStatsRequest(message);
                 break;
                 
             case GET_TABLES:
@@ -191,6 +196,50 @@ public class ClientController implements Observer {
         }
     }
 
+    /**
+     * Displays the statistics windows or a dialog box if there is no statistics
+     * to display.
+     * 
+     * @param message the statistics message.
+     */
+    private void handleStatsRequest(Message message) {
+        stats = (int []) message.getContent();
+        
+        if (stats [indexTotalGame] == 0) {
+            Platform.runLater(() -> {
+              displayNoStatsDialog();
+            });
+        } else {
+            Platform.runLater(() -> {
+                displayStatsWindow();
+            });
+        }
+    }
+
+    /**
+     * Displays a dialog box to inform that there is no statistics for this 
+     * client.
+     */
+    private void displayNoStatsDialog() {
+        Alert noStastDialog = new Alert(Alert.AlertType.ERROR);
+        noStastDialog.setTitle("Statistics");
+        noStastDialog.setHeaderText("Error");
+        noStastDialog.setContentText("There no statistics to display for you");
+        noStastDialog.showAndWait();
+    }
+    
+    /**
+     * Displays the windows that contains some game statistics.
+     */
+    private void displayStatsWindow() {
+        StatsWindow statsWindow = new StatsWindow(stats[indexDrawer],
+                                                  stats[indexPartner]);
+        Stage statsStage = new Stage();
+        statsStage.setScene(new Scene(statsWindow));
+        statsStage.setTitle("Statistics");
+        statsStage.show();
+    }
+    
     /**
      * Executes some actions for the partner window when the game is win.
      */
