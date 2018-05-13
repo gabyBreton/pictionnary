@@ -65,6 +65,16 @@ public class GameBusiness {
         }
     }
     
+    static GameDto getGameById(int id) throws PictionnaryDbException {
+        GameSel sel = new GameSel(id, 0, 0, null, null, 0);
+        Collection<GameDto> col = GameDB.getCollection(sel);
+        if (col.size() == 1) {
+            return col.iterator().next();
+        } else {
+            return null;
+        }
+    }
+    
     /**
      * Gets the game information for a partner id.
      * 

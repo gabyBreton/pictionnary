@@ -124,6 +124,19 @@ public class Members implements Iterable<User>, Serializable {
     }
     
     /**
+     * Changes the game id of the user.
+     * 
+     * @param userId the user id.
+     * @param newGameId the new game id.
+     */
+    public void changeGameId(int userId, int newGameId) {
+        User user = getUser(userId);
+        if (user !=  null) {
+            user.setGameId(newGameId);
+        }
+    }
+    
+    /**
      * Return the user of the given id.
      *
      * @param id userdId of the user to return.

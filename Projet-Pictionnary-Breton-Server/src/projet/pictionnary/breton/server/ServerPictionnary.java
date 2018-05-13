@@ -37,7 +37,6 @@ import projet.pictionnary.breton.server.business.AdminFacade;
 import projet.pictionnary.breton.server.dto.PlayerDto;
 import projet.pictionnary.breton.server.dto.WordDto;
 import projet.pictionnary.breton.server.exception.PictionnaryBusinessException;
-import projet.pictionnary.breton.server.exception.PictionnaryDbException;
 import projet.pictionnary.breton.common.users.User;
 import projet.pictionnary.breton.common.util.Observer;
 import projet.pictionnary.breton.server.dto.GameDto;
@@ -315,10 +314,19 @@ public class ServerPictionnary extends AbstractServer {
                                 GameStatus.WIN.toString());
                 
                 gameStatus = GameStatus.WIN;
-                GameDto gameDto = AdminFacade.getGameByDrawerId(tableSubmit.getDrawer().getId());
-                // TODO : FIX-ME CREER UN NOUVEAU GAME DTO ET PAS REUTILISER.
-                gameDto.setEndTime(new Timestamp(System.currentTimeMillis()));
-                AdminFacade.updateGame(gameDto);
+                
+                int gameId = members.getUser(author.getId()).getGameId();
+                GameDto gameDto = AdminFacade.getGameById(gameId);
+                
+                if (gameDto !=  null) {
+                    GameDto gameUpdate = new GameDto(gameDto.getId(),
+                                                     gameDto.getDrawer(),
+                                                     gameDto.getPartner(),
+                                                     gameDto.getStartTime(),
+                                                     new Timestamp(System.currentTimeMillis()),
+                                                     0);
+                    AdminFacade.updateGame(gameUpdate);
+                }
             } else {
                 gameStatus = GameStatus.IN_GAME;
             }
@@ -443,18 +451,24 @@ public class ServerPictionnary extends AbstractServer {
             
         } else if (tableQuit != null && tableQuit.getPlayerCount() == 2) {
             GameDto gameDto = null;
+            int gameId;
+            
             switch (author.getRole()) {
                 case DRAWER:
                     tableQuit.removeDrawer();
                     quitActions(author, tableQuit);
-                    gameDto = AdminFacade.getGameByDrawerId(author.getId());
+                    
+                    gameId = members.getUser(author.getId()).getGameId();
+                    gameDto = AdminFacade.getGameById(gameId);
                     // TODO notifier autre joueur
                     break;
         
                 case PARTNER:
                     tableQuit.removePartner();
                     quitActions(author, tableQuit);
-                    gameDto = AdminFacade.getGameByPartnerId(author.getId());
+                    
+                    gameId = members.getUser(author.getId()).getGameId();
+                    gameDto = AdminFacade.getGameById(gameId);
                     // TODO notifier autre joueur
                     break;
                 
@@ -541,11 +555,13 @@ public class ServerPictionnary extends AbstractServer {
                 joinActions(author, tableJoin);
                 sendMessagesAfterJoin(author, tableJoin);
                 try {
-                    AdminFacade.addGame(new GameDto(tableJoin.getDrawer().getId(),
-                                                    tableJoin.getPartner().getId(),
-                                                    new Timestamp(System.currentTimeMillis()),
-                                                    null,
-                                                    0));
+                    int gameId = AdminFacade.addGame(new GameDto(tableJoin.getDrawer().getId(),
+                                                                 tableJoin.getPartner().getId(),
+                                                                 new Timestamp(System.currentTimeMillis()),
+                                                                 null,
+                                                                 0));
+                    members.changeGameId(tableJoin.getDrawer().getId(), gameId);
+                    members.changeGameId(tableJoin.getPartner().getId(), gameId);
                 } catch (PictionnaryBusinessException ex) {
                     Logger.getLogger(ServerPictionnary.class.getName()).log(Level.SEVERE, null, ex);
                 }

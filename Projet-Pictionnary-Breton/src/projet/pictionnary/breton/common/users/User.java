@@ -23,6 +23,7 @@ public class User implements Serializable {
     private String name;
     private InetAddress address;
     private Role role;
+    private int gameId;
 
     /**
      * Constructs a connected user.
@@ -37,6 +38,7 @@ public class User implements Serializable {
         this.id = id;
         this.address = address;
         this.role = role;
+        gameId = 0;
     }
 
     /**
@@ -136,5 +138,23 @@ public class User implements Serializable {
     @Override
     public String toString() {
         return name + "(" + id + ")";
+    }
+
+    /**
+     * Gives the current game id of the user.
+     * 
+     * @return the game id of the user.
+     */
+    public int getGameId() {
+        return gameId;
+    }
+
+    /**
+     * Sets the current game id of the user.
+     * 
+     * @param gameId the game id of the user.
+     */
+    public void setGameId(int gameId) {
+        this.gameId = gameId;
     }
 }

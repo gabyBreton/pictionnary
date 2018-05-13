@@ -191,4 +191,22 @@ public class AdminFacade {
             }
         }
     }
+    
+    public static GameDto getGameById(int id) throws PictionnaryBusinessException {
+        try {
+            DBManager.startTransaction();
+            GameDto gameDto = GameBusiness.getGameById(id);
+            DBManager.validateTransaction();
+            return gameDto;
+        } catch (PictionnaryDbException pdb) {
+            String msg = pdb.getMessage();
+            try {
+                DBManager.cancelTransaction();
+            } catch (PictionnaryDbException ex) {
+                msg = ex.getMessage() + "\n" + msg;
+            } finally {
+                throw new PictionnaryBusinessException("Game unavailable \n" + msg);
+            }
+        }
+    }
 }
