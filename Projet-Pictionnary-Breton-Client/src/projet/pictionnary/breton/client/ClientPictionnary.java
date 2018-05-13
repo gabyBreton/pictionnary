@@ -327,6 +327,15 @@ public class ClientPictionnary extends AbstractClient {
         }
     }
     
+    /**
+     * Gives the name of the client.
+     * 
+     * @return the name of the client.
+     */
+    public String getName() {
+        return mySelf.getName();
+    }
+    
     @Override
     public void addObserver(Observer o) {
         observers.add(o);

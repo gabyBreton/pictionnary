@@ -107,6 +107,7 @@ public class ClientController implements Observer {
         // pass the client instance to the new stage
         tableSelectionCtrl = loader.getController();
         tableSelectionCtrl.setClientController(this);
+        tableSelectionCtrl.setClientName(clientPictionnary.getName());
         
         Parent root = loader.getRoot();
         Stage tableSelectionStage = new Stage();
@@ -133,7 +134,9 @@ public class ClientController implements Observer {
                 
             case GET_TABLES:
                 dataTables = (List<DataTable>) message.getContent();
-                tableSelectionCtrl.refreshTableView(dataTables);
+                Platform.runLater(() -> {
+                    tableSelectionCtrl.refreshTableView(dataTables);
+                });
                 break;
 
             case CREATE:

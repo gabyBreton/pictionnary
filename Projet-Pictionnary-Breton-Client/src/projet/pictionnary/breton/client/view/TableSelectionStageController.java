@@ -9,6 +9,7 @@ import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextInputDialog;
@@ -45,6 +46,9 @@ public class TableSelectionStageController implements Initializable {
 
     @FXML
     private TableColumn<DataTable, String> partnerCol;
+    
+    @FXML
+    private Label nameLbl;
 
     /**
      * Initializes the controller class.
@@ -52,7 +56,7 @@ public class TableSelectionStageController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         dataTables = new ArrayList<>();
-
+        
         nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         idCol.setCellValueFactory(new PropertyValueFactory<>("id"));
         statusCol.setCellValueFactory(new PropertyValueFactory<>("status"));
@@ -124,4 +128,14 @@ public class TableSelectionStageController implements Initializable {
             tableView.getItems().add(data);
         }
     }
+    
+    /**
+     * Sets the client name that is displayed on the table selection stage.
+     * 
+     * @param name the name to set.
+     */
+    public void setClientName(String name) {
+        nameLbl.setText(name);
+    }
 }
+
