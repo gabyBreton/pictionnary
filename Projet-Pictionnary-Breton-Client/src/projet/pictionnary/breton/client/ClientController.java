@@ -42,6 +42,7 @@ public class ClientController implements Observer {
     private GameWindow partnerWindow;
     private Stage drawerStage;
     private Stage partnerStage;
+    private int[] stats;
     
     /**
      * Loads the connexion stage.
@@ -121,6 +122,10 @@ public class ClientController implements Observer {
         Type type = (Type) message.getType();
 
         switch (type) {
+            case STATS:
+                stats = (int []) message.getContent();
+                break;
+                
             case GET_TABLES:
                 dataTables = (List<DataTable>) message.getContent();
                 tableSelectionCtrl.refreshTableView(dataTables);

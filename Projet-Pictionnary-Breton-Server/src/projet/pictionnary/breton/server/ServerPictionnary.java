@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import projet.pictionnary.breton.common.model.MessageStats;
 import projet.pictionnary.breton.common.users.Members;
 import projet.pictionnary.breton.server.business.AdminFacade;
 import projet.pictionnary.breton.server.dto.PlayerDto;
@@ -451,26 +452,47 @@ public class ServerPictionnary extends AbstractServer {
                                                "Your login is still not validated"), 
                          message.getAuthor());
         } else {
-            // TODO : peut etre que si vide renvoi null ?
             List<GameDto> gameInfosAsDrawer = AdminFacade.getGameInfosDrawer(memberId);
             List<GameDto> gameInfosAsPartner = AdminFacade.getGameInfosPartner(memberId);
-            
-            if (gameInfosAsDrawer != null) {
-                if (gameInfosAsPartner != null) {
-                    
-                    List<GameDto> gameInfos = gameInfosAsDrawer;
-                    for (GameDto game : gameInfosAsPartner) {
-                        gameInfos.add(game);
-                    }
-                } else {
-                    // on garde que le drawer
-                }
-            } else if (gameInfosAsPartner.size() > 0) {
-                // on garde que le partner
-            } else {
-                // on envoi un truc vide
-            }
+            int [] gameStats = storeStatistics(gameInfosAsDrawer, gameInfosAsPartner);
+
+            sendToClient(new MessageStats(User.ADMIN, message.getAuthor(), gameStats), 
+                         message.getAuthor());
         }
+    }
+
+    /**
+     * Stores client game statistics and return it.
+     * 
+     * @param gameInfosAsDrawer the informations for the client as drawer.
+     * @param gameInfosAsPartner the informations for the client as partner. 
+     */
+    private int[] storeStatistics(List<GameDto> gameInfosAsDrawer, 
+                                  List<GameDto> gameInfosAsPartner) {
+        int indexTotalGame = 0;
+        int indexDrawer = 1;
+        int indexPartner = 2;
+        // TODO bonus:
+        //int indexAbandonDrawer = 3;
+        //int indexAbandonPartner = 4;
+        int [] gameStats = new int [3];
+        int nbTotalGame = 0;
+        
+        if (gameInfosAsDrawer != null) {
+            nbTotalGame += gameInfosAsDrawer.size();
+            
+            gameStats[indexTotalGame] = nbTotalGame;
+            gameStats[indexDrawer] = gameInfosAsDrawer.size();
+        } 
+        
+        if (gameInfosAsPartner != null) {
+            nbTotalGame += gameInfosAsPartner.size();
+            
+            gameStats[indexTotalGame] = nbTotalGame;
+            gameStats[indexPartner] = gameInfosAsPartner.size();
+        }
+        
+        return gameStats;
     }
     
     /**

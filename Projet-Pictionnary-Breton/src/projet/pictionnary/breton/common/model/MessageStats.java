@@ -12,7 +12,7 @@ public class MessageStats implements Message {
 
     private final User author;
     private final User recipient;
-    private final List<String> stats;
+    private final int[] stats;
     
     /**
      * Constructs a new MessageStats.
@@ -21,7 +21,7 @@ public class MessageStats implements Message {
      * @param recipient the recipient of the message.
      * @param stats the statistics.
      */
-    public MessageStats(User author, User recipient, List<String> stats) {
+    public MessageStats(User author, User recipient, int[] stats) {
         this.author = author;
         this.recipient = recipient;
         this.stats = stats;

@@ -82,6 +82,11 @@ public class ClientPictionnary extends AbstractClient {
                 notifyObservers(msg);
                 break;
             
+            case STATS:
+                System.out.println("STATISTICS RECEIVED");
+                notifyObservers(msg);
+                break;
+                
             case CREATE:
                 setMySelf(message.getRecipient());                
                 notifyObservers(message);
