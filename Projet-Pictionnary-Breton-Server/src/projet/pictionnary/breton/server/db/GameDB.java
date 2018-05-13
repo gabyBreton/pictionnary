@@ -2,18 +2,25 @@ package projet.pictionnary.breton.server.db;
 
 import java.sql.Types;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import projet.pictionnary.breton.server.dto.GameDto;
 import projet.pictionnary.breton.server.exception.PictionnaryDbException;
 import projet.pictionnary.breton.server.seldto.GameSel;
 
 /**
- *
+ * Class used to interact with the Game table in the database.
+ * 
  * @author Gabriel Breton - 43397
  */
 public class GameDB {
     
+    /**
+     * Gets a collection of informations stored in the database.
+     * 
+     * @param sel the selection to gets the infos.
+     * @return a list of informations.
+     * @throws PictionnaryDbException if the instanciation of Game is impossible.
+     */
     public static List<GameDto> getCollection(GameSel sel) 
                                                  throws PictionnaryDbException {
         List<GameDto> al = new ArrayList<>();
@@ -96,6 +103,13 @@ public class GameDB {
         return al;
     }
     
+    /**
+     * Inserts a game in the database.
+     * 
+     * @param game the game to insert.
+     * @return the id of the game added.
+     * @throws PictionnaryDbException if it is not possible to add the game.
+     */
     public static int insertDb(GameDto game) throws PictionnaryDbException {
         try {
             int num = SequenceDB.getNextNum(SequenceDB.GAME);
@@ -116,6 +130,12 @@ public class GameDB {
         }
     }
     
+    /**
+     * Updates a game informations.
+     * 
+     * @param game the game to update.
+     * @throws PictionnaryDbException if it is not possible to modify the game.
+     */
     public static void updateDb(GameDto game) throws PictionnaryDbException {
         try {
             java.sql.Connection connexion = DBManager.getConnection();

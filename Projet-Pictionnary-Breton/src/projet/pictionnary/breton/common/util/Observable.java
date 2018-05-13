@@ -23,8 +23,9 @@ public interface Observable {
     public void deleteObserver(Observer o);
     
     /**
+     * Notifies the observers.
      * 
-     * @param arg
+     * @param arg the information to send.
      */
     public void notifyObservers(Object arg);
 }

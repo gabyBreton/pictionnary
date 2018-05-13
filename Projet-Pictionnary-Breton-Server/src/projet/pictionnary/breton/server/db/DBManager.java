@@ -4,13 +4,11 @@ import java.sql.*;
 import projet.pictionnary.breton.server.exception.PictionnaryDbException;
 
 /**
- * Offre les outils de connexion et de gestion de transaction. 
+ * Offers tools for connexion et transaction managing.
  */
 public class DBManager {
 
     private static Connection connection;
-    //private static MesSettingsDeConnexion dbChoisie;
-
 
     /**
      * Retourne la connexion établie ou à défaut, l'établit
@@ -28,7 +26,7 @@ public class DBManager {
     }
 
     /**
-     * débute une transaction
+     * Starts a transaction.
      */
     public static void startTransaction() throws PictionnaryDbException {
         try {
@@ -39,9 +37,9 @@ public class DBManager {
     }
 
     /**
-     * débute une transaction en spécifiant son niveau d'isolation
-     * Attention, ceci n'est pas implémenté sous Access!
-     * (cette notion sera abordée ultérieurement dans le cours de bd)
+     * Débute une transaction en spécifiant son niveau d'isolation.
+     * Attention, ceci n'est pas implémenté sous Access,
+     * (cette notion sera abordée ultérieurement dans le cours de bd).
      */
     public static void startTransaction(int isolationLevel) throws PictionnaryDbException {
         try {
@@ -71,7 +69,7 @@ public class DBManager {
     }
 
     /**
-     * valide la transaction courante
+     * Valide la transaction courante.
      */
     public static void validateTransaction() throws PictionnaryDbException {
         try {
@@ -83,7 +81,7 @@ public class DBManager {
     }
 
     /**
-     * annule la transaction courante
+     * Annule la transaction courante.
      */
     public static void cancelTransaction() throws PictionnaryDbException {
         try {

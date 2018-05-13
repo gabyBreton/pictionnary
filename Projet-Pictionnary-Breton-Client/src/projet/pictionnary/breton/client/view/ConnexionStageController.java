@@ -36,7 +36,6 @@ public class ConnexionStageController implements Initializable {
     @FXML
     public void connectToServer() {
         try {
-//            clientController.loadTableSelectionStage();
             clientController.connectToServer();
         } catch (IOException ioe) {
             System.out.println(ioe.getMessage());
@@ -88,6 +87,9 @@ public class ConnexionStageController implements Initializable {
         return connexionBtn;
     }
     
+    /**
+     * Displays that the login is invalid.
+     */
     public void invalidLogin() {
         pseudoTfd.setText("Invalid login");
     }

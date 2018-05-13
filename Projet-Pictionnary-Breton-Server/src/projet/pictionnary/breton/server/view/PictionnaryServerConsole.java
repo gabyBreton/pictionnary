@@ -47,8 +47,6 @@ public class PictionnaryServerConsole implements Observer {
         updateUser();
         if (arg != null) {
            // TODO : afficher nouvelles informations lors de changements importants.
-           // Message message = (Message) arg;
-           //updateMessage(message);
         }
 
     }

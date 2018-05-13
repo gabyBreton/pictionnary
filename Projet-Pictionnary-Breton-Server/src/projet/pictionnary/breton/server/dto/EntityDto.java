@@ -51,5 +51,4 @@ public abstract class EntityDto<T> {
         hash = 73 * hash + (this.id != null ? this.id.hashCode() : 0);
         return hash;
     }
-    
 }

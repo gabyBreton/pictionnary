@@ -3,7 +3,8 @@ package projet.pictionnary.breton.server.db;
 import projet.pictionnary.breton.server.exception.PictionnaryDbException;
 
 /**
- *
+ * Class used to interact with the Sequence table in the database.
+ * 
  * @author Gabriel Breton - 43397
  */
 public class SequenceDB {
@@ -12,6 +13,13 @@ public class SequenceDB {
     static final String PLAYER = "Player";
     static final String WORD = "Word";
 
+    /**
+     * Gets the next id of a register in a table.
+     * 
+     * @param sequence the name of the table.
+     * @return the next id.
+     * @throws PictionnaryDbException if the next id is not available.
+     */
     static synchronized int getNextNum(String sequence) throws PictionnaryDbException {
         try {
             java.sql.Connection connexion = DBManager.getConnection();

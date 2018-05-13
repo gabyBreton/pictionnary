@@ -13,7 +13,9 @@ import projet.pictionnary.breton.common.model.GameStatus;
 import projet.pictionnary.breton.common.util.Observer;
 
 /**
- *
+ * This class is used as an abstract generic class to derive from and create 
+ * game windows.
+ * 
  * @author Gabriel Breton - 43397
  */
 public abstract class GameWindow extends Region {
@@ -21,14 +23,17 @@ public abstract class GameWindow extends Region {
     private ClientController clientController;    
     
     /* Visual elements */
-    private Label gameStatusTitleLbl;
-    private Label gameStatusLbl;
-    private Label historyLbl;
-    private TextArea propositionHist;
-    private HBox rootBox;
-    private GridPane infosPane;
-    private Button quitBtn;
+    private final Label gameStatusTitleLbl;
+    private final Label gameStatusLbl;
+    private final Label historyLbl;
+    private final TextArea propositionHist;
+    private final HBox rootBox;
+    private final GridPane infosPane;
+    private final Button quitBtn;
     
+    /**
+     * Constructs a new game window. 
+     */
     public GameWindow() {
         rootBox = new HBox();
         
@@ -130,35 +135,75 @@ public abstract class GameWindow extends Region {
      */
     public void clearPane() {
     }   
-    
+
+    /**
+     * Gives the client controller.
+     * 
+     * @return the client controller.
+     */
     public ClientController getClientController() {
         return clientController;
     }
-
+    
+    /**
+     * Gives the game status title label.
+     * 
+     * @return the game status title label.
+     */
     public Label getGameStatusTitleLbl() {
         return gameStatusTitleLbl;
     }
 
+    /**
+     * Gives the game status label.
+     * 
+     * @return the game status label.
+     */
     public Label getGameStatusLbl() {
         return gameStatusLbl;
     }
 
+    /**
+     * Gives the history label.
+     * 
+     * @return the history label.
+     */
     public Label getHistoryLbl() {
         return historyLbl;
     }
 
+    /**
+     * Gives the propositions history.
+     * 
+     * @return the propositions history.
+     */
     public TextArea getPropositionHist() {
         return propositionHist;
     }
 
+    /**
+     * Gives the root box for the window's elements.
+     * 
+     * @return the root box.
+     */
     public HBox getRootBox() {
         return rootBox;
     }
 
+    /**
+     * Gives the info pane.
+     * 
+     * @return the info pane.
+     */
     public GridPane getInfosPane() {
         return infosPane;
     }
 
+    /**
+     * Gives the button to quit the window.
+     * 
+     * @return the button to quit.
+     */
     public Button getQuitBtn() {
         return quitBtn;
     }

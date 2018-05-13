@@ -138,16 +138,6 @@ public class ServerPictionnary extends AbstractServer {
     }
     
     /**
-     * Return the next client id.
-     *
-     * @return the next client id.
-     */
-    final synchronized int getNextClientId() {
-        clientId++;
-        return clientId;
-    }
-    
-    /**
      * Gives the nex table id.
      * 
      * @return the next table id.
@@ -157,6 +147,12 @@ public class ServerPictionnary extends AbstractServer {
         return tableId;
     }
     
+    /**
+     * Gives the next wait login id. Used when a client is connected but the 
+     * login is not validated.
+     * 
+     * @return the next wait login id.
+     */
     final synchronized int getNextLoginWaitId() {
         loginWaitId--;
         return loginWaitId;
@@ -240,6 +236,13 @@ public class ServerPictionnary extends AbstractServer {
         }
     } 
 
+    /**
+     * Handles a profile request.
+     * 
+     * @param author the author of the request.
+     * @param memberId the id of the member.
+     * @param msg the request.
+     */
     private void handleProfileRequest(User author, int memberId, Object msg) {
         try {
             PlayerDto registredPlayer = AdminFacade.getPlayerByLogin(author.getName());
@@ -277,6 +280,11 @@ public class ServerPictionnary extends AbstractServer {
         }
     }
 
+    /**
+     * Sends messages after a profile request.
+     * 
+     * @param author the author of the request.
+     */
     private void sendMessagesAfterProfile(User author) {
         sendToClient(new MessageProfile(author.getId(), author.getName()),
                         author.getId());
@@ -308,6 +316,7 @@ public class ServerPictionnary extends AbstractServer {
                 
                 gameStatus = GameStatus.WIN;
                 GameDto gameDto = AdminFacade.getGameByDrawerId(tableSubmit.getDrawer().getId());
+                // TODO : FIX-ME CREER UN NOUVEAU GAME DTO ET PAS REUTILISER.
                 gameDto.setEndTime(new Timestamp(System.currentTimeMillis()));
                 AdminFacade.updateGame(gameDto);
             } else {
@@ -381,7 +390,7 @@ public class ServerPictionnary extends AbstractServer {
     }
     
     /**
-     * Handles and applys a create table request.
+     * Handles and applies a create table request.
      * 
      * @param message the create table request.
      * @param memberId the id of the author of the request.

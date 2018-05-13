@@ -85,7 +85,7 @@ public class Members implements Iterable<User>, Serializable {
     }
 
     /**
-     * Update the name of a user.
+     * Update the name of an user.
      *
      * @param name new value of the name.
      * @param id userId of the user to update.
@@ -98,7 +98,7 @@ public class Members implements Iterable<User>, Serializable {
     }
 
     /**
-     * Update the role of a user.
+     * Update the role of an user.
      *
      * @param role new value of the role.
      * @param id userId of the user to update.
@@ -110,6 +110,12 @@ public class Members implements Iterable<User>, Serializable {
         }
     }
     
+    /**
+     * Update the id of an user.
+     * 
+     * @param oldId the old id.
+     * @param newId the new id.
+     */
     public void changeId(int oldId, int newId) {
         User user = getUser(oldId);
         if (user != null) {

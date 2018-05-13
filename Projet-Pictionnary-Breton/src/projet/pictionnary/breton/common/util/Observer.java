@@ -7,5 +7,10 @@ package projet.pictionnary.breton.common.util;
  */
 public interface Observer {
 
+    /**
+     * Updates after a notification from an observable.
+     * 
+     * @param arg the information to use to update.
+     */
     public void update(Object arg);
 }

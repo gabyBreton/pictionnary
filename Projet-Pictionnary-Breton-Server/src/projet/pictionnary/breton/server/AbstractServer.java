@@ -405,6 +405,12 @@ public abstract class AbstractServer implements Observable, Runnable {
         }
     }
 
+    /**
+     * Changes the id of a client in the connection thread list.
+     * 
+     * @param oldId the old id.
+     * @param newId the new id.
+     */
     public void changeClientConnectionId(int oldId, int newId) {
         for (Thread clientThread : threads) {
             int idClientThread = (Integer) 

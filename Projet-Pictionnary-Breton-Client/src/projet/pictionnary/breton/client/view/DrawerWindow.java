@@ -6,8 +6,6 @@ import javafx.scene.layout.GridPane;
 import projet.pictionnary.breton.common.util.Observer;
 import projet.pictionnary.breton.drawing.components.DrawingTools;
 
-// TODO classe pareille à PARTNER, faire un truc générique
-
 /**
  * This class is used as UI to represents the drawer side of the game.
  * 

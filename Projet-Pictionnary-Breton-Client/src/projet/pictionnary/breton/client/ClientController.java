@@ -13,10 +13,8 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import projet.pictionnary.breton.client.view.ConnexionStageController;
 import projet.pictionnary.breton.client.view.TableSelectionStageController;
-import projet.pictionnary.breton.client.view.DrawerWindow;
 import projet.pictionnary.breton.client.view.GameWindow;
 import projet.pictionnary.breton.client.view.GameWindowFactory;
-import projet.pictionnary.breton.client.view.PartnerWindow;
 import projet.pictionnary.breton.common.model.DataTable;
 import projet.pictionnary.breton.common.model.DrawEvent;
 import projet.pictionnary.breton.common.model.GameStatus;
@@ -63,7 +61,13 @@ public class ClientController implements Observer {
         stage.setTitle("Pictionnary - Server connexion");
         stage.show();
     }
-    
+
+    /**
+     * Launches the client for the Pictionnary and open the connection to the 
+     * server.
+     * 
+     * @throws IOException If an error occurs when connecting.
+     */
     public void connectToServer() throws IOException {
         clientPictionnary = new ClientPictionnary(connexionStageCtrl.getServerIp(),
                             Integer.parseInt(connexionStageCtrl.getPortNumber()),
@@ -292,7 +296,6 @@ public class ClientController implements Observer {
      * @param tableName the name of the table.
      */
     public void createTable(String tableName) {
-        System.out.println("Controller client create table");
         clientPictionnary.createTable(tableName);
     }
     

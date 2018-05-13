@@ -106,6 +106,8 @@ public class TableSelectionStageController implements Initializable {
     /**
      * Refresh the table view that contains all the informations for the tables
      * selection.
+     * 
+     * @param dataTables the data of the tables.
      */
     public void refreshTableView(List<DataTable> dataTables) {
         this.dataTables = dataTables;

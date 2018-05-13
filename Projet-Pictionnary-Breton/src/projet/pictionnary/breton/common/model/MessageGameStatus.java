@@ -22,7 +22,7 @@ public class MessageGameStatus implements Message{
      * @param gameStatus the status of the game.
      */
     public MessageGameStatus(User author, User recipient, 
-                                GameStatus gameStatus) {
+                             GameStatus gameStatus) {
         this.author = author;
         this.recipient = recipient;
         this.gameStatus = gameStatus;

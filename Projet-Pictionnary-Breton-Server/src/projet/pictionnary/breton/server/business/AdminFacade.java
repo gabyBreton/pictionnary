@@ -9,11 +9,19 @@ import projet.pictionnary.breton.server.exception.PictionnaryBusinessException;
 import projet.pictionnary.breton.server.exception.PictionnaryDbException;
 
 /**
- *
+ * This class is used as a facade for the admin of the server, to interact with
+ * the database.
+ * 
  * @author Gabriel Breton - 43397
  */
 public class AdminFacade {
-    
+   
+    /**
+     * Gives the words stored in the database.
+     * 
+     * @return the words stored in the database.
+     * @throws PictionnaryBusinessException if the list of words is not available.
+     */
     public static List<WordDto> getAllWords() throws PictionnaryBusinessException {
         try {
             DBManager.startTransaction();
@@ -32,6 +40,14 @@ public class AdminFacade {
         }
     }
     
+    /**
+     * Finds a player in the database with the login specified in parameters.
+     * 
+     * @param login the login of the player to find.
+     * @return a player dto corresponding to the player.
+     * @throws PictionnaryBusinessException if the player is not find in the 
+     *         database.
+     */
     public static PlayerDto getPlayerByLogin(String login) throws PictionnaryBusinessException {
         try {
             DBManager.startTransaction();
@@ -50,6 +66,14 @@ public class AdminFacade {
         }
     }
     
+    /**
+     * Adds a player in the database.
+     * 
+     * @param player the player to add.
+     * @return the id of the added player.
+     * @throws PictionnaryBusinessException if it is not possible to add the 
+     *         player.
+     */
     public static int addPlayer(PlayerDto player) throws PictionnaryBusinessException {
         try {
             DBManager.startTransaction();
@@ -68,6 +92,14 @@ public class AdminFacade {
         }
     }
     
+    /**
+     * Adds game informations in the database.
+     * 
+     * @param game the informations to add.
+     * @return the id of the added game.
+     * @throws PictionnaryBusinessException if it is not possible to add the 
+     *         game.
+     */
     public static int addGame(GameDto game) throws PictionnaryBusinessException {
         try {
             DBManager.startTransaction();
@@ -86,6 +118,13 @@ public class AdminFacade {
         }
     }
     
+    /**
+     * Updates the informations of a game stored in the database.
+     * 
+     * @param game the game informations.
+     * @throws PictionnaryBusinessException if it is not possible to update the 
+     *         informations.
+     */
     public static void updateGame(GameDto game) throws PictionnaryBusinessException {
         try {
             DBManager.startTransaction();
@@ -103,6 +142,13 @@ public class AdminFacade {
         }
     }
     
+    /**
+     * Gives the game informations corresponding to the id of a drawer.
+     * 
+     * @param id the id of the drawer.
+     * @return the game information corresponding to the id of a drawer.
+     * @throws PictionnaryBusinessException if the game is not available.
+     */
     public static GameDto getGameByDrawerId(int id) throws PictionnaryBusinessException {
         try {
             DBManager.startTransaction();
@@ -121,6 +167,13 @@ public class AdminFacade {
         }
     }
     
+    /**
+     * Gives the game informations corresponding to the id of a partner.
+     * 
+     * @param id the id of the partner.
+     * @return the game information corresponding to the id of a partner.
+     * @throws PictionnaryBusinessException if the game is not available.
+     */
     public static GameDto getGameByPartnerId(int id) throws PictionnaryBusinessException {
         try {
             DBManager.startTransaction();

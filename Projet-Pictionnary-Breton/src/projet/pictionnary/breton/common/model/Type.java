@@ -6,9 +6,15 @@ package projet.pictionnary.breton.common.model;
  */
 public enum Type {
 
-    
+    /**
+     * Message used to inform the client that it is well connected.
+     */
     CONNECTED, 
     
+    /**
+     * Message used to inform the client that it try to connect with an 
+     * invalid login.
+     */
     INVALID_LOGIN,
     
     /**
