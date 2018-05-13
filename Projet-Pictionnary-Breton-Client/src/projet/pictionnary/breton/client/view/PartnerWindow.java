@@ -32,12 +32,9 @@ public class PartnerWindow extends GameWindow {
         createsButtonSubmit();
         
         addElementsGridPane(super.getInfosPane(), 
-                            super.getGameStatusTitleLbl(), 
                             toGuessLbl, 
                             proposalTfd, 
-                            submitBtn, 
-                            super.getHistoryLbl(), 
-                            super.getQuitBtn());
+                            submitBtn);
         
         super.getRootBox().getChildren().addAll(drawingPane, 
                                                 super.getInfosPane());
@@ -74,18 +71,16 @@ public class PartnerWindow extends GameWindow {
      * @param historyLbl the info label for the history area.
      * @param quitBtn the quit button.
      */    
-    private void addElementsGridPane(GridPane infosPane, Label gameStatusTitleLbl, 
-                                        Label toGuessLbl, TextField proposalTfd, 
-                                        Button submitBtn, Label historyLbl, 
-                                        Button quitBtn) {
-        infosPane.add(gameStatusTitleLbl, 0, 0);
+    private void addElementsGridPane(GridPane infosPane, Label toGuessLbl, 
+                                     TextField proposalTfd, Button submitBtn) {
+        infosPane.add(super.getGameStatusTitleLbl(), 0, 0);
         infosPane.add(super.getGameStatusLbl(), 0, 1);
         infosPane.add(toGuessLbl, 0, 5);
         infosPane.add(proposalTfd, 0, 6);
         infosPane.add(submitBtn, 0, 7);
-        infosPane.add(historyLbl, 0, 11);
+        infosPane.add(super.getHistoryLbl(), 0, 11);
         infosPane.add(super.getPropositionHist(), 0, 12);
-        infosPane.add(quitBtn, 0, 20);
+        infosPane.add(super.getQuitBtn(), 0, 20);
     }
 
     /**

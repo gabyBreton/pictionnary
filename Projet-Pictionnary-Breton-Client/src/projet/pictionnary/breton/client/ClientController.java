@@ -355,6 +355,13 @@ public class ClientController implements Observer {
     }
     
     /**
+     * Requests the statistics for client.
+     */
+    public void getStats() {
+        clientPictionnary.getStats();
+    }
+    
+    /**
      * Notify the client that the user quit the game.
      */
     public void quitGame() {

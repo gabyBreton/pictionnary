@@ -82,7 +82,11 @@ public class GameDB {
                     stmt.setInt(i, sel.getDrawer());
                     i++;
                 }
-
+                if (sel.getPartner() != 0) {
+                    stmt.setInt(i, sel.getPartner());
+                    i++;
+                }
+                
             } else {
                 query = query + " Order by gdrawer";
                 stmt = connexion.prepareStatement(query);

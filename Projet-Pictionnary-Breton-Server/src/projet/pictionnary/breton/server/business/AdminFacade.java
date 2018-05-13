@@ -146,15 +146,15 @@ public class AdminFacade {
      * Gives the game informations corresponding to the id of a drawer.
      * 
      * @param id the id of the drawer.
-     * @return the game information corresponding to the id of a drawer.
+     * @return the game informations corresponding to the id of a drawer.
      * @throws PictionnaryBusinessException if the game is not available.
      */
-    public static GameDto getGameByDrawerId(int id) throws PictionnaryBusinessException {
+    public static List<GameDto> getGameInfosDrawer(int id) throws PictionnaryBusinessException {
         try {
             DBManager.startTransaction();
-            GameDto gameDto = GameBusiness.getGameByDrawerId(id);
+            List<GameDto> gameInfos = GameBusiness.getGameInfosDrawer(id);
             DBManager.validateTransaction();
-            return gameDto;
+            return gameInfos;
         } catch (PictionnaryDbException pdb) {
             String msg = pdb.getMessage();
             try {
@@ -171,15 +171,15 @@ public class AdminFacade {
      * Gives the game informations corresponding to the id of a partner.
      * 
      * @param id the id of the partner.
-     * @return the game information corresponding to the id of a partner.
+     * @return the game informations corresponding to the id of a partner.
      * @throws PictionnaryBusinessException if the game is not available.
      */
-    public static GameDto getGameByPartnerId(int id) throws PictionnaryBusinessException {
+    public static List<GameDto> getGameInfosPartner(int id) throws PictionnaryBusinessException {
         try {
             DBManager.startTransaction();
-            GameDto gameDto = GameBusiness.getGameByPartnerId(id);
+            List<GameDto> gameInfos = GameBusiness.getGameInfosPartner(id);
             DBManager.validateTransaction();
-            return gameDto;
+            return gameInfos;
         } catch (PictionnaryDbException pdb) {
             String msg = pdb.getMessage();
             try {
@@ -192,6 +192,13 @@ public class AdminFacade {
         }
     }
     
+    /**
+     * Gives a game information corresponding to a given game id.
+     * 
+     * @param id the id of the game to get.
+     * @return the game informations.
+     * @throws PictionnaryBusinessException if the Game table is not available.
+     */
     public static GameDto getGameById(int id) throws PictionnaryBusinessException {
         try {
             DBManager.startTransaction();

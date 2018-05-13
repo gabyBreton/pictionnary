@@ -28,12 +28,7 @@ public class DrawerWindow extends GameWindow {
         Label toDrawLbl = new Label("Word to draw");
         toDrawLbl.setUnderline(true);
         
-        addElementsGridPane(super.getInfosPane(), 
-                            super.getGameStatusTitleLbl(),
-                            toDrawLbl, 
-                            wordLbl, 
-                            super.getHistoryLbl(), 
-                            super.getQuitBtn());
+        addElementsGridPane(super.getInfosPane(), toDrawLbl, wordLbl);
         
         super.getRootBox().getChildren().addAll(drawingTools, 
                                                 super.getInfosPane());
@@ -51,16 +46,15 @@ public class DrawerWindow extends GameWindow {
      * @param historyLbl the info label for the history area.
      * @param quitBtn the quit button.
      */
-    private void addElementsGridPane(GridPane infosPane, Label gameStatusTitleLbl, 
-                                        Label toDrawLbl, Label wordLbl, 
-                                        Label historyLbl, Button quitBtn) {
-        infosPane.add(gameStatusTitleLbl, 0, 0);
+    private void addElementsGridPane(GridPane infosPane, Label toDrawLbl, 
+                                     Label wordLbl) {
+        infosPane.add(super.getGameStatusTitleLbl(), 0, 0);
         infosPane.add(super.getGameStatusLbl(), 0, 1);
         infosPane.add(toDrawLbl, 0, 5);
         infosPane.add(wordLbl, 0, 6);
-        infosPane.add(historyLbl, 0, 10);
+        infosPane.add(super.getHistoryLbl(), 0, 10);
         infosPane.add(super.getPropositionHist(), 0, 11);
-        infosPane.add(quitBtn, 0, 20);
+        infosPane.add(super.getQuitBtn(), 0, 20);
     }
     
     /**

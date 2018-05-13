@@ -1,6 +1,7 @@
 package projet.pictionnary.breton.server.business;
 
 import java.util.Collection;
+import java.util.List;
 import projet.pictionnary.breton.server.db.GameDB;
 import projet.pictionnary.breton.server.dto.GameDto;
 import projet.pictionnary.breton.server.exception.PictionnaryBusinessException;
@@ -49,22 +50,13 @@ public class GameBusiness {
     }
 
     /**
-     * Gets the game information for a drawer id.
+     * Gets a game by its corresponding id.
      * 
-     * @param id the id of the drawer.
-     * @return the game informations.
-     * @throws PictionnaryDbException if the game is not available. 
+     * @param id the id of the game to get.
+     * @return the game.
+     * @throws PictionnaryDbException if an errors occurs when interacting with 
+     *         the database.
      */
-    static GameDto getGameByDrawerId(int id) throws PictionnaryDbException {
-        GameSel sel = new GameSel(0, id, 0, null, null, 0);
-        Collection<GameDto> col = GameDB.getCollection(sel);
-        if (col.size() == 1) {
-            return col.iterator().next();
-        } else {
-            return null;
-        }
-    }
-    
     static GameDto getGameById(int id) throws PictionnaryDbException {
         GameSel sel = new GameSel(id, 0, 0, null, null, 0);
         Collection<GameDto> col = GameDB.getCollection(sel);
@@ -74,19 +66,38 @@ public class GameBusiness {
             return null;
         }
     }
-    
+
     /**
-     * Gets the game information for a partner id.
+     * Gets a list of game informations for a drawer id.
+     * 
+     * @param id the id of the drawer.
+     * @return the game informations or null if there is none.
+     * @throws PictionnaryDbException if an errors occurs when interacting with 
+     *         the database.
+     */    
+    static List<GameDto> getGameInfosDrawer(int id) throws PictionnaryDbException {
+        GameSel sel = new GameSel(0, id, 0, null, null, 0);
+        List<GameDto> list = GameDB.getCollection(sel);
+        if (list.size() > 0) {
+            return list;
+        } else {
+            return null;
+        }
+    }    
+
+    /**
+     * Gets a list of game informations for a partner id.
      * 
      * @param id the id of the partner.
-     * @return the game informations.
-     * @throws PictionnaryDbException if the game is not available. 
-     */
-    static GameDto getGameByPartnerId(int id) throws PictionnaryDbException {
+     * @return the game informations or null if there is none.
+     * @throws PictionnaryDbException if an errors occurs when interacting with 
+     *         the database.
+     */ 
+    static List<GameDto> getGameInfosPartner(int id) throws PictionnaryDbException {
         GameSel sel = new GameSel(0, 0, id, null, null, 0);
-        Collection<GameDto> col = GameDB.getCollection(sel);
-        if (col.size() == 1) {
-            return col.iterator().next();
+        List<GameDto> list = GameDB.getCollection(sel);
+        if (list.size() > 0) {
+            return list;
         } else {
             return null;
         }

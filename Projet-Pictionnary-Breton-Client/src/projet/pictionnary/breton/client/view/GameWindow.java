@@ -70,7 +70,7 @@ public abstract class GameWindow extends Region {
     public void setStatus(GameStatus gameStatus) {
         this.gameStatusLbl.setText(gameStatus.toString());
     }
-
+    
     /**
      * Creates the button quit.
      * 

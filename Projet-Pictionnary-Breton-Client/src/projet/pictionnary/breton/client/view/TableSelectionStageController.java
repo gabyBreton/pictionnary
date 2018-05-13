@@ -62,14 +62,20 @@ public class TableSelectionStageController implements Initializable {
 
     /**
      * Displays a dialog box to set the name of the table.
-     * 
-     * @param event the action event.
      */
     @FXML
-    public void createTable(ActionEvent event) {
+    public void createTable() {
         displayTableNameDialog();
     }
 
+    /**
+     * Requests to the server to get the game statistics for the client.
+     */
+    @FXML
+    public void getStats() {
+        clientController.getStats();
+    }
+    
     /**
      * Creates and shows the dialog box for the name of the table to create.
      */

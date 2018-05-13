@@ -17,6 +17,7 @@ import projet.pictionnary.breton.common.model.MessageSendDraw;
 import projet.pictionnary.breton.common.model.MessageGetWord;
 import projet.pictionnary.breton.common.model.MessageJoin;
 import projet.pictionnary.breton.common.model.MessageQuit;
+import projet.pictionnary.breton.common.model.MessageStats;
 import projet.pictionnary.breton.common.model.MessageSubmit;
 import projet.pictionnary.breton.common.model.Type;
 import projet.pictionnary.breton.common.users.User;
@@ -279,20 +280,6 @@ public class ClientPictionnary extends AbstractClient {
     }
     
     /**
-     * Sends to the server the word that has been submited in a game.
-     * 
-     * @param propostion the word proposed.
-     */
-    public void submit(String propostion) {
-        try {
-            sendToServer(new MessageSubmit(mySelf, User.ADMIN, propostion, 
-                                            gameStatus));
-        } catch (IOException ioe) {
-            System.out.println(ioe.getMessage());
-        }
-    }
-
-    /**
      * Sets the status of the game.
      * 
      * @param gameStatus the game status to set.
@@ -308,6 +295,31 @@ public class ClientPictionnary extends AbstractClient {
      */
     public GameStatus getGameStatus() {
         return gameStatus;
+    }
+
+    /**
+     * Sends to the server the word that has been submited in a game.
+     * 
+     * @param propostion the word proposed.
+     */
+    public void submit(String propostion) {
+        try {
+            sendToServer(new MessageSubmit(mySelf, User.ADMIN, propostion, 
+                                            gameStatus));
+        } catch (IOException ioe) {
+            System.out.println(ioe.getMessage());
+        }
+    }
+
+    /**
+     * Sends to the server a request to get the client statistics.
+     */
+    public void getStats() {
+        try {
+            sendToServer(new MessageStats(mySelf, User.ADMIN, null));
+        } catch (IOException ioe) {
+            System.out.println(ioe.getMessage());
+        }
     }
     
     @Override

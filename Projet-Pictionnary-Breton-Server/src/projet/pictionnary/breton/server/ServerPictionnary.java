@@ -56,7 +56,7 @@ public class ServerPictionnary extends AbstractServer {
     private final List<Observer> observers;    
     private final List<Table> tables;
     private final List<DataTable> dataTables;
-    private int clientId;
+    private int clientId; // NOTE : useless since we use SEQUENCE table for id.
     private int tableId;
     private int loginWaitId;
     private final Members members;
@@ -179,6 +179,14 @@ public class ServerPictionnary extends AbstractServer {
                 }
                 break;
     
+            case STATS:
+                try {
+                    handleStatsRequest(message, memberId);
+                } catch (PictionnaryBusinessException ex) {
+                    Logger.getLogger(ServerPictionnary.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                break;
+                
             case GET_TABLES:
                 Message msgGetTables = new MessageGetTables(User.ADMIN, author, 
                                                                 dataTables);
@@ -429,6 +437,41 @@ public class ServerPictionnary extends AbstractServer {
                                                     User.EVERYBODY, dataTables);
         sendToAllClients(messageGetAllTables);
     }    
+    
+    /**
+     * Handles a request to get the game statistics for a client.
+     * 
+     * @param message the statistics message.
+     * @param memberId the id of the client.
+     */
+    private void handleStatsRequest(Message message, int memberId) throws PictionnaryBusinessException {
+        if (memberId < 0) {
+            sendToClient(new MessageBadRequest(User.ADMIN, 
+                                               message.getAuthor(), 
+                                               "Your login is still not validated"), 
+                         message.getAuthor());
+        } else {
+            // TODO : peut etre que si vide renvoi null ?
+            List<GameDto> gameInfosAsDrawer = AdminFacade.getGameInfosDrawer(memberId);
+            List<GameDto> gameInfosAsPartner = AdminFacade.getGameInfosPartner(memberId);
+            
+            if (gameInfosAsDrawer != null) {
+                if (gameInfosAsPartner != null) {
+                    
+                    List<GameDto> gameInfos = gameInfosAsDrawer;
+                    for (GameDto game : gameInfosAsPartner) {
+                        gameInfos.add(game);
+                    }
+                } else {
+                    // on garde que le drawer
+                }
+            } else if (gameInfosAsPartner.size() > 0) {
+                // on garde que le partner
+            } else {
+                // on envoi un truc vide
+            }
+        }
+    }
     
     /**
      * Handles and applys a quit request.

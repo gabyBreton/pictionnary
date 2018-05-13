@@ -23,6 +23,11 @@ public enum Type {
     PROFILE,
     
     /**
+     * Message to transfer client game statistics.
+     */
+    STATS,
+    
+    /**
      * Message to share the data for all the tables.
      */
     GET_TABLES,
