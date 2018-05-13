@@ -421,8 +421,10 @@ public class ClientController implements Observer {
     public void quitGame() {
         if (drawerWindow != null ) {
             drawerStage.close();
+            drawerWindow = null;
         } else if (partnerWindow != null) {
             partnerStage.close();
+            partnerWindow = null;
         }
         clientPictionnary.quitGame();
     }
