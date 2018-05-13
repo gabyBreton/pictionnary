@@ -83,7 +83,6 @@ public class DataTable implements Serializable {
         return partner;
     }
 
-    // TODO : empecher un nom vide lors de la connexion du client.
     /**
      * Sets the name of the drawer.
      * 

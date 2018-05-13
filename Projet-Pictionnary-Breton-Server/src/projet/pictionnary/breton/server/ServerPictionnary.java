@@ -375,7 +375,7 @@ public class ServerPictionnary extends AbstractServer {
      * Handles a request to get the word to draw.
      * 
      * @param author the author of the request.
-     * @param memberId the id of the author. // TODO don't need it
+     * @param memberId the id of the author. 
      */
     private void handleGetWordRequest(User author, int memberId) {
         if (author.getRole() == Role.PARTNER) {
@@ -738,8 +738,6 @@ public class ServerPictionnary extends AbstractServer {
         client.setInfo(ID_MAPINFO, memberId);
         sendToClient(new MessageConnected(User.ADMIN, members.getUser(memberId), true), 
                             memberId);
-       // TODO : lui envoyer datatables lorsqu'il est connecté avec un nom
-       // sendToClient(new MessageGetTables(User.ADMIN, null, dataTables), memberId);
     }
     
     /**

@@ -87,7 +87,6 @@ public class ClientController implements Observer {
      * @throws java.io.IOException in of loading error.
      */
     public void loadTableSelectionStage() throws IOException {
-        // TODO verify input before !           
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(getClass().getResource("view/TableSelectionStage.fxml"));
 

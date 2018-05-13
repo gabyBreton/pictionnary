@@ -262,7 +262,6 @@ public abstract class AbstractServer implements Observable, Runnable {
     synchronized protected void clientDisconnected(
             ConnectionToClient client) {
     }
-    // TODO : when a player quit (ferme la fenetre par exemple)
 
     /**
      * Hook method called each time an exception is thrown in a
