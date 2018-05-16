@@ -137,6 +137,24 @@ public class AdminFacade {
         }
     }
     
+    public static List<GameDto> getGamesByWord(int word) throws PictionnaryBusinessException {
+        try {
+            DBManager.startTransaction();
+            List<GameDto> list = GameBusiness.getGamesByWord(word);
+            DBManager.validateTransaction();
+            return list;
+        } catch (PictionnaryDbException pDB) {
+            String msg = pDB.getMessage();
+            try {
+                DBManager.cancelTransaction();
+            } catch (PictionnaryDbException ex) {
+                msg = ex.getMessage() + "\n" + msg;
+            } finally {
+                throw new PictionnaryBusinessException("Not possible to get the games \n" + msg);
+            }
+        }
+    }
+    
     /**
      * Updates the informations of a game stored in the database.
      * 
@@ -272,21 +290,31 @@ public class AdminFacade {
         }
     }
     
-    public static int getNumberBadProposition(String word) throws PictionnaryBusinessException {
-        try {
-            DBManager.startTransaction();
-            int number = PropositionBusiness.getNumberBadProposition(word);
-            DBManager.validateTransaction();
-            return  number;
-        } catch (PictionnaryDbException pDB) {
-            String msg = pDB.getMessage();
-            try {
-                DBManager.cancelTransaction();
-            } catch (PictionnaryDbException ex) {
-                msg = ex.getMessage() + "\n" + msg;
-            } finally {
-                throw new PictionnaryBusinessException("Not possible to get words \n" + msg);
-            }
+//    public static int getNumberBadProposition(String word) throws PictionnaryBusinessException {
+//        try {
+//            DBManager.startTransaction();
+//            int number = PropositionBusiness.getNumberBadProposition(word);
+//            DBManager.validateTransaction();
+//            return  number;
+//        } catch (PictionnaryDbException pDB) {
+//            String msg = pDB.getMessage();
+//            try {
+//                DBManager.cancelTransaction();
+//            } catch (PictionnaryDbException ex) {
+//                msg = ex.getMessage() + "\n" + msg;
+//            } finally {
+//                throw new PictionnaryBusinessException("Not possible to get words \n" + msg);
+//            }
+//        }
+//    }
+    
+    public static int getNumberBadPropositions(String word) throws PictionnaryBusinessException {
+        int wordId = getWord(word).getId();
+        List<GameDto> list = getGamesByWord(wordId);
+        int tot = 0;
+        for (GameDto game : list) {
+            tot += getAllBadPropositions(game.getId()).size();
         }
+        return tot;
     }
 }

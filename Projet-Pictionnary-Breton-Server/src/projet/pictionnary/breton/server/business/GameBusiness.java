@@ -58,7 +58,7 @@ public class GameBusiness {
      *         the database.
      */
     static GameDto getGameById(int id) throws PictionnaryDbException {
-        GameSel sel = new GameSel(id, 0, 0, null, null, 0);
+        GameSel sel = new GameSel(id, 0, 0, null, null, 0, 0, null);
         Collection<GameDto> col = GameDB.getCollection(sel);
         if (col.size() == 1) {
             return col.iterator().next();
@@ -76,7 +76,7 @@ public class GameBusiness {
      *         the database.
      */    
     static List<GameDto> getGameInfosDrawer(int id) throws PictionnaryDbException {
-        GameSel sel = new GameSel(0, id, 0, null, null, 0);
+        GameSel sel = new GameSel(0, id, 0, null, null, 0, 0, null);
         List<GameDto> list = GameDB.getCollection(sel);
         if (list.size() > 0) {
             return list;
@@ -94,7 +94,7 @@ public class GameBusiness {
      *         the database.
      */ 
     static List<GameDto> getGameInfosPartner(int id) throws PictionnaryDbException {
-        GameSel sel = new GameSel(0, 0, id, null, null, 0);
+        GameSel sel = new GameSel(0, 0, id, null, null, 0, 0, null);
         List<GameDto> list = GameDB.getCollection(sel);
         if (list.size() > 0) {
             return list;
@@ -102,4 +102,9 @@ public class GameBusiness {
             return null;
         }
     }    
+    
+    static List<GameDto> getGamesByWord(int word) throws PictionnaryDbException {
+        GameSel sel = new GameSel(0, 0, 0, null, null, 0, word, null);
+        return GameDB.getCollection(sel);
+    }
 }

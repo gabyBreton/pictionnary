@@ -15,6 +15,8 @@ public class GameSel {
     private final Timestamp startTime;
     private final Timestamp endTime;
     private final int stopPlayer;
+    private final int word;
+    private final String table;
 
     /**
      * Constructs a new GameSel.
@@ -27,13 +29,15 @@ public class GameSel {
      * @param stopPlayer the id of the player that stopped the game.
      */
     public GameSel(int id, int drawer, int partner, Timestamp startTime, 
-                    Timestamp endTime, int stopPlayer) {
+                    Timestamp endTime, int stopPlayer, int word, String table) {
         this.id = id;
         this.drawer = drawer;
         this.partner = partner;
         this.startTime = startTime;
         this.endTime = endTime;
         this.stopPlayer = stopPlayer;
+        this.word = word;
+        this.table = table;
     }
 
     /**
@@ -88,5 +92,13 @@ public class GameSel {
      */
     public int getStopPlayer() {
         return stopPlayer;
+    }
+
+    public int getWord() {
+        return word;
+    }
+
+    public String getTable() {
+        return table;
     }
 }

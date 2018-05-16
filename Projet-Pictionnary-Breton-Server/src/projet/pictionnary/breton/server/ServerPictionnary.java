@@ -339,9 +339,7 @@ public class ServerPictionnary extends AbstractServer {
                 }
             } else {
                 gameStatus = GameStatus.IN_GAME;
-                AdminFacade.addPropostion(new PropositionDto(proposition, gameId));
-                int nb = AdminFacade.getNumberBadProposition(proposition);
-                System.out.println(nb);
+                AdminFacade.addPropostion(new PropositionDto(proposition, gameId));               
             }
             
             sendSubmitResponse(tableSubmit.getDrawer(),

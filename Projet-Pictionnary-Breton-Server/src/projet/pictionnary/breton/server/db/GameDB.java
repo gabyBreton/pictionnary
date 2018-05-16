@@ -26,7 +26,7 @@ public class GameDB {
         List<GameDto> al = new ArrayList<>();
         try {
             String query = "Select gid, gdrawer, gpartner, gstarttime, gendtime, "
-                           + "gstopplayer FROM Game ";
+                           + "gstopplayer, gword, gtable FROM Game ";
             java.sql.Connection connexion = DBManager.getConnection();
             java.sql.PreparedStatement stmt;
             String where = "";
@@ -66,7 +66,21 @@ public class GameDB {
                 if (!where.equals("")) {
                     where = where + " AND ";
                 }
-                where = where + " gstopplayer ";
+                where = where + " gstopplayer = ? ";
+            }
+            
+            if (sel.getWord()!= 0) {
+                if (!where.equals("")) {
+                    where = where + " AND ";
+                }
+                where = where + " gword = ? ";
+            }            
+            
+            if (sel.getTable()!= null) {
+                if (!where.equals("")) {
+                    where = where + " AND ";
+                }
+                where = where + " gtable = ? ";
             }
             
             if (where.length() != 0) {
@@ -84,6 +98,11 @@ public class GameDB {
                 }
                 if (sel.getPartner() != 0) {
                     stmt.setInt(i, sel.getPartner());
+                    i++;
+                }
+                
+                if (sel.getWord() != 0) {
+                    stmt.setInt(i, sel.getWord());
                     i++;
                 }
                 
