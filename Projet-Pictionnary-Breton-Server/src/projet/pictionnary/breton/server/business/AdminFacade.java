@@ -290,25 +290,39 @@ public class AdminFacade {
         }
     }
     
-//    public static int getNumberBadProposition(String word) throws PictionnaryBusinessException {
-//        try {
-//            DBManager.startTransaction();
-//            int number = PropositionBusiness.getNumberBadProposition(word);
-//            DBManager.validateTransaction();
-//            return  number;
-//        } catch (PictionnaryDbException pDB) {
-//            String msg = pDB.getMessage();
-//            try {
-//                DBManager.cancelTransaction();
-//            } catch (PictionnaryDbException ex) {
-//                msg = ex.getMessage() + "\n" + msg;
-//            } finally {
-//                throw new PictionnaryBusinessException("Not possible to get words \n" + msg);
-//            }
-//        }
-//    }
-    
+    /**
+     * For any word.
+     * 
+     * @param word
+     * @return
+     * @throws PictionnaryBusinessException 
+     */
     public static int getNumberBadPropositions(String word) throws PictionnaryBusinessException {
+        try {
+            DBManager.startTransaction();
+            int number = PropositionBusiness.getNumberBadProposition(word);
+            DBManager.validateTransaction();
+            return  number;
+        } catch (PictionnaryDbException pDB) {
+            String msg = pDB.getMessage();
+            try {
+                DBManager.cancelTransaction();
+            } catch (PictionnaryDbException ex) {
+                msg = ex.getMessage() + "\n" + msg;
+            } finally {
+                throw new PictionnaryBusinessException("Not possible to get words \n" + msg);
+            }
+        }
+    }
+    
+    /**
+     * For a word from the table Word.
+     * 
+     * @param word
+     * @return
+     * @throws PictionnaryBusinessException 
+     */
+    public static int getNumberBadPropositionsFromTableWord(String word) throws PictionnaryBusinessException {
         int wordId = getWord(word).getId();
         List<GameDto> list = getGamesByWord(wordId);
         int tot = 0;

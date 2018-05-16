@@ -1,5 +1,8 @@
 package projet.pictionnary.breton.client.view;
 
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -30,6 +33,7 @@ public abstract class GameWindow extends Region {
     private final HBox rootBox;
     private final GridPane infosPane;
     private final Button quitBtn;
+    private final Button historyBtn;
     
     /**
      * Constructs a new game window. 
@@ -49,6 +53,7 @@ public abstract class GameWindow extends Region {
         propositionHist = new TextArea();
         propositionHist.setEditable(false);
         
+        historyBtn = createsButtonHistory();
         quitBtn = createsButtonQuit();
     }
 
@@ -80,6 +85,18 @@ public abstract class GameWindow extends Region {
         Button quitBtn = new Button("Quit");
         quitBtn.setOnAction((event) -> {
             clientController.quitGame();
+        });
+        return quitBtn;
+    }
+    
+    private Button createsButtonHistory() {
+        Button quitBtn = new Button("All games history");
+        quitBtn.setOnAction((event) -> {
+            try {
+                clientController.getFullHistory();
+            } catch (IOException ex) {
+                Logger.getLogger(GameWindow.class.getName()).log(Level.SEVERE, null, ex);
+            }
         });
         return quitBtn;
     }
@@ -206,5 +223,9 @@ public abstract class GameWindow extends Region {
      */
     public Button getQuitBtn() {
         return quitBtn;
+    }
+
+    public Button getHistoryBtn() {
+        return historyBtn;
     }
 }

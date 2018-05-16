@@ -80,6 +80,7 @@ public class PartnerWindow extends GameWindow {
         infosPane.add(submitBtn, 0, 7);
         infosPane.add(super.getHistoryLbl(), 0, 11);
         infosPane.add(super.getPropositionHist(), 0, 12);
+        infosPane.add(super.getHistoryBtn(), 0, 18);
         infosPane.add(super.getQuitBtn(), 0, 20);
     }
 

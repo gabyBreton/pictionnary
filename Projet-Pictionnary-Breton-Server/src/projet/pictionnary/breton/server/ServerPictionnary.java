@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import projet.pictionnary.breton.common.model.MessageHistory;
 import projet.pictionnary.breton.common.model.MessageStats;
 import projet.pictionnary.breton.common.users.Members;
 import projet.pictionnary.breton.server.business.AdminFacade;
@@ -187,6 +188,15 @@ public class ServerPictionnary extends AbstractServer {
                 }
                 break;
                 
+            case HISTORY:
+                try {
+                    handleHistoryRequest(author);
+                } catch (PictionnaryBusinessException ex) {
+                    Logger.getLogger(ServerPictionnary.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                // pour chq ProDto on récupere le nombre de getNumberBadProposition
+                break;
+                
             case GET_TABLES:
                 Message msgGetTables = new MessageGetTables(User.ADMIN, author, 
                                                                 dataTables);
@@ -246,6 +256,20 @@ public class ServerPictionnary extends AbstractServer {
                 throw new IllegalArgumentException("Message type unknown " + type);
         }
     } 
+
+    private void handleHistoryRequest(User author) throws PictionnaryBusinessException {
+        int gameId = members.getUser(author.getId()).getGameId();
+        
+        List<PropositionDto> list = AdminFacade.getAllBadPropositions(gameId);
+        List<String> listHistory = new ArrayList<>();
+        int nbBadProps = 0;
+        for (PropositionDto props : list) {
+            nbBadProps = AdminFacade.getNumberBadPropositions(props.getTxt());
+            listHistory.add(props.getTxt() + " - " + Integer.toString(nbBadProps));
+        }
+        
+        sendToClient(new MessageHistory(User.ADMIN, author, listHistory), author);
+    }
 
     /**
      * Handles a profile request.

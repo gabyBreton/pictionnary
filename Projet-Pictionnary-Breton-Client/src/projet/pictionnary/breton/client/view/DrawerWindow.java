@@ -1,6 +1,5 @@
 package projet.pictionnary.breton.client.view;
 
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import projet.pictionnary.breton.common.util.Observer;
@@ -63,6 +62,7 @@ public class DrawerWindow extends GameWindow {
         infosPane.add(avgPropsLbl, 0, 9);
         infosPane.add(super.getHistoryLbl(), 0, 11);
         infosPane.add(super.getPropositionHist(), 0, 12);
+        infosPane.add(super.getHistoryBtn(), 0, 18);
         infosPane.add(super.getQuitBtn(), 0, 20);
     }
     

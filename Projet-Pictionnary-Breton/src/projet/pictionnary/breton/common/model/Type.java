@@ -28,6 +28,11 @@ public enum Type {
     STATS,
     
     /**
+     * To get the history for a word.
+     */
+    HISTORY,
+    
+    /**
      * Message to share the data for all the tables.
      */
     GET_TABLES,

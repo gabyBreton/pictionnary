@@ -16,6 +16,7 @@ import projet.pictionnary.breton.client.view.ConnexionStageController;
 import projet.pictionnary.breton.client.view.TableSelectionStageController;
 import projet.pictionnary.breton.client.view.GameWindow;
 import projet.pictionnary.breton.client.view.GameWindowFactory;
+import projet.pictionnary.breton.client.view.HistoryWindow;
 import projet.pictionnary.breton.client.view.StatsWindow;
 import projet.pictionnary.breton.common.model.DataTable;
 import projet.pictionnary.breton.common.model.DrawEvent;
@@ -131,6 +132,10 @@ public class ClientController implements Observer {
                 handleStatsRequest(message);
                 break;
                 
+            case HISTORY:
+                handleHistoryRequest(message);
+                break;
+                
             case GET_TABLES:
                 dataTables = (List<DataTable>) message.getContent();
                 Platform.runLater(() -> {
@@ -217,6 +222,17 @@ public class ClientController implements Observer {
             });
         }
     }
+    
+    private void handleHistoryRequest(Message message) {
+        Platform.runLater(() -> {
+            List<String> listHist = (List<String>) message.getContent();
+            HistoryWindow historyWindow = new HistoryWindow(listHist);
+            Stage histStage = new Stage();
+            histStage.setScene(new Scene(historyWindow));
+            histStage.show();
+        });
+    }
+
 
     /**
      * Displays a dialog box to inform that there is no statistics for this 
@@ -363,6 +379,10 @@ public class ClientController implements Observer {
     public void joinTable(int id) {
         clientPictionnary.join(id);
     }
+    
+    public void getFullHistory() throws IOException {
+        clientPictionnary.getFullHistory();
+    }    
     
     /**
      * Creates and shows the <code> PartnerWindow </code> window.

@@ -15,6 +15,7 @@ import projet.pictionnary.breton.common.model.MessageCreate;
 import projet.pictionnary.breton.common.model.MessageGameStatus;
 import projet.pictionnary.breton.common.model.MessageSendDraw;
 import projet.pictionnary.breton.common.model.MessageGetWord;
+import projet.pictionnary.breton.common.model.MessageHistory;
 import projet.pictionnary.breton.common.model.MessageJoin;
 import projet.pictionnary.breton.common.model.MessageQuit;
 import projet.pictionnary.breton.common.model.MessageStats;
@@ -85,6 +86,11 @@ public class ClientPictionnary extends AbstractClient {
             
             case STATS:
                 System.out.println("STATISTICS RECEIVED");
+                notifyObservers(msg);
+                break;
+                
+            case HISTORY:
+                System.out.println("FULL HISTORY RECEIVED");
                 notifyObservers(msg);
                 break;
                 
@@ -225,6 +231,10 @@ public class ClientPictionnary extends AbstractClient {
 
     public int getAvgPropositions() {
         return avgPropositions;
+    }
+     
+    public void getFullHistory() throws IOException {
+        sendToServer(new MessageHistory(mySelf, User.ADMIN, null));
     }
     
     /**
