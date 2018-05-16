@@ -194,7 +194,11 @@ public class ServerPictionnary extends AbstractServer {
                 break;
                 
             case GET_WORD:
-                handleGetWordRequest(author, memberId);
+                try {
+                    handleGetWordRequest(author, memberId);
+                } catch (PictionnaryBusinessException ex) {
+                    Logger.getLogger(ServerPictionnary.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 break;
             
             case QUIT:
@@ -379,14 +383,15 @@ public class ServerPictionnary extends AbstractServer {
      * @param author the author of the request.
      * @param memberId the id of the author. 
      */
-    private void handleGetWordRequest(User author, int memberId) {
+    private void handleGetWordRequest(User author, int memberId) throws PictionnaryBusinessException {
         if (author.getRole() == Role.PARTNER) {
             Message msgBadRequestGetWord = new MessageBadRequest(User.ADMIN,
-                    author, "Can't give the word, you are partner.");
+                                author, "Can't give the word, you are partner.");
             sendToClient(msgBadRequestGetWord, memberId);
         } else {
+            String word = getWordFromTable(memberId);
             Message msgGetWord = new MessageGetWord(User.ADMIN, author,
-                    getWordFromTable(memberId));
+                                 word, AdminFacade.getAverageNumberProps(word));
             sendToClient(msgGetWord, memberId);
         }
     }
