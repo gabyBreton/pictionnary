@@ -391,7 +391,8 @@ public class ClientController implements Observer {
      */
     private void displayDrawerWindow() {
         drawerWindow = GameWindowFactory.createGameWindow(Role.DRAWER, 
-                                                          clientPictionnary.getWord());
+                                                          clientPictionnary.getWord(),
+                                                          clientPictionnary.getAvgPropositions());
         drawerWindow.setController(this);
         drawerWindow.setStatus(clientPictionnary.getGameStatus());
         drawerWindow.addObserver(this);

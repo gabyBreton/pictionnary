@@ -135,7 +135,7 @@ public abstract class GameWindow extends Region {
      */
     public void clearPane() {
     }   
-
+    
     /**
      * Gives the client controller.
      * 

@@ -35,6 +35,7 @@ public class ClientPictionnary extends AbstractClient {
     private List<DataTable> dataTables;
     private final List<Observer> observers;
     private String word; // TODO : retirer le mot lors de la destruction de la table.
+    private int avgPropositions = 0;
     private GameStatus gameStatus;
     
     /**
@@ -99,6 +100,8 @@ public class ClientPictionnary extends AbstractClient {
                 break;
                 
             case GET_WORD:
+                MessageGetWord msgWord = (MessageGetWord) message;
+                avgPropositions = msgWord.getAvgProps();
                 word = (String) message.getContent();
                 notifyObservers(message);
                 break;
@@ -205,7 +208,7 @@ public class ClientPictionnary extends AbstractClient {
      */
     public void askWord() {
         try {
-            sendToServer(new MessageGetWord(mySelf, User.ADMIN, ""));
+            sendToServer(new MessageGetWord(mySelf, User.ADMIN, "", 0));
         } catch (IOException ioe) {
             System.out.println(ioe.getMessage());
         } 
@@ -218,6 +221,10 @@ public class ClientPictionnary extends AbstractClient {
      */
     public String getWord() {
         return word;
+    }
+
+    public int getAvgPropositions() {
+        return avgPropositions;
     }
     
     /**

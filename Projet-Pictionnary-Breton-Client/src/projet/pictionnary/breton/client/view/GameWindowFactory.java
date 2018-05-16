@@ -45,12 +45,12 @@ public class GameWindowFactory {
      * @param wordToDraw the word that the drawer need to draw.
      * @return the new game window.
      */
-    public static  GameWindow createGameWindow(Role role, String wordToDraw) {
+    public static  GameWindow createGameWindow(Role role, String wordToDraw, int avgProps) {
         GameWindow gameWindow;
         
         switch (role) {
             case DRAWER:
-                gameWindow = new DrawerWindow(wordToDraw);
+                gameWindow = new DrawerWindow(wordToDraw, avgProps);
                 break;
                 
             default:

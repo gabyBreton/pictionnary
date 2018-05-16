@@ -12,6 +12,7 @@ public class MessageGetWord implements Message {
     private final User author;
     private final User recipient;
     private final String word;
+    private final int avgProps;
 
     /**
      * Constructs a new <code> MessageGetWord </code>.
@@ -20,10 +21,11 @@ public class MessageGetWord implements Message {
      * @param recipient the recipient of the message.
      * @param word the word to draw.
      */
-    public MessageGetWord(User author, User recipient, String word) {
+    public MessageGetWord(User author, User recipient, String word, int avgProps) {
         this.author = author;
         this.recipient = recipient;
         this.word = word;
+        this.avgProps = avgProps;
     }
     
     @Override
@@ -45,4 +47,8 @@ public class MessageGetWord implements Message {
     public Object getContent() {
         return word;
     }   
+
+    public int getAvgProps() {
+        return avgProps;
+    }
 }
