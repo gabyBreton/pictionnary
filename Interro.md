@@ -13,3 +13,4 @@
 
 ## 3 - Modifications des affichages
 * Le client du drawer affiche désormais le nombre moyen de propositions pour le mot à dessiner.
+* Le client affiche un historique qui n'est pas le bon.
