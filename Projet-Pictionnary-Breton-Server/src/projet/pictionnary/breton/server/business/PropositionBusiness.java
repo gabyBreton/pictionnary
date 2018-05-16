@@ -31,4 +31,15 @@ public class PropositionBusiness {
         PropositionSel sel = new PropositionSel(0, null, gameId);
         return PropositionDB.getCollection(sel);
     }
+    
+    static int getNumberBadProposition(String word) throws PictionnaryDbException {
+        PropositionSel sel = new PropositionSel(0, word, 0);
+        List<PropositionDto> propositions = PropositionDB.getCollection(sel);
+        
+        if (propositions !=  null) {
+            return propositions.size();
+        } else {
+            return 0;
+        }
+    }
 }

@@ -271,4 +271,22 @@ public class AdminFacade {
             }
         }
     }
+    
+    public static int getNumberBadProposition(String word) throws PictionnaryBusinessException {
+        try {
+            DBManager.startTransaction();
+            int number = PropositionBusiness.getNumberBadProposition(word);
+            DBManager.validateTransaction();
+            return  number;
+        } catch (PictionnaryDbException pDB) {
+            String msg = pDB.getMessage();
+            try {
+                DBManager.cancelTransaction();
+            } catch (PictionnaryDbException ex) {
+                msg = ex.getMessage() + "\n" + msg;
+            } finally {
+                throw new PictionnaryBusinessException("Not possible to get words \n" + msg);
+            }
+        }
+    }
 }
