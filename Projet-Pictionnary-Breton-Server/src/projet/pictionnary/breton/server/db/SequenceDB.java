@@ -12,6 +12,7 @@ public class SequenceDB {
     static final String GAME = "Game";
     static final String PLAYER = "Player";
     static final String WORD = "Word";
+    static final String PROPOSITION = "Proposition";
 
     /**
      * Gets the next id of a register in a table.

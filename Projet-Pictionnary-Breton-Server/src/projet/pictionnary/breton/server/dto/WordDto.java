@@ -18,6 +18,11 @@ public class WordDto extends EntityDto<Integer> {
         this.word = word;
     }
 
+    public WordDto(int id, String word) {
+        this(word);
+        this.id = id;
+    }
+    
     /**
      * Gives the word.
      * 

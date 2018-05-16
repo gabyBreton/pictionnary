@@ -14,6 +14,8 @@ public class GameDto extends EntityDto<Integer> {
     private final Timestamp startTime;
     private Timestamp endTime;
     private int stopPlayer;
+    private int word;
+    private String name;
 
     /**
      * Constructs a new GameDto.
@@ -26,12 +28,14 @@ public class GameDto extends EntityDto<Integer> {
      *                   Can be null.
      */
     public GameDto(int drawer, int partner, Timestamp startTime, 
-                   Timestamp endTime, int stopPlayer) {
+                   Timestamp endTime, int stopPlayer, int word, String name) {
         this.drawer = drawer;
         this.partner = partner;
         this.startTime = startTime;
         this.endTime = endTime;
         this.stopPlayer = stopPlayer;
+        this.word = word;
+        this.name = name;
     }
     
     /**
@@ -44,10 +48,11 @@ public class GameDto extends EntityDto<Integer> {
      * @param endTime the end time of the game. Can be null.
      * @param stopPlayer the id of the player that have stop the game. 
      *                   Can be null.
+     * @param word
      */
     public GameDto (int id, int drawer, int partner, Timestamp startTime, 
-                   Timestamp endTime, int stopPlayer) {
-        this(drawer, partner, startTime, endTime, stopPlayer);
+                   Timestamp endTime, int stopPlayer, int word, String name) {
+        this(drawer, partner, startTime, endTime, stopPlayer, word, name);
         this.id = id;
     }
 
@@ -94,5 +99,13 @@ public class GameDto extends EntityDto<Integer> {
      */
     public int getStopPlayer() {
         return stopPlayer;
+    }
+
+    public int getWord() {
+        return word;
+    }
+
+    public String getName() {
+        return name;
     }
 }

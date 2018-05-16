@@ -4,6 +4,7 @@ import java.util.List;
 import projet.pictionnary.breton.server.db.DBManager;
 import projet.pictionnary.breton.server.dto.GameDto;
 import projet.pictionnary.breton.server.dto.PlayerDto;
+import projet.pictionnary.breton.server.dto.PropositionDto;
 import projet.pictionnary.breton.server.dto.WordDto;
 import projet.pictionnary.breton.server.exception.PictionnaryBusinessException;
 import projet.pictionnary.breton.server.exception.PictionnaryDbException;
@@ -36,6 +37,24 @@ public class AdminFacade {
                 msg = ex.getMessage() + "\n" + msg;
             } finally {
                 throw new PictionnaryBusinessException("Words list unavailable \n" + msg);
+            }
+        }
+    }
+    
+    public static WordDto getWord(String word) throws PictionnaryBusinessException {
+        try {
+            DBManager.startTransaction();
+            WordDto wordDto = WordBusiness.getWord(word);
+            DBManager.validateTransaction();
+            return wordDto;
+        } catch (PictionnaryDbException pdb) {
+            String msg = pdb.getMessage();
+            try {
+                DBManager.cancelTransaction();
+            } catch (PictionnaryDbException ex) {
+                msg = ex.getMessage() + "\n" + msg;
+            } finally {
+                throw new PictionnaryBusinessException("Player id unavailable \n" + msg);
             }
         }
     }
@@ -213,6 +232,24 @@ public class AdminFacade {
                 msg = ex.getMessage() + "\n" + msg;
             } finally {
                 throw new PictionnaryBusinessException("Game unavailable \n" + msg);
+            }
+        }
+    }
+    
+    public static int addPropostion(PropositionDto proposition) throws PictionnaryBusinessException {
+        try {
+            DBManager.startTransaction();
+            int i = PropositionBusiness.add(proposition);
+            DBManager.validateTransaction();
+            return i;
+        } catch (PictionnaryDbException pDB) {
+            String msg = pDB.getMessage();
+            try {
+                DBManager.cancelTransaction();
+            } catch (PictionnaryDbException ex) {
+                msg = ex.getMessage() + "\n" + msg;
+            } finally {
+                throw new PictionnaryBusinessException("Not possible to add the game \n" + msg);
             }
         }
     }

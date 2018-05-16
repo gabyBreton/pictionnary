@@ -99,7 +99,9 @@ public class GameDB {
                                    rs.getInt("gpartner"),
                                    rs.getTimestamp("gstarttime"),
                                    rs.getTimestamp("gendtime"),
-                                   rs.getInt("gstopplayer")));
+                                   rs.getInt("gstopplayer"),
+                                   rs.getInt("gword"),
+                                   rs.getString("gtable")));
             }
         } catch (java.sql.SQLException pSQL) {
             throw new PictionnaryDbException("Instanciation de Game impossible:\nSQLException: " + pSQL.getMessage());
@@ -121,12 +123,14 @@ public class GameDB {
             java.sql.PreparedStatement insert;
             insert = 
                     connexion.prepareStatement("Insert into Game(gid, gdrawer, "
-                                               + "gpartner, gstarttime) "
-                                               + "values(?, ?, ?, ?)");
+                                               + "gpartner, gstarttime, gword, gtable) "
+                                               + "values(?, ?, ?, ?, ?, ?)");
             insert.setInt(1, num);
             insert.setInt(2, game.getDrawer());
             insert.setInt(3, game.getPartner());
             insert.setTimestamp(4, game.getStartTime());
+            insert.setInt(5, game.getWord());
+            insert.setString(6, game.getName());
             insert.execute();
             return num;
         } catch (Exception ex) {

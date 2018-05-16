@@ -41,6 +41,7 @@ import projet.pictionnary.breton.server.exception.PictionnaryBusinessException;
 import projet.pictionnary.breton.common.users.User;
 import projet.pictionnary.breton.common.util.Observer;
 import projet.pictionnary.breton.server.dto.GameDto;
+import projet.pictionnary.breton.server.dto.PropositionDto;
 
 /**
  * This class is used to manage and control the Pictionnary server.
@@ -309,7 +310,8 @@ public class ServerPictionnary extends AbstractServer {
                                         User author) throws PictionnaryBusinessException {
         GameStatus gameStatus;
         if (tableSubmit != null) {
-            
+
+            int gameId = members.getUser(author.getId()).getGameId();
             if (proposition.toLowerCase().equals(tableSubmit
                                                     .getWord()
                                                     .toLowerCase())) {
@@ -322,7 +324,6 @@ public class ServerPictionnary extends AbstractServer {
                 
                 gameStatus = GameStatus.WIN;
                 
-                int gameId = members.getUser(author.getId()).getGameId();
                 GameDto gameDto = AdminFacade.getGameById(gameId);
                 
                 if (gameDto !=  null) {
@@ -331,11 +332,14 @@ public class ServerPictionnary extends AbstractServer {
                                                      gameDto.getPartner(),
                                                      gameDto.getStartTime(),
                                                      new Timestamp(System.currentTimeMillis()),
-                                                     0);
+                                                     0,
+                                                     AdminFacade.getWord(proposition).getId(),
+                                                     gameDto.getName());
                     AdminFacade.updateGame(gameUpdate);
                 }
             } else {
                 gameStatus = GameStatus.IN_GAME;
+                AdminFacade.addPropostion(new PropositionDto(proposition, gameId));
             }
             
             sendSubmitResponse(tableSubmit.getDrawer(),
@@ -550,7 +554,9 @@ public class ServerPictionnary extends AbstractServer {
                                                  gameDto.getPartner(), 
                                                  gameDto.getStartTime(), 
                                                  new Timestamp(System.currentTimeMillis()),
-                                                 author.getId());
+                                                 author.getId(),
+                                                 gameDto.getWord(),
+                                                 gameDto.getName());
                 
                 AdminFacade.updateGame(gameUpdate);
             }
@@ -618,11 +624,14 @@ public class ServerPictionnary extends AbstractServer {
                 joinActions(author, tableJoin);
                 sendMessagesAfterJoin(author, tableJoin);
                 try {
+                    int wordId = AdminFacade.getWord(tableJoin.getWord()).getId();
                     int gameId = AdminFacade.addGame(new GameDto(tableJoin.getDrawer().getId(),
                                                                  tableJoin.getPartner().getId(),
                                                                  new Timestamp(System.currentTimeMillis()),
                                                                  null,
-                                                                 0));
+                                                                 0,
+                                                                 wordId,
+                                                                 tableJoin.getName()));
                     members.changeGameId(tableJoin.getDrawer().getId(), gameId);
                     members.changeGameId(tableJoin.getPartner().getId(), gameId);
                 } catch (PictionnaryBusinessException ex) {

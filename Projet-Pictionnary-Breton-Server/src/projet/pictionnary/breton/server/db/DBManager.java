@@ -17,7 +17,7 @@ public class DBManager {
     public static Connection getConnection() throws PictionnaryDbException {
         if (connection == null) {
             try {
-                connection = DriverManager.getConnection("jdbc:derby://localhost:1527/pictionnary", "g433971", "aaaa");
+                connection = DriverManager.getConnection("jdbc:derby://localhost:1527/interro", "app", "aaaa");
             } catch (SQLException ex) {
                 throw new PictionnaryDbException("Connexion impossible: " + ex.getMessage());
             }
