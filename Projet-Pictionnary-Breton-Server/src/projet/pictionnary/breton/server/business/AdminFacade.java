@@ -312,9 +312,34 @@ public class AdminFacade {
         int wordId = getWord(word).getId();
         List<GameDto> list = getGamesByWord(wordId);
         int tot = 0;
-        for (GameDto game : list) {
-            tot += getAllBadPropositions(game.getId()).size();
+        if (list != null) {
+            for (GameDto game : list) {
+                tot += getAllBadPropositions(game.getId()).size();
+            }
+            return tot;
+        } else {
+            return 0;
         }
-        return tot;
+    }
+    
+    public static int getAverageNumberProps(String word) throws PictionnaryBusinessException {
+        int wordId = getWord(word).getId();        
+        List<GameDto> list = getGamesByWord(wordId);
+        if (list != null) {
+            int nbGames = list.size();
+            int tot = 0;
+            int avg = 0;
+            for (GameDto game : list) {
+                tot += getAllBadPropositions(game.getId()).size();
+            }
+            try {
+                avg = tot / nbGames;
+            } catch (ArithmeticException ae) {
+                System.out.println(ae.getMessage());
+            }
+            return avg;
+        } else {
+            return 0;
+        }
     }
 }
