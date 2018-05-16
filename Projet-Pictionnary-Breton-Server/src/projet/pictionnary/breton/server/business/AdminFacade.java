@@ -249,7 +249,25 @@ public class AdminFacade {
             } catch (PictionnaryDbException ex) {
                 msg = ex.getMessage() + "\n" + msg;
             } finally {
-                throw new PictionnaryBusinessException("Not possible to add the game \n" + msg);
+                throw new PictionnaryBusinessException("Not possible to add the proposition \n" + msg);
+            }
+        }
+    }
+    
+    public static List<PropositionDto> getAllBadPropositions(int gameId) throws PictionnaryBusinessException {
+        try {
+            DBManager.startTransaction();
+            List<PropositionDto> words = PropositionBusiness.getAllBadPropositions(gameId);
+            DBManager.validateTransaction();
+            return  words;
+        } catch (PictionnaryDbException pDB) {
+            String msg = pDB.getMessage();
+            try {
+                DBManager.cancelTransaction();
+            } catch (PictionnaryDbException ex) {
+                msg = ex.getMessage() + "\n" + msg;
+            } finally {
+                throw new PictionnaryBusinessException("Not possible to get words \n" + msg);
             }
         }
     }

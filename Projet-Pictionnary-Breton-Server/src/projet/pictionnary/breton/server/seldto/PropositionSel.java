@@ -4,13 +4,16 @@ package projet.pictionnary.breton.server.seldto;
  *
  * @author G43397
  */
-public class WordSel {
+public class PropositionSel {
+    
     private final int id;
     private final String txt;
+    private final int game;
 
-    public WordSel(int id, String txt) {
+    public PropositionSel(int id, String txt, int game) {
         this.id = id;
         this.txt = txt;
+        this.game = game;
     }
 
     public int getId() {
@@ -19,5 +22,9 @@ public class WordSel {
 
     public String getTxt() {
         return txt;
+    }
+
+    public int getGame() {
+        return game;
     }
 }
