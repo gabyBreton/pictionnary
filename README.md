@@ -1,7 +1,11 @@
-# Pictionnary -- 2017 / 2018 
-## Breton Gabriel
+# Pictionnary - 2017 / 2018 
+## Description
+This project is a Java implementation of the game Pictionnary.
 
-### ToDo:
+It offers the possibilty to play with more than one person, on the local server provided.
+You can create several game rooms, or join a waiting room.
+
+### ToDo (in french):
 #### Client:
  * Afficher proprement une erreur en GUI si l'utilisateur tente de se connecter sur un mauvais port ou un mauvais host, ou avec un nom vide.
  * Nettoyer le stockage du mot à dessiner lors de la destruction de la fenetre de Drawer.
