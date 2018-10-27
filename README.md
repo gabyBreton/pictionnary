@@ -1,4 +1,4 @@
-# Pictionnary - 2017 / 2018 
+# Pictionnary - 2018 
 ## Description
 This project is a Java implementation of the game Pictionnary.
 
