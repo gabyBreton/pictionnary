@@ -1,7 +1,7 @@
 # Pictionnary -- 2017 / 2018 
-## Breton Gabriel - 43397
+## Breton Gabriel
 
-### TODO:
+### ToDo:
 #### Client:
  * Afficher proprement une erreur en GUI si l'utilisateur tente de se connecter sur un mauvais port ou un mauvais host, ou avec un nom vide.
  * Nettoyer le stockage du mot à dessiner lors de la destruction de la fenetre de Drawer.
