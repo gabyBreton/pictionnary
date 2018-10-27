@@ -1,0 +1,15 @@
+# Ignore all
+*
+
+# Unignore all dirs (needed)
+!*/
+
+# Unignore good files
+!*.java
+!*.css
+!*.fxml
+!*.md
+!*.mp3
+!.gitignore
+!*.png
+!*.jar

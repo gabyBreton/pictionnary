@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="804.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="projet.pictionnary.breton.client.view.TableSelectionStageController">
+   <children>
+      <Label layoutX="17.0" layoutY="23.0" text="Table selection" AnchorPane.leftAnchor="30.0">
+         <font>
+            <Font size="43.0" />
+         </font>
+      </Label>
+      <Button fx:id="createTableBtn" layoutX="654.0" layoutY="308.0" mnemonicParsing="false" onAction="#createTable" prefHeight="26.0" prefWidth="124.0" text="Create table" />
+      <TableView fx:id="tableView" layoutX="30.0" layoutY="89.0" onMouseClicked="#join" prefHeight="245.0" prefWidth="600.0">
+        <columns>
+          <TableColumn fx:id="nameCol" prefWidth="120.0" text="Name" />
+          <TableColumn fx:id="idCol" editable="false" prefWidth="120.0" text="Id" />
+            <TableColumn fx:id="statusCol" prefWidth="120.0" text="Status" />
+            <TableColumn fx:id="drawerCol" editable="false" prefWidth="120.0" text="Drawer" />
+            <TableColumn fx:id="partnerCol" editable="false" prefWidth="120.0" text="Partner" />
+        </columns>
+      </TableView>
+      <Button fx:id="statsBtn" layoutX="654.0" layoutY="259.0" mnemonicParsing="false" onAction="#getStats" prefHeight="26.0" prefWidth="124.0" text="Statistics" />
+      <Label layoutX="654.0" layoutY="117.0" text="Name :">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Label fx:id="nameLbl" layoutX="654.0" layoutY="145.0" />
+   </children>
+</AnchorPane>
